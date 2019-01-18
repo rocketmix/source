@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>io.github.rocketmix</groupId>
+	<artifactId>rocketmix-parent</artifactId>
+	<name>RocketMiX Parent Maven Project</name>
+	<version>1.0.3-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<modules>
+		<module>rocketmix-management-server</module>
+		<module>rocketmix-routing-server</module>
+		<module>rocketmix-spring-boot-starter</module>
+		<module>rocketmix-services-demo</module>
+	</modules>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.8</java.version>
+		<cxf.version>3.2.7</cxf.version>
+		<swagger-ui.version>3.19.5</swagger-ui.version>
+	</properties>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.0.2.RELEASE</version>
+	</parent>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>Finchley.RELEASE</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.gif</include>
+					<include>**/*.jpg</include>
+					<include>**/*.properties</include>
+					<include>**/*.xml</include>
+				</includes>
+			</resource>
+		</resources>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-maven-plugin</artifactId>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<!-- MET A JOUR LA VERSION DU PARENT DANS LES MODULES AU MOMENT DU RELEASE 
+				(start) -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<autoVersionSubmodules>true</autoVersionSubmodules>
+				</configuration>
+			</plugin>
+			<!-- MET A JOUR LA VERSION DU PARENT DANS LES MODULES AU MOMENT DU RELEASE 
+				(end) -->
+			<!-- EVITE LES ERREURS DE PACKAGING SUR JAVADOC (start) -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<configuration>
+							<failOnError>false</failOnError>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- EVITE LES ERREURS DE PACKAGING SUR JAVADOC (end) -->
+			<!-- PERMET D'AVOIR UN PROJET SERVLET 3 SANS WEB.XML (start) -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<warName>${project.build.finalName}</warName>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+					<recompressZippedFiles>false</recompressZippedFiles>
+					<archive>
+						<compress>false</compress>
+						<!-- ATTENTION!!! Suppression du manifest d'origine sinon ne peut pas 
+							etre tranforme en executable Linux -->
+						<!-- ${project.build.directory}/war/work/org.apereo.cas/cas-server-webapp-tomcat/META-INF/MANIFEST.MF -->
+						<manifestFile />
+					</archive>
+				</configuration>
+			</plugin>
+			<!-- PERMET D'AVOIR UN PROJET SERVLET 3 SANS WEB.XML (end) -->
+			<!-- PERMET AU WAR D'ETRE EXECUTABLE EN TANT QUE DAEMON LINUX (start) -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<addResources>true</addResources>
+					<executable>true</executable>
+					<layout>WAR</layout>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- PERMET AU WAR D'ETRE EXECUTABLE EN TANT QUE DAEMON LINUX (end) -->
+		</plugins>
+	</build>
+</project>

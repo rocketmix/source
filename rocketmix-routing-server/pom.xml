@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>rocketmix-routing-server</artifactId>
+	<name>RocketMiX Router (Spring Cloud Zuul server)</name>
+	<packaging>war</packaging>
+	<parent>
+		<groupId>io.github.rocketmix</groupId>
+		<artifactId>rocketmix-parent</artifactId>
+		<version>1.0.3-SNAPSHOT</version>
+	</parent>
+	<dependencies>
+		<!-- ROUTER (start) -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-zuul</artifactId>
+		</dependency>
+		<!-- ROUTER (end) -->
+		<!-- CUSTOM OPENAPI.JSON MERGE (start) -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+		<!-- CUSTOM OPENAPI.JSON MERGE (end) -->
+		<!-- MONITORING AND CIRCUIT BREAKER (start) -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-hystrix-dashboard</artifactId>
+		</dependency>
+		<!-- MONITORING AND CIRCUIT BREAKER (end) -->
+		<!-- EUREKA SERVICE DISCOVERY CLIENT (start) -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+		</dependency>
+		<!-- EUREKA SERVICE DISCOVERY CLIENT (end) -->
+		<!-- SWAGGER UI (start) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>swagger-ui</artifactId>
+			<version>${swagger-ui.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
+		<!-- SWAGGER UI (end) -->
+	</dependencies>
+</project>

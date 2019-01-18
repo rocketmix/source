@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>rocketmix-spring-boot-starter</artifactId>
+	<name>RocketMiX SpringBoot starter module for simplify services implementation</name>
+	<packaging>jar</packaging>
+	<parent>
+		<groupId>io.github.rocketmix</groupId>
+		<artifactId>rocketmix-parent</artifactId>
+		<version>1.0.3-SNAPSHOT</version>
+	</parent>
+	<description>Shared configuration and tools. This project contains a custom spring boot module to facilitate new api project developpement startup process.</description>
+	<dependencies>
+		<!-- EUREKA SERVICE DISCOVERY CLIENT (start) -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.ws.rs</groupId>
+					<artifactId>jsr311-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- EUREKA SERVICE DISCOVERY CLIENT (end) -->
+		<!-- JAX-RS IMPLEMENTATION (start) -->
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-spring-boot-starter-jaxrs</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-rs-service-description-openapi-v3</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-features-metrics</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.jaxrs</groupId>
+			<artifactId>jackson-jaxrs-json-provider</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>20.0</version>
+		</dependency>
+		<!-- JAX-RS IMPLEMENTATION (end) -->
+		<!-- SPRING SECURITY (start) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<!-- SPRING SECURITY (end) -->
+		<!-- SPRING ACTUATOR ENDPOINTS (start) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.dropwizard.metrics</groupId>
+			<artifactId>metrics-core</artifactId>
+		</dependency>
+		<!-- SPRING ACTUATOR ENDPOINTS (end) -->
+		<!-- SPRING BOOT ADMIN (start) -->
+		<dependency>
+			<groupId>de.codecentric</groupId>
+			<artifactId>spring-boot-admin-client</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+		<!-- SPRING BOOT ADMIN (start) -->
+		<!-- SWAGGER UI (start) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>swagger-ui</artifactId>
+			<version>${swagger-ui.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
+		<!-- SWAGGER UI (end) -->
+		<!-- MONITORING AND CIRCUIT BREAKER (start) -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-hystrix-dashboard</artifactId>
+		</dependency>
+		<!-- MONITORING AND CIRCUIT BREAKER (end) -->
+	</dependencies>
+	<build>
+		<plugins>
+			<!-- NO LINUX BUILD NEEDED (start) -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- NO LINUX BUILD NEEDED (end) -->
+		</plugins>
+	</build>
+</project>

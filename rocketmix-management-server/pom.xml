@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>rocketmix-management-server</artifactId>
+	<name>RocketMiX Management Server (Spring Cloud Eureka server combined with Spring Cloud Admin server)</name>
+	<packaging>war</packaging>
+	<parent>
+		<groupId>io.github.rocketmix</groupId>
+		<artifactId>rocketmix-parent</artifactId>
+		<version>1.0.3-SNAPSHOT</version>
+	</parent>
+	<dependencies>
+		<!-- API REGISTRATION EUREKA SERVER (start) -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+		</dependency>
+		<!-- API REGISTRATION EUREKA SERVER (end) -->
+		<!-- ADMIN SERVER (start) -->
+		<dependency>
+			<groupId>de.codecentric</groupId>
+			<artifactId>spring-boot-admin-server</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>de.codecentric</groupId>
+			<artifactId>spring-boot-admin-server-ui</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+		<!-- ADMIN SERVER (end) -->
+	</dependencies>
+</project>

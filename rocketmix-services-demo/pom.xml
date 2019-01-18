@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>rocketmix-services-demo</artifactId>
+	<name>RocketMiX services implementation Demo</name>
+	<packaging>war</packaging>
+	<parent>
+		<groupId>io.github.rocketmix</groupId>
+		<artifactId>rocketmix-parent</artifactId>
+		<version>1.0.3-SNAPSHOT</version>
+	</parent>
+	<dependencies>
+		<!--  CUSTOM SPRINT BOOT MODULE (start) -->
+		<dependency>
+			<groupId>${project.parent.groupId}</groupId>
+			<artifactId>rocketmix-spring-boot-starter</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+		<!--  CUSTOM SPRINT BOOT MODULE (end) -->
+	</dependencies>
+</project>

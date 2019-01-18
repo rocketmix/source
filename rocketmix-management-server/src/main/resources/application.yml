@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: EurekaServer
+  boot:
+    admin:
+      context-path: /admin
+
+server:
+  port: 8761
+  
+eureka:
+  client:
+    enabled: true
+    registerWithEureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: ${eureka.server.uri:http://127.0.0.1:8761}/eureka/
+  instance:
+    preferIpAddress: true
+    metadataMap:
+      instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+      
+     
+     
