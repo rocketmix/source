@@ -1,103 +1,63 @@
-/* ---- base ---- */
-
-html,body{ 
-	width:100%;
-	height:100%;
-	background:#000000;
+html, body {
+    font-family: 'Raleway', sans-serif;
 }
-
-html{
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-}
-
-body{
-  font:normal 75% Arial, Helvetica, sans-serif;
-}
-
-canvas{
-  display:block;
-  vertical-align:bottom;
-}
-
-
-/* ---- particles.js container ---- */
-
-#particles-js{
-  width: 100%;
-  height: 100%;
-  background-color: #000000;
-  background-image: url('');
-  background-size: cover;
-  background-position: 50% 50%;
-  background-repeat: no-repeat;
-}
-
-
-canvas {
-  display: block;
-  vertical-align: bottom;
-}
-
-
-.text {
-	position: absolute;
-	top: 50%;
-	right: 50%;
-	transform: translate(50%,-50%);
-	color: #000000;
-	font-family: 'Raleway', sans-serif;
-	text-align: center;
-    color: #42d3a5;
-}
-
-
-
 h1 {
-	color: #DDDDDD;
-    font-family: "merriweather", serif;
-    font-size: 40px;
-    margin-left: auto;
-    margin-right: auto;
+    font-family: 'merriweather', serif;
+    font-weight: bold;
+    color: #DDDDDD;
+}
+.text-primary {
+    color: #42d3a5 !important;
 }
 
-.colored {
- 	color: #42d3a5;
+.navbar-brand {
+    font-family: 'Caveat', cursive;
+    font-size: 1.6rem;
+    padding-top: 0rem;
+    padding-bottom: 0rem;
 }
 
-.button {
-	margin-top: 50px;
-	margin-bottom: 50px;
+#particles-container {
+    position: relative;
+    min-height: 700px;
+    width: 100%;
+    max-width: 100%;
+    padding-right: 0px;
+    padding-left: 0px;
+    background-color: black;
 }
 
-.button a {
-	margin-left: 25px;
-	margin-right: 25px;
+@media (max-width: 575px) {
+    #particles-container {
+        min-height: 500px;
+    }
+}
+
+#particles, #particles-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin-left: 0;
+    margin-right: 0;
+}
+#particles-content {
+    z-index: 10;
+    padding-top: 100px;
 }
 
 
-
-a,
-a:visited {
-	line-height: 80px;
-    font-size: 16px;
-	font-weight: bold;
-	text-transform: uppercase;
-    text-decoration: none;
-	letter-spacing: 4px;
-	color: #42d3a5;
-	background: #FFFFFF;
-	padding-left: 30px;
-	padding-right: 30px;
-	padding-top: 20px;
-	padding-bottom: 20px;
-	-webkit-transition: 0.3s ease-out;
-	-moz-transition: 0.3s ease-out;
-	-o-transition: 0.3s ease-out;
-	transition: 0.3s ease-out;
+.btn-outline-success-custom {
+    color: #42d3a5;
+    border-color: #42d3a5;
+    background-color: #FFFFFF;
+    font-family: 'Raleway', sans-serif;
+    letter-spacing: 0.25rem;
+    font-size: 1.0rem;
 }
 
-a:hover,
-a:focus {
-	color: #FFFFFF;
-	background: #42d3a5;
+.btn-outline-success-custom:hover {
+    background-color: #42d3a5;
 }
+
