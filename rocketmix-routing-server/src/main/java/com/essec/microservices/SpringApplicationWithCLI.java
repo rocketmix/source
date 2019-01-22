@@ -39,14 +39,13 @@ public class SpringApplicationWithCLI {
 
 	public static void init() {
 		options = new Options();
-		final Option fileOption = Option.builder("f").argName("file").hasArg().desc("File to be analyzed").build();
 		options.addOption("?", "help", false, "Display this help");
-		options.addOption(null, "portal.companyName", true, "Override de company name display on the API Portal");
-		options.addOption(null, "portal.logoURL", true, "Set a logo displayed on the API Portal instead of the rocket logo. Should be a transparent PNG. URL must be absolute. Ex : http://www.acme.com/static/logo.png");
-		options.addOption(null, "server.port", true, "Change HTTP port (default: 8080)");
-		options.addOption(null, "install", false, "Deploy as Linux SystemV service. Run this command only with root permissions");
-		options.addOption(null, "uninstall", false, "Undeploy Linux SystemV service. Run this command only with root permissions");
-		options.addOption(fileOption);
+		options.addOption(null, "companyName", true, "Override de company name display on the API Portal");
+		options.addOption(null, "logoURL", true, "Set a logo displayed on the API Portal instead of the rocket logo. Should be a transparent PNG. URL must be absolute. Ex : http://www.acme.com/static/logo.png");
+		options.addOption(null, "port", true, "Change HTTP port (default: 8080)");
+		options.addOption(null, "managementServerURL", true, "Set URL (with network port) of the management server (default: http://127.0.0.1:8761, used when management server is executed on the same machine)");
+		options.addOption(Option.builder().argName("install").desc("Generate install scripts to deploy/undeploy as Linux SystemV service. You need to provide which Linux user/group will be used to run the service. You can combine this option with other options").longOpt("install").hasArgs().numberOfArgs(2).argName("user:group").valueSeparator(':').build());
 	}
+	
 
 }

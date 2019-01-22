@@ -34,7 +34,7 @@ zuul:
   routes:
     admin:
       path: /admin/**
-      url: http://localhost:8761/admin
+      url: ${eureka.server.uri:http://127.0.0.1:8761}/admin
 # Ribbon acts as load balancer between microservices
 ribbon: 
   ConnectTimeout: 3000
