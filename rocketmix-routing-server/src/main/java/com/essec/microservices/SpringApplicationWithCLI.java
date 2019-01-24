@@ -9,6 +9,8 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.springframework.boot.SpringApplication;
 
+import com.essec.microservices.InstallScriptGenerator.InstallScriptParameters;
+
 
 public class SpringApplicationWithCLI {
 
@@ -27,7 +29,12 @@ public class SpringApplicationWithCLI {
 				formatter.printHelp(" ", options);
 				return;
 			}
-			
+			if (line.hasOption("install")) {
+				InstallScriptParameters params = buildInstallerParams(line);
+				InstallScriptGenerator scriptGenerator = new InstallScriptGenerator();
+				scriptGenerator.generateInstallScript(params);
+				return;
+			}
 			SpringApplication.run(springBootApplicationClazz, args);
 		} catch (ParseException exp) {
 			// oops, something went wrong
@@ -45,6 +52,29 @@ public class SpringApplicationWithCLI {
 		options.addOption(null, "port", true, "Change HTTP port (default: 8080)");
 		options.addOption(null, "managementServerURL", true, "Set URL (with network port) of the management server (default: http://127.0.0.1:8761, used when management server is executed on the same machine)");
 		options.addOption(Option.builder().argName("install").desc("Generate install scripts to deploy/undeploy as Linux SystemV service. You need to provide which Linux user/group will be used to run the service. You can combine this option with other options").longOpt("install").hasArgs().numberOfArgs(2).argName("user:group").valueSeparator(':').build());
+	}
+	
+	private static InstallScriptParameters buildInstallerParams(CommandLine line) {
+		if (!line.hasOption("install")) {
+			throw new RuntimeException("Unable to read --install params");
+		}
+		InstallScriptParameters result = new InstallScriptGenerator.InstallScriptParameters();
+		String[] userParams = line.getOptionValues("install");
+		result.setUser(userParams[0]);
+		result.setGroup(userParams[1]);
+		if (line.hasOption("companyName")) {
+			result.setCompanyName(line.getOptionValue("companyName"));
+		}
+		if (line.hasOption("logoURL")) {
+			result.setLogoURL(line.getOptionValue("logoURL"));
+		}
+		if (line.hasOption("managementServerURL")) {
+			result.setManagementServerURL(line.getOptionValue("managementServerURL"));
+		}
+		if (line.hasOption("port")) {
+			result.setServerPort(Integer.parseInt(line.getOptionValue("port")));
+		}
+		return result;
 	}
 	
 

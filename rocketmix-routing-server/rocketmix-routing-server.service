@@ -8,9 +8,9 @@ After=network.target
 
 [Service]
 Type=simple
-User={{username}}
-Group={{groupname}}
-ExecStart={{installpath}}/rocketmix-routing-server.war
+User=tomcatmanager
+Group=tomcatmanager
+ExecStart=/home/depellegrin/git/rocketmix.source/rocketmix-routing-server/target/rocketmix-routing-server.war
 SuccessExitStatus=143
 RemainAfterExit=no
 Restart=on-failure

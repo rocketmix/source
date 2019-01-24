@@ -1,6 +1,6 @@
 #!/bin/sh
 
-INSTALL_DIR={{installpath}}
+INSTALL_DIR=/home/depellegrin/git/rocketmix.source/rocketmix-routing-server/target
 SERVICE_NAME="rocketmix-routing-server"
 
 # Already exist check
