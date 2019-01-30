@@ -26,6 +26,10 @@ public class RouterApplication {
 	public FallbackProvider getCircuitBreakerFallbackProvider() {
 		return new CircuitBreakerDefaultFallbackProvider();
 	}
+	
+	
+	
+	
 
 	
 	
