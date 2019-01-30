@@ -1,6 +1,6 @@
 # What is RocketMix.github.io ?
 
-\>\>\> [Go to the website](https://rocketmix.github.io "https://rocketmix.github.io") <<<
+\>\>\> [Go to the website](https://rocketmix.github.io "https://rocketmix.github.io") (in french only) <<<
 
 RocketMiX is a free API plateform under Apache Licence 2.0 which helps you to publish your APIs. As many products are complex to understand and complex to deploy, we made RocketMix to be as simple as possible. Just a few Linux executables, nothing more! 
 
