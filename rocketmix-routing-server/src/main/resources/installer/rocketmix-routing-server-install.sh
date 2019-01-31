@@ -1,7 +1,11 @@
 #!/bin/sh
 
+
 INSTALL_DIR={{installpath}}
 SERVICE_NAME="rocketmix-routing-server"
+
+# Display banner
+{{banner}}
 
 # Already exist check
 systemctl is-enabled $SERVICE_NAME.service
@@ -43,12 +47,18 @@ fi
 executablefilename=$SERVICE_NAME
 executablefilename0="$INSTALL_DIR/$filename.war"
 executablefilename1="$INSTALL_DIR/$filename.conf"
-chmod +x $executablefilename0
-chmod +x $executablefilename1
+executablefilename2="$INSTALL_DIR/$filename.service"
+chmod 744 $executablefilename0
+chmod 744 $executablefilename1
+chmod 444 $executablefilename2
 
 
 # Declare service
 filename=$SERVICE_NAME
 servicefile="$INSTALL_DIR/$filename.service"
 systemctl enable $servicefile
+if [ $? -ne 0 ]; then  
+	echo "Service registration failed when trying  to run : ystemctl enable $servicefile"
+	exit 1
+fi
 echo "Done! Service will start automatically on next reboot. You can use systemctl start|stop|status to control your service"
