@@ -5,7 +5,11 @@ INSTALL_DIR={{installpath}}
 SERVICE_NAME="rocketmix-routing-server"
 
 # Display banner
+BANNER="$(cat <<-EOF
 {{banner}}
+EOF
+)"
+echo "$BANNER"
 
 # Already exist check
 systemctl is-enabled $SERVICE_NAME.service
