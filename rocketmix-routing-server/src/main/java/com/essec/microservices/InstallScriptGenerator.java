@@ -29,6 +29,7 @@ public class InstallScriptGenerator {
 
 	public void generateAll(InstallScriptParameters params) {
 		try {
+			displayBanner();
 			generateInstallScript(params);
 			generateConfigFile(params);
 			generateSystemdFile(params);
@@ -49,6 +50,11 @@ public class InstallScriptGenerator {
 		}
 	}
 	
+	private void displayBanner() throws Exception {
+		String banner = loadFileTemplate("banner.txt");
+		System.out.print(banner);
+	}
+
 	private void generateInstallScript(InstallScriptParameters params) throws Exception {
 		StringBuilder content1 = new StringBuilder(loadFileTemplate("installer/" + INSTALL_SCRIPT_NAME));
 		content1.replace(content1.indexOf("{{installpath}}"), content1.indexOf("{{installpath}}") + "{{installpath}}".length(), params.getInstallPath());
