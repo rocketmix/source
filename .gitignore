@@ -2,7 +2,9 @@
 .classpath
 .settings/
 target/
+.vscode/
 */.project
 */.classpath
 */.settings/
 */target/
+*/.vscode/
