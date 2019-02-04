@@ -2,7 +2,7 @@
 
 
 INSTALL_DIR={{installpath}}
-SERVICE_NAME="rocketmix-routing-server"
+SERVICE_NAME={{servicename}}
 
 # Display banner
 BANNER="$(cat <<-EOF
