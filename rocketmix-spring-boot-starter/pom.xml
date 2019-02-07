@@ -99,6 +99,13 @@
 			<artifactId>spring-cloud-starter-netflix-hystrix-dashboard</artifactId>
 		</dependency>
 		<!-- MONITORING AND CIRCUIT BREAKER (end) -->
+		<!-- LINUX SERVICE INSTALLER (start) -->
+		<dependency>
+			<groupId>io.github.rocketmix</groupId>
+			<artifactId>rocketmix-installer</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+		<!-- LINUX SERVICE INSTALLER (start) -->		
 	</dependencies>
 	<build>
 		<plugins>

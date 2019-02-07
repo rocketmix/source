@@ -18,7 +18,9 @@ public class InstallScriptGenerator {
 	private static final String INSTALL_SCRIPT_TEMPLATE = "template/install-template.sh";
 	private static final String SPRING_CONFIGURATION_FILE_TEMPLATE = "template/spring-configuration-template.conf";
 	private static final String SYSTEMD_CONFIGURATION_TEMPLATE = "template/systemd-configuration-template.service";
+	private static final String BANNER_FILE = "template/banner.txt";
 
+	
 	public void generateAll(InstallScriptParameters params) {
 		try {
 			checkPrerequisite(params);
@@ -63,7 +65,7 @@ public class InstallScriptGenerator {
 		StringBuilder content1 = new StringBuilder(loadFileTemplate(INSTALL_SCRIPT_TEMPLATE));
 		replaceString(content1, "{{servicename}}", params.getServiceName());
 		replaceString(content1, "{{installpath}}", params.getInstallPath());
-		String banner = loadFileTemplate("banner.txt");
+		String banner = loadFileTemplate(BANNER_FILE);
 		replaceString(content1, "{{banner}}", banner);
 		Files.write(Paths.get(params.getInstallScriptFilename()), content1.toString().getBytes());
 	}

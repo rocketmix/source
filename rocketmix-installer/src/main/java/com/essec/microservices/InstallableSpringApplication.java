@@ -15,6 +15,14 @@ public class InstallableSpringApplication {
 	private static HelpFormatter formatter = new HelpFormatter();
 	
 	
+	
+	public static void run(Class<?> springBootApplicationClazz, String... args) {
+		Options options = new Options();
+		run(springBootApplicationClazz, options, args);
+	}
+	
+	
+	
 	public static void run(Class<?> springBootApplicationClazz, Options options, String... args) {
 		// init();
 		options = init(options);
@@ -51,8 +59,12 @@ public class InstallableSpringApplication {
 	
 	public static Options init(Options options) {
 		options.addOption("?", "help", false, "Display this help");
-		options.addOption(null, "port", true, "Change HTTP port (default: 8080)");
-		options.addOption(null, "managementServerURL", true, "Set URL (with network port) of the management server (default: http://127.0.0.1:8761, used when management server is executed on the same machine)");
+		if (options.getMatchingOptions("port").isEmpty()) {
+			options.addOption(null, "port", true, "Change HTTP port (default: 8080)");
+		}
+		if (options.getMatchingOptions("managemenServerURL").isEmpty()) {
+			options.addOption(null, "managementServerURL", true, "Set URL (with network port) of the management server (default: http://127.0.0.1:8761, used when management server is executed on the same machine)");
+		}
 		options.addOption(Option.builder().argName("install").desc("Generate install scripts to deploy/undeploy as Linux SystemV service. You need to provide which Linux user/group will be used to run the service. You can combine this option with other options").longOpt("install").hasArgs().optionalArg(true).numberOfArgs(2).argName("user:group").valueSeparator(':').build());
 		return options;
 	}

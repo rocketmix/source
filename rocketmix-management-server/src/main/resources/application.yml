@@ -14,7 +14,7 @@ eureka:
     registerWithEureka: true
     fetch-registry: true
     serviceUrl:
-      defaultZone: ${eureka.server.uri:http://127.0.0.1:8761}/eureka/
+      defaultZone: http://127.0.0.1:${server.port:8761}/eureka/
   instance:
     preferIpAddress: true
     metadataMap:
