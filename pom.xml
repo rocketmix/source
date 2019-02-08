@@ -26,7 +26,7 @@
 		</repository>
 	</distributionManagement>
 	<scm>
-		<connection>scm:git:git://github.com/rocketmix/rocketmix.source.git</connection>
+		<connection>scm:git:https://github.com/rocketmix/rocketmix.source.git</connection>
 		<developerConnection>scm:git:https://github.com/rocketmix/rocketmix.source.git</developerConnection>
 		<url>https://github.com/rocketmix/rocketmix.source</url>
 	</scm>
