@@ -8,3 +8,5 @@ target/
 */.settings/
 */target/
 */.vscode/
+*.releaseBackup
+release.properties
