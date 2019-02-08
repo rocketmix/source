@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>io.github.rocketmix</groupId>
 		<artifactId>rocketmix-parent</artifactId>
-		<version>1.0.9</version>
+		<version>1.0.10-SNAPSHOT</version>
 	</parent>
 	<dependencies>
 		<!-- EUREKA SERVICE DISCOVERY CLIENT (start) -->
