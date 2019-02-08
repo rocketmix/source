@@ -3,7 +3,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>rocketmix-management-server</artifactId>
-	<name>RocketMiX Management Server (Spring Cloud Eureka server combined with Spring Cloud Admin server)</name>
+	<name>RocketMiX Management Server</name>
+	<description>A merge of Spring Cloud Eureka server and Spring Cloud Admin server</description>
+	<url>https://github.com/rocketmix/rocketmix.source</url>
 	<packaging>war</packaging>
 	<parent>
 		<groupId>io.github.rocketmix</groupId>

@@ -1,16 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.rocketmix</groupId>
 	<artifactId>rocketmix-parent</artifactId>
 	<name>RocketMiX Parent Maven Project</name>
+	<description>RocketMiX Parent Project contains all common stuff we need to build all sub projects</description>
+	<url>https://github.com/rocketmix/rocketmix.source</url>
 	<version>1.0.4-SNAPSHOT</version>
 	<packaging>pom</packaging>
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
+	<scm>
+		<connection>scm:git:git://github.com/rocketmix/rocketmix.source.git</connection>
+		<developerConnection>scm:git:ssh://github.com/rocketmix/rocketmix.source.git</developerConnection>
+		<url>https://github.com/rocketmix/rocketmix.source</url>
+	</scm>
+	<developers>
+		<developer>
+			<name>Alexandre de Pellegrin</name>
+			<email>alexdp@free.fr</email>
+			<organization>RocketMiX.github.io</organization>
+			<organizationUrl>https://rocketmix.github.io</organizationUrl>
+		</developer>
+	</developers>
 	<modules>
 		<module>rocketmix-management-server</module>
 		<module>rocketmix-routing-server</module>
 		<module>rocketmix-spring-boot-starter</module>
-		<module>rocketmix-services-demo</module>
+		<!-- <module>rocketmix-services-demo</module> -->
 		<module>rocketmix-installer</module>
 	</modules>
 	<properties>
@@ -64,29 +96,13 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.1</version>
 				<configuration>
 					<autoVersionSubmodules>true</autoVersionSubmodules>
 				</configuration>
 			</plugin>
 			<!-- MET A JOUR LA VERSION DU PARENT DANS LES MODULES AU MOMENT DU RELEASE 
 				(end) -->
-			<!-- EVITE LES ERREURS DE PACKAGING SUR JAVADOC (start) -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-						<configuration>
-							<failOnError>false</failOnError>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<!-- EVITE LES ERREURS DE PACKAGING SUR JAVADOC (end) -->
 			<!-- PERMET D'AVOIR UN PROJET SERVLET 3 SANS WEB.XML (start) -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -123,6 +139,66 @@
 				</executions>
 			</plugin>
 			<!-- PERMET AU WAR D'ETRE EXECUTABLE EN TANT QUE DAEMON LINUX (end) -->
+			<!-- PUBLICATION VERS REPO CENTRAL (start) -->
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>1.6.7</version>
+				<extensions>true</extensions>
+				<configuration>
+					<serverId>ossrh</serverId>
+					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+				</configuration>
+			</plugin>
+			<!-- PUBLICATION VERS REPO CENTRAL (end) -->
+			<!-- GENERATION CODE SOURCE REQUISE POUR LA PUBLICATION CENTRALE (start) -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- GENERATION CODE SOURCE REQUISE POUR LA PUBLICATION CENTRALE (end) -->
+			<!-- GENERATION JAVADOC REQUISE POUR LA PUBLICATION CENTRALE (start) -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<configuration>
+							<failOnError>false</failOnError>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- GENERATION JAVADOC REQUISE POUR LA PUBLICATION CENTRALE (end) -->
+			<!-- SIGNATURE DES ARTIFACTS PRODUITS (start) -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>1.6</version>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- SIGNATURE DES ARTIFACTS PRODUITS (end) -->
 		</plugins>
 	</build>
 </project>

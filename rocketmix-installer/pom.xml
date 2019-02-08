@@ -4,6 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>rocketmix-installer</artifactId>
 	<name>RocketMiX Linux service install script generator</name>
+	<description>This modules embeds a custom Spring Boot boostrap which all to generates install scripts</description>
+	<url>https://github.com/rocketmix/rocketmix.source</url>
 	<packaging>jar</packaging>
 	<parent>
 		<groupId>io.github.rocketmix</groupId>
