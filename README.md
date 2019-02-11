@@ -19,7 +19,7 @@ You just need a Linux machine with OpenJDK (>= 8) installed. Download the three 
 
 # Now that I want to develop my own API, what should I do ?
 
-Even if the platform is compatible with other languages, this section is written for Java developers. So, you need a developement machine with OpenJDK (>= 8) installed and Maven 3. A good starting point is to read the code of the demo on this repository. To simplify development, we made a Spring Boot Starter kit you can import to your maven project with the following lines :
+Even if the platform is compatible with other languages, this section is written for Java developers. So, you need a developement machine with OpenJDK (>= 8) installed and Maven 3. A good starting point is to read the code of the demo on this repository. To simplify development, we made a Spring Boot Starter module you can import to your maven project with the following lines :
 
 ```XML
 <!-- https://mvnrepository.com/artifact/io.github.rocketmix/rocketmix-spring-boot-starter -->
@@ -29,7 +29,34 @@ Even if the platform is compatible with other languages, this section is written
     <version>1.0.15</version>
 </dependency>
 ```
-You project will be able to run without the routing server and management server. It will be accessible localy. Then, if you precise in an the application.yml a management server url, it will be self registered on it and will be reachable through the routing server (on port 8080).
+You project will run with or without the routing server and management server. It will start on port 8888 and try to register itself oto the management server on localhost:8761. You can customize this from command line or standard Spring Framework application.properties or application.yml such as :
+
+```
+application.name=super-api-project
+server.port=8084
+management.server.url=http://dev-server:8761
+```
+# Let's deploy my own API!
+
+Use our demo project to help you to let Maven create Linux executable from your API project. Then, when you build everything with mvn clean compile package, it generates an executable war file in your target/ directory. Just copy it on your server and run it! 
+
+You will probably want to override some parameters. It's quite simple with command line args such as :
+
+```
+./super-api-project.war -Dserver.port=8090 -Dmanagement.server.url=http://prod-server:8761
+```
+
+Of course, this is not enough and we will help you to install your executable as a Linux systemd service. Thus, it will auto start, auto stop and will be monitored and restarted automatically on crash. To do that, just run :
+
+```
+./super-api-project.war --install
+```
+
+# What about security ?
+
+We also tried to simplify security parts with a few rules :
+* Management server users are declared management-server-security.properties (located in the same directory as the war file). This file is reloaded every minutes. 
+* API projects must brings their own security. So RocketMix doesn't impose something you don't want. Look at the demo project to see a basic HTTP authentication. Of course, we encoruage you to implement common standards like JWT.   
 
 
 
