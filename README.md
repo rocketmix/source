@@ -19,4 +19,17 @@ You just need a Linux machine with OpenJDK (>= 8) installed. Download the three 
 
 # Now that I want to develop my own API, what should I do ?
 
-You will need a developement machine with OpenJDK (>= 8) installed and Maven 3. Clone this repo and compile everything to check if all is OK (mvn clean compile package). Then, you will see that there's a Spring boot started project. Just create your Maven project based on it and follow the sample codes. You project will be able to run without the routing server and management server. It will be accessible localy. Then, if you precise a the application.yml a management server url, it will self register on it and will be reachable through the routing server (port 8080).    
+Even if the platform is compatible with other languages, this section is written for Java developers. So, you need a developement machine with OpenJDK (>= 8) installed and Maven 3. A good starting point is to read the code of the demo on this repository. To simplify development, we made a Spring Boot Starter kit you can import to your maven project with the following lines :
+
+```XML
+<!-- https://mvnrepository.com/artifact/io.github.rocketmix/rocketmix-spring-boot-starter -->
+<dependency>
+    <groupId>io.github.rocketmix</groupId>
+    <artifactId>rocketmix-spring-boot-starter</artifactId>
+    <version>1.0.15</version>
+</dependency>
+```
+You project will be able to run without the routing server and management server. It will be accessible localy. Then, if you precise in an the application.yml a management server url, it will be self registered on it and will be reachable through the routing server (on port 8080).
+
+
+
