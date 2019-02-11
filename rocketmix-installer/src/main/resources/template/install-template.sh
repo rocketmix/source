@@ -14,7 +14,12 @@ echo "$BANNER"
 # Already exist check
 systemctl is-enabled $SERVICE_NAME.service
 if [ $? -eq 0 ]; then
-	echo "Service already enabled. Please use uninstall script before running this one"
+	echo "Service already enabled. Please use uninstall script before running this one\n"
+	echo "You can use :"
+	echo "* sudo systemctl start $filename.service to start your service"
+	echo "* sudo systemctl status $filename.service to see if your service is running"
+	echo "* sudo systemctl stop $filename.service to stop your service"
+	echo "* sudo journalctl -f to view and follow all logs\n"
 	exit 1
 fi  
 
@@ -43,7 +48,7 @@ do
 	fi
 done
 if ! $allfilesfound; then
-	echo "Unable to find all files needed to install $filename as a Linux service. Please run '$filename.war --install' again to regenerate all these files"
+	echo "Unable to find all files needed to install $filename as a Linux service. Please run sudo ./$filename.war --install again to regenerate all these files"
 	exit 1
 fi
 
@@ -62,7 +67,13 @@ filename=$SERVICE_NAME
 servicefile="$INSTALL_DIR/$filename.service"
 systemctl enable $servicefile
 if [ $? -ne 0 ]; then  
-	echo "Service registration failed when trying  to run : systemctl enable $servicefile"
+	echo "Service registration failed when trying to run : sudo systemctl enable $servicefile"
 	exit 1
 fi
-echo "Done! Service will start automatically on next reboot. You can use systemctl start|stop|status to control your service"
+echo "\nDone! Service will start automatically on next reboot.\n"
+echo "You can use :"
+echo "* sudo systemctl start $filename.service to start your service"
+echo "* sudo systemctl status $filename.service to see if your service is running"
+echo "* sudo systemctl stop $filename.service to stop your service"
+echo "* sudo journalctl -f to view and follow all logs\n"
+echo "Enjoy :)\n" 

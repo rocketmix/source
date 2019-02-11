@@ -39,11 +39,10 @@ fi
 
 # Remove service
 filename=$SERVICE_NAME
-servicefile="$INSTALL_DIR/$filename.service"
-systemctl kill $servicefile
-systemctl disable $servicefile
+systemctl kill $filename.service
+systemctl disable $filename.service
 if [ $? -ne 0 ]; then  
-	echo "Service uninstall failed when trying to run : systemctl disable $servicefile"
+	echo "\nService uninstall failed when trying to run : sudo systemctl disable $filename.service\n"
 	exit 1
 fi
-echo "Done! Service is killed and uninstalled."
+echo "\nDone! Service is killed and uninstalled.\n"

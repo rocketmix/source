@@ -39,6 +39,7 @@ public class InstallScriptGenerator {
 	private void showResult(InstallScriptParameters params) {
 		int maxFilenameLength = getMaxFilenameLength(params);
 		System.out.println("Install scripts generated in " + params.getInstallPath() + " !!!");
+		System.out.println(" ");
 		System.out.println("You should find in this directory :");
 		System.out.println("* " + getFixedLengthString(params.getExecutableFile().getName(), maxFilenameLength) + " <-- main executable file");
 		if (params.getExecutableFile() != null && !params.getSymbolicLinkFilename().equals(params.getExecutableFile().getName())) {
@@ -46,9 +47,14 @@ public class InstallScriptGenerator {
 		}
 		System.out.println("* " + getFixedLengthString(params.getSpringConfigurationFilename(), maxFilenameLength) + " <-- configuration options");
 		System.out.println("* " + getFixedLengthString(params.getSystemdFilename(), maxFilenameLength) + " <-- systemd service file");
-		System.out.println("* " + getFixedLengthString(params.getInstallScriptFilename(), maxFilenameLength) + " <-- install script (to execute AS ROOT to finish install)");
+		System.out.println("* " + getFixedLengthString(params.getInstallScriptFilename(), maxFilenameLength) + " <-- install script (run it AS ROOT ONLY to deploy this as a Linux service)");
+		System.out.println("* " + getFixedLengthString(params.getUninstallScriptFilename(), maxFilenameLength) + " <-- uninstall script (run it AS ROOT ONLY to undeploy Linux service)");
+		System.out.println(" ");
 		System.out.println("You can adapt " + params.getSpringConfigurationFilename() + " and " + params.getSystemdFilename() + " as you need.");
-		System.out.println("Please run " + params.getInstallScriptFilename() + " AS ROOT(!) to finish installation.");
+		System.out.println(" ");
+		System.out.println("Please run sudo ./" + params.getInstallScriptFilename() + " to finish installation.");
+		System.out.println(" ");
+		System.out.println(" ");
 	}
 
 	private int getMaxFilenameLength(InstallScriptParameters params) {
@@ -69,7 +75,12 @@ public class InstallScriptGenerator {
 		replaceString(content1, "{{installpath}}", params.getInstallPath());
 		String banner = loadFileTemplate(BANNER_FILE);
 		replaceString(content1, "{{banner}}", banner);
-		Files.write(Paths.get(params.getInstallScriptFilename()), content1.toString().getBytes());
+		Path path = Paths.get(params.getInstallScriptFilename());
+		Files.write(path, content1.toString().getBytes());
+		File file = path.toFile();
+		file.setReadable(true, false);
+		file.setWritable(true, false);
+		file.setExecutable(true, false);
 	}
 
 	private void generateUninstallScript(InstallScriptParameters params) throws Exception {
@@ -78,13 +89,22 @@ public class InstallScriptGenerator {
 		replaceString(content1, "{{installpath}}", params.getInstallPath());
 		String banner = loadFileTemplate(BANNER_FILE);
 		replaceString(content1, "{{banner}}", banner);
-		Files.write(Paths.get(params.getUninstallScriptFilename()), content1.toString().getBytes());
+		Path path = Paths.get(params.getUninstallScriptFilename());
+		Files.write(path, content1.toString().getBytes());
+		File file = path.toFile();
+		file.setReadable(true, false);
+		file.setWritable(true, false);
+		file.setExecutable(true, false);
 	}	
 	
 	private void generateConfigFile(InstallScriptParameters params) throws Exception {
 		String content2 = loadFileTemplate(SPRING_CONFIGURATION_FILE_TEMPLATE);
 		content2 = content2.replace("{{options}}", params.getOptionsString());
-		Files.write(Paths.get(params.getSpringConfigurationFilename()), content2.getBytes());
+		Path path = Paths.get(params.getSpringConfigurationFilename());
+		Files.write(path, content2.getBytes());
+		File file = path.toFile();
+		file.setReadable(true, false);
+		file.setWritable(true, false);
 	}
 
 	private void generateSystemdFile(InstallScriptParameters params) throws Exception {
@@ -93,7 +113,11 @@ public class InstallScriptGenerator {
 		params.getGroup().ifPresent(value -> replaceString(content3, "{{groupname}}", value));
 		replaceString(content3, "{{servicename}}", params.getServiceName());
 		replaceString(content3, "{{installpath}}", params.getInstallPath());
-		Files.write(Paths.get(params.getSystemdFilename()), content3.toString().getBytes());
+		Path path = Paths.get(params.getSystemdFilename());
+		Files.write(path, content3.toString().getBytes());
+		File file = path.toFile();
+		file.setReadable(true, false);
+		file.setWritable(true, false);
 	}
 
 	private void generateSymbolicLink(InstallScriptParameters params) throws Exception {
