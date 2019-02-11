@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 public class InstallScriptGenerator {
 
 	private static final String INSTALL_SCRIPT_TEMPLATE = "template/install-template.sh";
+	private static final String UNINSTALL_SCRIPT_TEMPLATE = "template/uninstall-template.sh";
 	private static final String SPRING_CONFIGURATION_FILE_TEMPLATE = "template/spring-configuration-template.conf";
 	private static final String SYSTEMD_CONFIGURATION_TEMPLATE = "template/systemd-configuration-template.service";
 	private static final String BANNER_FILE = "template/banner.txt";
@@ -25,6 +26,7 @@ public class InstallScriptGenerator {
 		try {
 			checkPrerequisite(params);
 			generateInstallScript(params);
+			generateUninstallScript(params);
 			generateConfigFile(params);
 			generateSystemdFile(params);
 			generateSymbolicLink(params);
@@ -70,6 +72,15 @@ public class InstallScriptGenerator {
 		Files.write(Paths.get(params.getInstallScriptFilename()), content1.toString().getBytes());
 	}
 
+	private void generateUninstallScript(InstallScriptParameters params) throws Exception {
+		StringBuilder content1 = new StringBuilder(loadFileTemplate(UNINSTALL_SCRIPT_TEMPLATE));
+		replaceString(content1, "{{servicename}}", params.getServiceName());
+		replaceString(content1, "{{installpath}}", params.getInstallPath());
+		String banner = loadFileTemplate(BANNER_FILE);
+		replaceString(content1, "{{banner}}", banner);
+		Files.write(Paths.get(params.getUninstallScriptFilename()), content1.toString().getBytes());
+	}	
+	
 	private void generateConfigFile(InstallScriptParameters params) throws Exception {
 		String content2 = loadFileTemplate(SPRING_CONFIGURATION_FILE_TEMPLATE);
 		content2 = content2.replace("{{options}}", params.getOptionsString());

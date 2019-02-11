@@ -62,7 +62,7 @@ filename=$SERVICE_NAME
 servicefile="$INSTALL_DIR/$filename.service"
 systemctl enable $servicefile
 if [ $? -ne 0 ]; then  
-	echo "Service registration failed when trying  to run : ystemctl enable $servicefile"
+	echo "Service registration failed when trying  to run : systemctl enable $servicefile"
 	exit 1
 fi
 echo "Done! Service will start automatically on next reboot. You can use systemctl start|stop|status to control your service"

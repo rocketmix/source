@@ -14,6 +14,7 @@ public class InstallScriptParameters {
 
 	private static final String SYMBOLIC_LINK_FILENAME = "{0}.war";
 	private static final String INSTALL_SCRIPT_FILENAME = "{0}-install.sh";
+	private static final String UNINSTALL_SCRIPT_FILENAME = "{0}-uninstall.sh";
 	private static final String SPRING_CONFIGURATION_FILENAME = "{0}.conf";
 	private static final String SYSTEMD_FILENAME = "{0}.service";
 	
@@ -43,6 +44,10 @@ public class InstallScriptParameters {
 
 	public String getInstallScriptFilename() {
 		return MessageFormat.format(INSTALL_SCRIPT_FILENAME, getServiceName());
+	}
+
+	public String getUninstallScriptFilename() {
+		return MessageFormat.format(UNINSTALL_SCRIPT_FILENAME, getServiceName());
 	}
 	
 	public String getSpringConfigurationFilename() {
