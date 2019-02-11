@@ -94,7 +94,7 @@ public class InstallableSpringApplication {
 		}
 		InstallScriptParameters result = new InstallScriptParameters();
 		for (Option anOption : line.getOptions()) {
-			switch (anOption.getArgName()) {
+			switch (anOption.getLongOpt()) {
 			case "install":
 				String[] userParams = line.getOptionValues("install");
 				if (userParams == null || (userParams != null && userParams.length != 2)) {

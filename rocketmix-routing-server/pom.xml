@@ -59,11 +59,6 @@
 			<artifactId>swagger-ui</artifactId>
 			<version>${swagger-ui.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.4</version>
-		</dependency>
 		<!-- SWAGGER UI (end) -->
 		<!-- LINUX SERVICE INSTALLER (start) -->
 		<dependency>

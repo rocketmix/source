@@ -24,7 +24,7 @@ public class InstallScriptGenerator {
 	
 	public void generateAll(InstallScriptParameters params) {
 		try {
-			checkPrerequisite(params);
+			//checkPrerequisite(params);
 			generateInstallScript(params);
 			generateUninstallScript(params);
 			generateConfigFile(params);
@@ -38,6 +38,7 @@ public class InstallScriptGenerator {
 
 	private void showResult(InstallScriptParameters params) {
 		int maxFilenameLength = getMaxFilenameLength(params);
+		System.out.println(" ");
 		System.out.println("Install scripts generated in " + params.getInstallPath() + " !!!");
 		System.out.println(" ");
 		System.out.println("You should find in this directory :");
@@ -73,6 +74,7 @@ public class InstallScriptGenerator {
 		StringBuilder content1 = new StringBuilder(loadFileTemplate(INSTALL_SCRIPT_TEMPLATE));
 		replaceString(content1, "{{servicename}}", params.getServiceName());
 		replaceString(content1, "{{installpath}}", params.getInstallPath());
+		replaceString(content1, "{{uninstallscript}}", params.getUninstallScriptFilename());
 		String banner = loadFileTemplate(BANNER_FILE);
 		replaceString(content1, "{{banner}}", banner);
 		Path path = Paths.get(params.getInstallScriptFilename());
@@ -87,6 +89,7 @@ public class InstallScriptGenerator {
 		StringBuilder content1 = new StringBuilder(loadFileTemplate(UNINSTALL_SCRIPT_TEMPLATE));
 		replaceString(content1, "{{servicename}}", params.getServiceName());
 		replaceString(content1, "{{installpath}}", params.getInstallPath());
+		replaceString(content1, "{{installscript}}", params.getInstallScriptFilename());
 		String banner = loadFileTemplate(BANNER_FILE);
 		replaceString(content1, "{{banner}}", banner);
 		Path path = Paths.get(params.getUninstallScriptFilename());

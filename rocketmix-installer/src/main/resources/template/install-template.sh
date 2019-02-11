@@ -3,6 +3,7 @@
 
 INSTALL_DIR={{installpath}}
 SERVICE_NAME={{servicename}}
+UNINSTALL_SCRIPT={{uninstallscript}}
 
 # Display banner
 BANNER="$(cat <<-EOF
@@ -14,12 +15,13 @@ echo "$BANNER"
 # Already exist check
 systemctl is-enabled $SERVICE_NAME.service
 if [ $? -eq 0 ]; then
-	echo "Service already enabled. Please use uninstall script before running this one\n"
+	echo "Service already enabled.\n"
 	echo "You can use :"
 	echo "* sudo systemctl start $filename.service to start your service"
 	echo "* sudo systemctl status $filename.service to see if your service is running"
 	echo "* sudo systemctl stop $filename.service to stop your service"
 	echo "* sudo journalctl -f to view and follow all logs\n"
+	echo "Run sudo ./$UNINSTALL_SCRIPT to uninstall this service\n";
 	exit 1
 fi  
 
@@ -70,10 +72,13 @@ if [ $? -ne 0 ]; then
 	echo "Service registration failed when trying to run : sudo systemctl enable $servicefile"
 	exit 1
 fi
-echo "\nDone! Service will start automatically on next reboot.\n"
+systemctl start $filename.service
+systemctl status $filename.service
+echo "\nDone! Service is registered to start automatically on reboot.\n"
 echo "You can use :"
 echo "* sudo systemctl start $filename.service to start your service"
 echo "* sudo systemctl status $filename.service to see if your service is running"
 echo "* sudo systemctl stop $filename.service to stop your service"
 echo "* sudo journalctl -f to view and follow all logs\n"
+echo "Run sudo ./$UNINSTALL_SCRIPT to uninstall this service\n";
 echo "Enjoy :)\n" 

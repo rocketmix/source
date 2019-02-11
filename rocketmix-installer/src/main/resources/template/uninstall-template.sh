@@ -3,6 +3,7 @@
 
 INSTALL_DIR={{installpath}}
 SERVICE_NAME={{servicename}}
+INSTALL_SCRIPT={{installscript}}
 
 # Display banner
 BANNER="$(cat <<-EOF
@@ -14,7 +15,8 @@ echo "$BANNER"
 # Already exist check
 systemctl is-enabled $SERVICE_NAME.service
 if [ $? -ne 0 ]; then
-	echo "Service not found. Did you run install script before running this one ?"
+	echo "\nService not found. Did you run install script before running this one ?\n"
+	echo "Run sudo ./$INSTALL_SCRIPT if you want to re-install this service\n";
 	exit 1
 fi  
 
@@ -32,7 +34,7 @@ filename=$SERVICE_NAME
 servicefile="$INSTALL_DIR/$filename.service"
 if [ ! -f "$servicefile" ]
 then
-	echo "Unable to find $servicefile needed to uninstall $filename Linux service. You can try to re-run install script to regenerate this file."
+	echo "Unable to find $servicefile needed to uninstall $filename Linux service.\n"
 	exit 1
 fi
 
@@ -46,3 +48,5 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 echo "\nDone! Service is killed and uninstalled.\n"
+echo "Run sudo ./$INSTALL_SCRIPT if you want to re-install this service\n";
+
