@@ -92,7 +92,7 @@ public class InstallableSpringApplication {
 		if (!line.hasOption("install")) {
 			throw new RuntimeException("Unable to read --install params");
 		}
-		InstallScriptParameters result = new InstallScriptParameters();
+		InstallScriptParameters result = InstallScriptParameters.getInstance();
 		for (Option anOption : line.getOptions()) {
 			switch (anOption.getLongOpt()) {
 			case "install":

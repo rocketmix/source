@@ -28,6 +28,16 @@ public class InstallScriptParameters {
 	private String installPath;
 	private File executableFile;
 	
+	private static final InstallScriptParameters instance = new InstallScriptParameters();
+	
+	private InstallScriptParameters() {
+		// Singleton
+	}
+	
+	public static InstallScriptParameters getInstance() {
+		return instance;
+	}
+	
 	public String getServiceName() {
 		if (this.serviceName == null) {
 			File executableFile = getExecutableFile();

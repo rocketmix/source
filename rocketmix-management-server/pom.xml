@@ -36,6 +36,12 @@
 			<artifactId>rocketmix-installer</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
-		<!-- LINUX SERVICE INSTALLER (start) -->		
+		<!-- LINUX SERVICE INSTALLER (start) -->
+		<!-- SECURITY (start) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<!-- SECURITY (start) -->				
 	</dependencies>
 </project>

@@ -5,6 +5,11 @@ spring:
     admin:
       context-path: /admin
 
+
+logging:
+  level:
+    org.springframework.security: DEBUG   
+
 server:
   port: 8761
   
