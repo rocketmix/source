@@ -12,7 +12,9 @@ Because it is made to be very very (VERY!) simple. It offers you the best result
 
 # I'm excited! How should I start ?
 
-You just need a Linux machine with OpenJDK (>= 8) installed. Download the three executables and launch them. One is for the routing started on http port 8080. One is for the managerment server (which starts on port 8761 but you don't have to care about it because its web interface is accessible on port 8080 from the routing server. The third one is just an Hello World API demo.
+You just need a Linux machine with OpenJDK (>= 8) installed. Download the three executables and launch them. 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.rocketmix/rocketmix-routing-server/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.rocketmix/rocketmix-routing-server) One is for the routing started on http port 8080.
+One is for the managerment server (which starts on port 8761 but you don't have to care about it because its web interface is accessible on port 8080 from the routing server. The third one is just an Hello World API demo.
 
 # Now that I want to develop my own API, what should I do ?
 
