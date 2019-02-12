@@ -34,6 +34,9 @@ Even if the platform is compatible with other languages, this section is written
     <version>1.0.15</version>
 </dependency>
 ```
+
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.rocketmix/rocketmix-spring-boot-starter/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.rocketmix/rocketmix-spring-boot-starter)
+
 You project will run with or without the routing server and management server. It will start on port 8888 and try to register itself oto the management server on localhost:8761. You can customize this from command line or standard Spring Framework application.properties or application.yml such as :
 
 ```
