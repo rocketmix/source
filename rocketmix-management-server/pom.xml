@@ -44,4 +44,17 @@
 		</dependency>
 		<!-- SECURITY (start) -->				
 	</dependencies>
+	<build>
+		<plugins>
+			<!-- AVOID DEPLOYMENT ON MAVEN REPO OF THIS MODULE (start) -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+			<!-- AVOID DEPLOYMENT ON MAVEN REPO OF THIS MODULE (end) -->
+		</plugins>
+	</build>
 </project>
