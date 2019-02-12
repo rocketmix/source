@@ -34,7 +34,7 @@ zuul:
   routes:
     admin:
       path: /admin/**
-      url: ${eureka.server.uri:http://127.0.0.1:8761}/admin
+      url: ${management.server.uri:http://127.0.0.1:8761}/admin
 # Ribbon acts as load balancer between microservices
 ribbon: 
   ConnectTimeout: 3000
@@ -61,7 +61,7 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: ${eureka.server.uri:http://127.0.0.1:8761}/eureka/
+      defaultZone: ${management.server.uri:http://127.0.0.1:8761}/eureka/
 
 
           
