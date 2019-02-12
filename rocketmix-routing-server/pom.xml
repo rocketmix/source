@@ -77,15 +77,23 @@
 	</dependencies>
 	<build>
 		<plugins>
-			<!-- AVOID DEPLOYMENT ON MAVEN REPO OF THIS MODULE (start) -->
+			<!-- DEPLOY ON SOURCEFORGE (start) -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
 				<configuration>
-					<skip>true</skip>
+					<altSnapshotDeploymentRepository>sourceforge::default::sftp://frs.sourceforge.net:/home/frs/project/rocketmix/snapshots</altSnapshotDeploymentRepository>
+					<altReleaseDeploymentRepository>sourceforge::default::sftp://frs.sourceforge.net:/home/frs/project/rocketmix/releases</altReleaseDeploymentRepository>
 				</configuration>
 			</plugin>
-			<!-- AVOID DEPLOYMENT ON MAVEN REPO OF THIS MODULE (end) -->
+ 			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<configuration>
+					<skipRemoteStaging>true</skipRemoteStaging>
+				</configuration>
+			</plugin>
+			<!-- DEPLOY ON SOURCEFORGE (end) -->
 		</plugins>
 	</build>
 </project>

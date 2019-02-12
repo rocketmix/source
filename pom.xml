@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.rocketmix</groupId>
 	<artifactId>rocketmix-parent</artifactId>
@@ -14,7 +15,7 @@
 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
 		</license>
 	</licenses>
-	<distributionManagement>
+ 	<distributionManagement>
 		<snapshotRepository>
 			<id>ossrh</id>
 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
@@ -28,8 +29,8 @@
 		<connection>scm:git:https://github.com/rocketmix/rocketmix.source.git</connection>
 		<developerConnection>scm:git:https://github.com/rocketmix/rocketmix.source.git</developerConnection>
 		<url>https://github.com/rocketmix/rocketmix.source</url>
-	  <tag>HEAD</tag>
-  </scm>
+		<tag>HEAD</tag>
+	</scm>
 	<developers>
 		<developer>
 			<name>Alexandre de Pellegrin</name>
@@ -128,7 +129,7 @@
 			</plugin>
 			<!-- PERMET AU WAR D'ETRE EXECUTABLE EN TANT QUE DAEMON LINUX (end) -->
 			<!-- PUBLICATION VERS REPO CENTRAL (start) -->
-			<plugin>
+ 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
 				<version>1.6.7</version>
@@ -166,6 +167,7 @@
 						</goals>
 						<configuration>
 							<failOnError>false</failOnError>
+							<quiet>true</quiet>
 						</configuration>
 					</execution>
 				</executions>
