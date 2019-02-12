@@ -15,7 +15,7 @@
 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
 		</license>
 	</licenses>
- 	<distributionManagement>
+	<distributionManagement>
 		<snapshotRepository>
 			<id>ossrh</id>
 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
@@ -40,8 +40,8 @@
 		</developer>
 	</developers>
 	<modules>
-		<module>rocketmix-management-server</module>
 		<module>rocketmix-routing-server</module>
+ 		<module>rocketmix-management-server</module>
 		<module>rocketmix-spring-boot-starter</module>
 		<module>rocketmix-services-demo</module>
 		<module>rocketmix-installer</module>
@@ -129,11 +129,10 @@
 			</plugin>
 			<!-- PERMET AU WAR D'ETRE EXECUTABLE EN TANT QUE DAEMON LINUX (end) -->
 			<!-- PUBLICATION VERS REPO CENTRAL (start) -->
- 			<plugin>
+			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
 				<version>1.6.7</version>
-				<extensions>true</extensions>
 				<configuration>
 					<serverId>ossrh</serverId>
 					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
