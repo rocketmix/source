@@ -1,3 +1,5 @@
+[![Download RocketMiX](https://a.fsdn.com/con/app/sf-download-button)](https://sourceforge.net/projects/rocketmix/files/latest/download)
+
 # What is RocketMix.github.io ?
 
 \>\>\> [Go to the website](https://rocketmix.github.io "https://rocketmix.github.io") (in french only) <<<
@@ -12,7 +14,10 @@ Because it is made to be very very (VERY!) simple. It offers you the best result
 
 # I'm excited! How should I start ?
 
-You just need a Linux machine with OpenJDK (>= 8) installed. Download the three executables and launch them. 
+You just need a Linux machine with OpenJDK (>= 8) installed. Download the three executables from Sourceforge to a Linux machine and launch them. 
+
+[![Download RocketMiX](https://img.shields.io/sourceforge/dt/rocketmix.svg)](https://sourceforge.net/projects/rocketmix/files/latest/download)
+
 * One is for the routing started on http port 8080.
 * One is for the managerment server. It runs on port 8761 but its web interface is accessible on port 8080 from the routing server.
 * The third one is just an Hello World API demo.
