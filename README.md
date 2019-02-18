@@ -4,7 +4,7 @@
 
 \>\>\> [Go to the website](https://rocketmix.github.io "https://rocketmix.github.io") (in french only) <<<
 
-\>\>\> [Go to Travis CI](https://travis-ci.org/rocketmix/rocketmix.source "https://travis-ci.org/rocketmix/rocketmix.source") <<<
+\>\>\> [Go to Travis CI](https://travis-ci.org/rocketmix/rocketmix.source "https://travis-ci.org/rocketmix/rocketmix.source") (Continuous integration) <<<
 
 RocketMiX is a free API plateform under Apache Licence 2.0 which helps you to publish your APIs. As many products are complex to understand and complex to deploy, we made RocketMix to be as simple as possible. Just a few Linux executables, nothing more! 
 
