@@ -16,11 +16,11 @@ before_install:
     - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
 
 install:
-    mvn --settings .travis-maven-settings.xml install -DskipTests=true -B -V
+    mvn --settings .travis-maven-settings.xml clean install -DskipTests=true -B -V
 
 ## Build and release to maven central  
 script: 
-    mvn clean deploy --settings .travis-maven-settings.xml -DskipTests=true -B -U
+    mvn --settings .travis-maven-settings.xml deploy -DskipTests=true -B -U
     
 cache:
     directories:

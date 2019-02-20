@@ -149,7 +149,7 @@
 					<execution>
 						<id>attach-sources</id>
 						<goals>
-							<goal>jar-no-fork</goal>
+							<goal>jar</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -166,6 +166,7 @@
 							<goal>jar</goal>
 						</goals>
 						<configuration>
+							<doclint>none</doclint>
 							<failOnError>false</failOnError>
 							<quiet>true</quiet>
 						</configuration>
