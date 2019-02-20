@@ -82,10 +82,14 @@
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<configuration>
-					<skipStaging>true</skipStaging>
-				</configuration>
-				<extensions>true</extensions>
+				<executions>
+					<execution>
+						<phase>deploy</phase>
+						<configuration>
+							<skipStaging>true</skipStaging>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
