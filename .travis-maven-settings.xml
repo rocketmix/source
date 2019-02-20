@@ -18,13 +18,12 @@
       <id>sourceforge</id>
       <username>${env.SOURCEFORGE_USERNAME}</username>
       <password>${env.SOURCEFORGE_PASSWORD}</password>
-      <passphrase>ignored</passphrase>
       <configuration> 
         <knownHostsProvider implementation="org.apache.maven.wagon.providers.ssh.knownhost.NullKnownHostProvider"> 
           <hostKeyChecking>no</hostKeyChecking> 
         </knownHostsProvider>
         <strictHostKeyChecking>no</strictHostKeyChecking>
-        <preferredAuthentications>publickey,password</preferredAuthentications>
+        <preferredAuthentications>password</preferredAuthentications>
         <interactive>false</interactive>
       </configuration> 
     </server>
