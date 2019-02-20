@@ -19,7 +19,8 @@
       <username>${env.SOURCEFORGE_USERNAME}</username>
       <password>${env.SOURCEFORGE_PASSWORD}</password>
       <configuration> 
-        <sshArgs>-o PreferredAuthentications=password -o PubkeyAuthentication=no</sshArgs>
+        <preferredAuthentications>password</preferredAuthentications>
+        <strictHostKeyChecking>no</strictHostKeyChecking>
       </configuration> 
     </server>
   </servers>
