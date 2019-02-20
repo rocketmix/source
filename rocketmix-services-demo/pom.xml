@@ -35,6 +35,7 @@
 						<phase>deploy</phase>
 						<configuration>
 							<serverId>sourceforge</serverId>
+							<skip>true</skip>
 							<target>
 								<property environment="env"/>
 								<echo message="Push to Sourceforge" />
