@@ -21,3 +21,7 @@ install:
 ## Build and release to maven central  
 script: 
     mvn clean deploy --settings .travis-maven-settings.xml -DskipTests=true -B -U
+    
+cache:
+    directories:
+        - ~/.m2/repository    
