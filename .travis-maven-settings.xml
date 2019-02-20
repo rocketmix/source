@@ -21,7 +21,8 @@
       <configuration> 
         <knownHostsProvider implementation="org.apache.maven.wagon.providers.ssh.knownhost.NullKnownHostProvider"> 
           <hostKeyChecking>no</hostKeyChecking> 
-      </knownHostsProvider> 
+        </knownHostsProvider> 
+      </configuration> 
     </server>
   </servers>
   <profiles>
