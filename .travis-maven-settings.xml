@@ -18,6 +18,10 @@
       <id>sourceforge</id>
       <username>${env.SOURCEFORGE_USERNAME}</username>
       <password>${env.SOURCEFORGE_PASSWORD}</password>
+      <configuration> 
+        <knownHostsProvider implementation="org.apache.maven.wagon.providers.ssh.knownhost.NullKnownHostProvider"> 
+          <hostKeyChecking>no</hostKeyChecking> 
+      </knownHostsProvider> 
     </server>
   </servers>
   <profiles>
