@@ -189,8 +189,7 @@
 				</executions>
 			</plugin>
 			<!-- SIGNATURE DES ARTIFACTS PRODUITS (end) -->
-			<!-- MET A JOUR LA VERSION DU PARENT DANS LES MODULES AU MOMENT DU RELEASE 
-				(start) -->
+			<!-- UPDATE MODULE VERSION ON RELEASE (start) -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
@@ -199,8 +198,7 @@
 					<autoVersionSubmodules>true</autoVersionSubmodules>
 				</configuration>
 			</plugin>
-			<!-- MET A JOUR LA VERSION DU PARENT DANS LES MODULES AU MOMENT DU RELEASE 
-				(end) -->
+			<!-- UPDATE MODULE VERSION ON RELEASE (end) -->
 		</plugins>
 	</build>
 </project>
