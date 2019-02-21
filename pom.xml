@@ -40,11 +40,11 @@
 		</developer>
 	</developers>
 	<modules>
-		<!-- module>rocketmix-routing-server</module -->
- 		<!-- module>rocketmix-management-server</module -->
+		<module>rocketmix-routing-server</module>
+ 		<module>rocketmix-management-server</module>
 		<module>rocketmix-spring-boot-starter</module>
-		<!-- module>rocketmix-services-demo</module -->
-		<!-- module>rocketmix-installer</module -->
+		<module>rocketmix-services-demo</module>
+		<module>rocketmix-installer</module>
 	</modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -92,7 +92,7 @@
 			</plugins>
 		</pluginManagement>
 		<plugins>
-			<!-- PERMET D'AVOIR UN PROJET SERVLET 3 SANS WEB.XML (start) -->
+			<!-- ALLOW SERVLET 3 WITHOUT WEB.XML (start) -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
@@ -109,8 +109,8 @@
 					</archive>
 				</configuration>
 			</plugin>
-			<!-- PERMET D'AVOIR UN PROJET SERVLET 3 SANS WEB.XML (end) -->
-			<!-- PERMET AU WAR D'ETRE EXECUTABLE EN TANT QUE DAEMON LINUX (start) -->
+			<!-- ALLOW SERVLET 3 WITHOUT WEB.XML (end) -->
+			<!-- TRANSFORM WAR TO LINUX EXECUTABLE FILE (start) -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -127,8 +127,8 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- PERMET AU WAR D'ETRE EXECUTABLE EN TANT QUE DAEMON LINUX (end) -->
-			<!-- PUBLICATION VERS REPO CENTRAL (start) -->
+			<!-- TRANSFORM WAR TO LINUX EXECUTABLE FILE (end) -->
+			<!-- PUBLISH TO MAVEN CENTRAL (start) -->
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
@@ -137,11 +137,10 @@
 				<configuration>
 					<serverId>ossrh</serverId>
 					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<autoReleaseAfterClose>true</autoReleaseAfterClose>
 				</configuration>
 			</plugin>
-			<!-- PUBLICATION VERS REPO CENTRAL (end) -->
-			<!-- GENERATION CODE SOURCE REQUISE POUR LA PUBLICATION CENTRALE (start) -->
+			<!-- PUBLISH TO MAVEN CENTRAL (end) -->
+			<!-- ADD SOURCE CODE AS REQUIRED BY MAVEN CENTRAL (start) -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
@@ -154,8 +153,8 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- GENERATION CODE SOURCE REQUISE POUR LA PUBLICATION CENTRALE (end) -->
-			<!-- GENERATION JAVADOC REQUISE POUR LA PUBLICATION CENTRALE (start) -->
+			<!-- ADD SOURCE CODE AS REQUIRED BY MAVEN CENTRAL (end) -->
+			<!-- ADD JAVADOC AS REQUIRED BY MAVEN CENTRAL (start) -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
@@ -173,8 +172,8 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- GENERATION JAVADOC REQUISE POUR LA PUBLICATION CENTRALE (end) -->
-			<!-- SIGNATURE DES ARTIFACTS PRODUITS (start) -->
+			<!-- ADD JAVADOC AS REQUIRED BY MAVEN CENTRAL (end) -->
+			<!-- SIGN ARTIFACTS AS REQUIRED BY MAVEN CENTRAL (start) -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
@@ -189,7 +188,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- SIGNATURE DES ARTIFACTS PRODUITS (end) -->
+			<!-- SIGN ARTIFACTS AS REQUIRED BY MAVEN CENTRAL (end) -->
 			<!-- UPDATE MODULE VERSION ON RELEASE (start) -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
