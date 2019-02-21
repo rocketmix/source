@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>io.github.rocketmix</groupId>
 		<artifactId>rocketmix-parent</artifactId>
-		<version>1.0.17-SNAPSHOT</version>
+		<version>1.0.17</version>
 	</parent>
 	<dependencies>
 		<!-- ROUTER (start) -->
@@ -92,10 +92,10 @@
 							<target>
 								<property environment="env" />
 								<echo message="Push to Sourceforge" />
-								<copy file="target/${project.build.finalName}.war" todir="target/${project.version}"/>
+								<copy file="target/${project.build.finalName}.war" todir="target/${project.version}" />
 								<scp password="${env.SOURCEFORGE_PASSWORD}" trust="yes" todir="${env.SOURCEFORGE_USERNAME}@frs.sourceforge.net:/home/frs/project/rocketmix">
 									<fileset dir="target">
-										<include name="${project.version}/*.war"/>
+										<include name="${project.version}/*.war" />
 									</fileset>
 								</scp>
 							</target>
