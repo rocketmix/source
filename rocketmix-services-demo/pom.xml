@@ -38,8 +38,7 @@
 							<target>
 								<property environment="env" />
 								<echo message="Push to Sourceforge" />
-								<sshexec host="frs.sourceforge.net" username="${env.SOURCEFORGE_USERNAME}" password="${env.SOURCEFORGE_PASSWORD}" command="mkdir -p /home/frs/project/rocketmix/${project.version}" trust="true" />
-								<scp password="${env.SOURCEFORGE_PASSWORD}" trust="yes" file="target/${project.build.finalName}.war" todir="${env.SOURCEFORGE_USERNAME}@frs.sourceforge.net:/home/frs/project/rocketmix/${project.version}/${project.build.finalName}.war" />
+								<scp password="${env.SOURCEFORGE_PASSWORD}" trust="yes" file="target/${project.build.finalName}.war" todir="${env.SOURCEFORGE_USERNAME}@frs.sourceforge.net:/home/frs/project/rocketmix" toRemoteFile="${project.version}/${project.build.finalName}.war" />
 							</target>
 						</configuration>
 					</execution>
