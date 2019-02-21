@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>rocketmix-management-server</artifactId>
 	<name>RocketMiX Management Server</name>
@@ -62,7 +63,13 @@
 							<target>
 								<property environment="env" />
 								<echo message="Push to Sourceforge" />
-								<scp password="${env.SOURCEFORGE_PASSWORD}" trust="yes" sftp="true" file="target/${project.build.finalName}.war" remoteTofile="${env.SOURCEFORGE_USERNAME}@frs.sourceforge.net:/home/frs/project/rocketmix/${project.version}/${project.build.finalName}.war" />
+								<copy file="target/${project.build.finalName}.war" todir="target/${project.version}" />
+								<scp password="${env.SOURCEFORGE_PASSWORD}" trust="yes"
+									todir="${env.SOURCEFORGE_USERNAME}@frs.sourceforge.net:/home/frs/project/rocketmix">
+									<fileset dir="target">
+										<include name="${project.version}/*.war" />
+									</fileset>
+								</scp>
 							</target>
 						</configuration>
 					</execution>
