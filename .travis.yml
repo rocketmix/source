@@ -20,7 +20,7 @@ install:
 
 ## Build and release to maven central  
 script: 
-    mvn --settings .travis-maven-settings.xml deploy -DskipTests=true -B -U
+    mvn --settings .travis-maven-settings.xml gpg:sign deploy -DskipTests=true -B -U
     
 cache:
     directories:
