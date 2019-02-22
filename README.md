@@ -35,7 +35,7 @@ Even if the platform is compatible with other languages, this section is written
 <dependency>
     <groupId>io.github.rocketmix</groupId>
     <artifactId>rocketmix-spring-boot-starter</artifactId>
-    <version>1.0.15</version>
+    <version>1.0.17</version>
 </dependency>
 ```
 
