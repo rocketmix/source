@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>rocketmix-spring-boot-starter</artifactId>
 	<name>RocketMiX SpringBoot starter module</name>
@@ -88,6 +89,11 @@
 			<artifactId>commons-io</artifactId>
 			<version>2.4</version>
 		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.5</version><!--$NO-MVN-MAN-VER$ -->
+		</dependency>
 		<!-- SWAGGER UI (end) -->
 		<!-- MONITORING AND CIRCUIT BREAKER (start) -->
 		<dependency>
@@ -105,7 +111,14 @@
 			<artifactId>rocketmix-installer</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
-		<!-- LINUX SERVICE INSTALLER (start) -->		
+		<!-- LINUX SERVICE INSTALLER (start) -->
+		<!-- FIX HIBERNATE DEPENDENCY ISSUE (start) -->
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>2.0.1.Final</version><!--$NO-MVN-MAN-VER$ -->
+		</dependency>
+		<!-- FIX HIBERNATE DEPENDENCY ISSUE (end) -->
 	</dependencies>
 	<build>
 		<plugins>

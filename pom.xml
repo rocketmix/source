@@ -182,9 +182,11 @@
 					<execution>
 						<id>sign-artifacts</id>
 						<phase>verify</phase>
-						<goals>
-							<goal>sign</goal>
-						</goals>
+						<configuration>
+							<!-- Done to disable signing on local mvn install -->
+							<!-- To sign artifact, make explicit call mvn gpg:sign -->
+							<skip>true</skip>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
