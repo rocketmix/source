@@ -1,14 +1,12 @@
 package com.essec.microservices;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
@@ -29,8 +27,6 @@ import org.springframework.security.provisioning.UserDetailsManager;
 @EnableScheduling
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Value("classpath:users.properties")
-	private Resource users;
 	
 	@Autowired
 	private ResourceLoader resourceLoader;
@@ -52,8 +48,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				Files.write(newFile.toPath(), "admin=admin,ROLE_ADMIN,enabled".getBytes(Charset.defaultCharset()));
 			}
 			return new ReloadableUserDetailsManager(resource);
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Throwable t) {
+			logger.error(t.getMessage());
 			return new InMemoryUserDetailsManager(User.withUsername("admin").password(ReloadableUserDetailsManager.passwordEncoder().encode("admin")).roles("ADMIN").build());
 		}
 	}
@@ -64,7 +60,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 	
 	
-	@Scheduled(fixedDelay = 10000)
+	@Scheduled(fixedDelay = 60000)
 	public void refreshUsers() {
 		UserDetailsManager userDetailsManager = userDetailsManager();
 		if (ReloadableUserDetailsManager.class.isInstance(userDetailsManager)) {

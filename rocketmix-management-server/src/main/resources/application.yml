@@ -8,7 +8,8 @@ spring:
 
 logging:
   level:
-    org.springframework.security: DEBUG   
+    org.springframework.security: debug   
+    com.netflix.discovery: off # Disable Eureka exception logging when management server is unreachable
 
 server:
   port: 8761

@@ -42,6 +42,7 @@
 		<module>rocketmix-routing-server</module>
  		<module>rocketmix-management-server</module>
 		<module>rocketmix-spring-boot-starter</module>
+		<module>rocketmix-services-demo</module>
 		<module>rocketmix-installer</module>
 	</modules>
 	<properties>

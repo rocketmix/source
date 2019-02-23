@@ -23,6 +23,11 @@ management:
         include:
         - "*"    
 
+# Disable Eureka exception logging when management server is unreachable
+logging:
+  level:
+    com.netflix.discovery: off 
+
 # Zuul is the router. It acts as proxy and dispatched all requests to their endpoints
 # To let http authorization headers passed throw te proxy, we create a whitelist in zuul.sensitive-headers
 zuul:

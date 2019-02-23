@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>rocketmix-services-demo</artifactId>
+	<name>RocketMiX services implementation Demo</name>
+	<description>Hello World service API demo to useful to start a new project</description>
+	<url>https://github.com/rocketmix/rocketmix.source</url>
+	<packaging>war</packaging>
+	<parent>
+		<groupId>io.github.rocketmix</groupId>
+		<artifactId>rocketmix-parent</artifactId>
+		<version>1.0.18-SNAPSHOT</version>
+	</parent>
+	<dependencies>
+		<!-- CUSTOM SPRINT BOOT MODULE (start) -->
+		<dependency>
+			<groupId>${project.parent.groupId}</groupId>
+			<artifactId>rocketmix-spring-boot-starter</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+		<!-- CUSTOM SPRINT BOOT MODULE (end) -->
+		<!-- JDK 11 COMPATIBILITY MODULES (start) -->
+		<dependency>
+			<groupId>javax.xml.ws</groupId>
+			<artifactId>jaxws-api</artifactId>
+			<version>2.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.activation</groupId>
+			<artifactId>javax.activation-api</artifactId>
+			<version>1.2.0</version>
+		</dependency>
+		<!-- JDK 11 COMPATIBILITY MODULES (end) -->		
+	</dependencies>
+	<build>
+		<plugins>
+			<!-- DEPLOY ON SOURCEFORGE (start) -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<phase>deploy</phase>
+						<configuration>
+							<serverId>sourceforge</serverId>
+							<skip>false</skip>
+							<target>
+								<property environment="env" />
+								<echo message="Push to Sourceforge" />
+								<copy file="target/${project.build.finalName}.war" todir="target/${project.version}" />
+								<scp password="${env.SOURCEFORGE_PASSWORD}" trust="yes" todir="${env.SOURCEFORGE_USERNAME}@frs.sourceforge.net:/home/frs/project/rocketmix">
+									<fileset dir="target">
+										<include name="${project.version}/*.war" />
+									</fileset>
+								</scp>
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.ant</groupId>
+						<artifactId>ant-jsch</artifactId>
+						<version>1.8.4</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+			<!-- DEPLOY ON SOURCEFORGE (end) -->
+		</plugins>
+	</build>
+</project>
