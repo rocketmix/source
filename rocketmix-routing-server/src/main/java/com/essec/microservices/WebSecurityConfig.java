@@ -42,12 +42,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			if (!resource.exists()) {
 				File newFile = resource.getFile();
 				newFile.createNewFile();
-				Files.write(newFile.toPath(), "admin=admin,ROLE_ADMIN,enabled".getBytes(Charset.defaultCharset()));
+				Files.write(newFile.toPath(), "guest=password,ROLE_GUEST,enabled".getBytes(Charset.defaultCharset()));
 			}
 			return new ReloadableUserDetailsManager(resource);
 		} catch (Throwable t) {
 			logger.error(t.getMessage());
-			return new InMemoryUserDetailsManager(User.withUsername("admin").password(ReloadableUserDetailsManager.passwordEncoder().encode("admin")).roles("ADMIN").build());
+			return new InMemoryUserDetailsManager(User.withUsername("guest").password(ReloadableUserDetailsManager.passwordEncoder().encode("password")).roles("GUEST").build());
 		}
 	}
 	
@@ -70,7 +70,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
     	http.csrf().disable();
-		http.authorizeRequests().antMatchers("/admin/logout").permitAll();
+		http.authorizeRequests().antMatchers("/admin", "/admin/**").permitAll();
 		http.authorizeRequests().antMatchers("/", "/index.html", "/**/*.css", "/**/*.js", "/img/**").permitAll();
 		http.authorizeRequests().antMatchers("/catalog/**").permitAll();
 		http.authorizeRequests().anyRequest().permitAll();
