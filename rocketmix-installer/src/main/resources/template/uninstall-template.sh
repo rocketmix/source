@@ -10,13 +10,13 @@ BANNER="$(cat <<-EOF
 {{banner}}
 EOF
 )"
-echo "$BANNER"
+printf "$BANNER\n"
 
 # Already exist check
 systemctl is-enabled $SERVICE_NAME.service
 if [ $? -ne 0 ]; then
-	echo "\nService not found. Did you run install script before running this one ?\n"
-	echo "Run sudo ./$INSTALL_SCRIPT if you want to re-install this service\n";
+	printf "\nService not found. Did you run install script before running this one ?\n"
+	printf "Run ./$INSTALL_SCRIPT AS ROOT (sudo or su -) if you want to re-install this service\n";
 	exit 1
 fi  
 
@@ -24,7 +24,7 @@ fi
 # Permission check
 touch /etc/systemd/system
 if [ $? -ne 0 ]; then  
-	echo "Unable to access to /etc/systemd/system/ directory. Be carefull to run this script as root"
+	printf "Unable to access to /etc/systemd/system/ directory. Be carefull to run this script AS ROOT \n"
 	#exit 1
 fi
 
@@ -34,7 +34,7 @@ filename=$SERVICE_NAME
 servicefile="$INSTALL_DIR/$filename.service"
 if [ ! -f "$servicefile" ]
 then
-	echo "Unable to find $servicefile needed to uninstall $filename Linux service.\n"
+	printf "Unable to find $servicefile needed to uninstall $filename Linux service.\n"
 	exit 1
 fi
 
@@ -44,9 +44,9 @@ filename=$SERVICE_NAME
 systemctl kill $filename.service
 systemctl disable $filename.service
 if [ $? -ne 0 ]; then  
-	echo "\nService uninstall failed when trying to run : sudo systemctl disable $filename.service\n"
+	printf "\nService uninstall failed when trying to run : sudo systemctl disable $filename.service\n"
 	exit 1
 fi
-echo "\nDone! Service is killed and uninstalled.\n"
-echo "Run sudo ./$INSTALL_SCRIPT if you want to re-install this service\n";
+printf "\nDone! Service is killed and uninstalled.\n"
+printf "Run ./$INSTALL_SCRIPT AS ROOT (sudo or su-) if you want to re-install this service\n";
 

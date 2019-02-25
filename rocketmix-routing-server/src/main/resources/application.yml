@@ -23,23 +23,26 @@ management:
         include:
         - "*"    
 
-# Disable Eureka exception logging when management server is unreachable
+
 logging:
   level:
-    com.netflix.discovery: off 
+    com.netflix.discovery: off # Disable Eureka exception logging when management server is unreachable 
+    org.springframework.security: debug
+    org.springframework.cloud.netflix.zuul.filters.post: off
 
 # Zuul is the router. It acts as proxy and dispatched all requests to their endpoints
-# To let http authorization headers passed throw te proxy, we create a whitelist in zuul.sensitive-headers
 zuul:
-  sensitive-headers:
   ribbon-isolation-strategy: thread
   thread-pool:
     use-separate-thread-pools: true
-  ignoredPatterns: /admin/logout  
+  ignoredPatterns: /admin/logout # used by AdminController to redirect user to portal main page
   routes:
     admin:
       path: /admin/**
+      strip-prefix: true
+      sensitive-headers: # blank value needed to keep authorization http headers  
       url: ${management.server.uri:http://127.0.0.1:8761}/admin
+
 # Ribbon acts as load balancer between microservices
 ribbon: 
   ConnectTimeout: 3000

@@ -70,12 +70,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
     	http.csrf().disable();
+		http.authorizeRequests().antMatchers("/catalog/**").hasAnyRole("GUEST");
+		http.authorizeRequests().antMatchers("/", "/index.html", "/favicon.ico", "/**/*.css", "/**/*.js", "/img/**", "/admin", "/admin/**").permitAll();
 		http.authorizeRequests().antMatchers("/admin", "/admin/**").permitAll();
-		http.authorizeRequests().antMatchers("/", "/index.html", "/**/*.css", "/**/*.js", "/img/**").permitAll();
-		http.authorizeRequests().antMatchers("/catalog/**").permitAll();
-		http.authorizeRequests().anyRequest().permitAll();
+		http.anonymous();
 		http.httpBasic();
     }
+    
     
 
 }
