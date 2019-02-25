@@ -8,6 +8,7 @@ import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboar
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.cloud.netflix.zuul.filters.route.FallbackProvider;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 @EnableDiscoveryClient
 @EnableZuulProxy
@@ -26,6 +27,18 @@ public class RouterApplication {
 	@Bean
 	public FallbackProvider getCircuitBreakerFallbackProvider() {
 		return new CircuitBreakerDefaultFallbackProvider();
+	}
+	
+	/**
+	 * Needed for injection with @Value annotation
+	 * 
+	 * @return c
+	 */
+	@Bean
+	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+		PropertySourcesPlaceholderConfigurer c = new PropertySourcesPlaceholderConfigurer();
+		c.setIgnoreUnresolvablePlaceholders(true);
+		return c;
 	}
 	
 	

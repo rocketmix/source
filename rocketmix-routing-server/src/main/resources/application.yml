@@ -1,7 +1,3 @@
-portal:
-  companyName:
-  logoURL:
-
 spring:
   application:
     name: ZuulServer

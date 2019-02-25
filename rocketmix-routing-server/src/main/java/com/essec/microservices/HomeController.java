@@ -22,11 +22,11 @@ public class HomeController {
 	private static final String COMPANY_NAME_TEMPLATE_KEY = "Welcome to";
 	private static final String COMPANY_LOGO_TEMPLATE_KEY = "img/rocket-logo-min.png";
 	
-	@Value("${companyName}")
-	private String companyName;
+	@Value("${companyName:}")
+	private String companyName = "";
 	
-	@Value("${logoURL}")
-	private String companyLogo;
+	@Value("${logoURL:}")
+	private String companyLogo = "";
 	
 	@Autowired
 	private ResourceLoader resourceLoader;	
