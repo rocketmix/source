@@ -1,6 +1,7 @@
 package com.essec.microservices;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.security.CodeSource;
@@ -17,6 +18,7 @@ public class InstallScriptParameters {
 	private static final String UNINSTALL_SCRIPT_FILENAME = "{0}-uninstall.sh";
 	private static final String SPRING_CONFIGURATION_FILENAME = "{0}.conf";
 	private static final String SYSTEMD_FILENAME = "{0}.service";
+	private static final String PROPERTIES_FILENAME = "{0}.properties";
 	
 	private Optional<String> user = Optional.empty();
 	private Optional<String> group = Optional.empty();
@@ -67,6 +69,10 @@ public class InstallScriptParameters {
 	public String getSystemdFilename() {
 		return MessageFormat.format(SYSTEMD_FILENAME, getServiceName());
 	}
+
+	public String getPropertiesFilename() {
+		return MessageFormat.format(PROPERTIES_FILENAME, getServiceName());
+	}
 	
 	public String getSymbolicLinkFilename() {
 		return MessageFormat.format(SYMBOLIC_LINK_FILENAME, getServiceName());
@@ -106,7 +112,22 @@ public class InstallScriptParameters {
 		serverPort.ifPresent(value -> builder.append("-Dserver.port=").append(value).append(" "));
 		managementServerURL.ifPresent(value -> builder.append("-Deureka.server.uri=").append(value).append(" "));
 		for (String anExternalOption : externalOptions.keySet()) {
-			builder.append("-D").append(anExternalOption);
+			Object value = externalOptions.get(anExternalOption);
+			if (value == null) {
+				builder.append("-D").append(anExternalOption);
+				continue;
+			}
+			if (value.toString().length() == 0) {
+				builder.append("-D").append(anExternalOption);
+				continue;
+			}
+		}
+		builder.append("-Dspring.config.name=").append(getServiceName());
+		return builder.toString();
+	}
+	
+	public boolean isPropertiesFileNeeded() {
+		for (String anExternalOption : externalOptions.keySet()) {
 			Object value = externalOptions.get(anExternalOption);
 			if (value == null) {
 				continue;
@@ -114,18 +135,15 @@ public class InstallScriptParameters {
 			if (value.toString().length() == 0) {
 				continue;
 			}
-			boolean containsSpace = value.toString().contains(" ");
-			if (containsSpace) {
-				builder.append("=\"").append(value).append("\" ");
-				continue;
-			}
-			if (!containsSpace) {
-				builder.append("=").append(value).append(" ");
-				continue;
-			}
+			return true; // return true if one option has a value
 		}
-		return builder.toString();
+		return false;
 	}
+	
+	public Map<String, Object> getExternalOptions() {
+		return this.externalOptions;
+	}
+	
 	
 	public File getExecutableFile() {
 		if (this.executableFile == null) {

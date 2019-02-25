@@ -114,7 +114,7 @@ public class InstallableSpringApplication {
 				result.setServerPort(Integer.parseInt(line.getOptionValue("port")));
 				break;
 			default:
-				result.addExternalOption(anOption.getArgName(), line.getOptionValue(anOption.getArgName(), ""));
+				result.addExternalOption(anOption.getLongOpt(), line.getOptionValue(anOption.getLongOpt(), ""));
 				break;
 			}
 		}

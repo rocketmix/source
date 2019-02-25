@@ -5,12 +5,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class InstallScriptGenerator {
@@ -24,12 +27,13 @@ public class InstallScriptGenerator {
 	
 	public void generateAll(InstallScriptParameters params) {
 		try {
-			//checkPrerequisite(params);
+			checkPrerequisite(params);
 			generateInstallScript(params);
 			generateUninstallScript(params);
 			generateConfigFile(params);
 			generateSystemdFile(params);
 			generateSymbolicLink(params);
+			generatePropertiesFile(params);
 			showResult(params);
 		} catch (Exception e) {
 			throw new RuntimeException("Error while generating install scripts", e);
@@ -47,6 +51,9 @@ public class InstallScriptGenerator {
 			System.out.println("* " + getFixedLengthString(params.getSymbolicLinkFilename(), maxFilenameLength) + " <-- symbolic link to executable file");
 		}
 		System.out.println("* " + getFixedLengthString(params.getSpringConfigurationFilename(), maxFilenameLength) + " <-- configuration options");
+		if (params.isPropertiesFileNeeded()) {
+			System.out.println("* " + getFixedLengthString(params.getPropertiesFilename(), maxFilenameLength) + " <-- configuration properties");
+		}
 		System.out.println("* " + getFixedLengthString(params.getSystemdFilename(), maxFilenameLength) + " <-- systemd service file");
 		System.out.println("* " + getFixedLengthString(params.getInstallScriptFilename(), maxFilenameLength) + " <-- install script (run it AS ROOT ONLY to deploy this as a Linux service)");
 		System.out.println("* " + getFixedLengthString(params.getUninstallScriptFilename(), maxFilenameLength) + " <-- uninstall script (run it AS ROOT ONLY to undeploy Linux service)");
@@ -109,7 +116,41 @@ public class InstallScriptGenerator {
 		file.setReadable(true, false);
 		file.setWritable(true, false);
 	}
-
+	
+	private void generatePropertiesFile(InstallScriptParameters params) throws Exception {
+		if (!params.isPropertiesFileNeeded()) {
+			return;
+		}
+		Map<String, Object> externalOptions = params.getExternalOptions();
+		if (externalOptions.isEmpty()) {
+			return;
+		}
+		StringBuilder content = new StringBuilder();
+		for (String anExternalOption : externalOptions.keySet()) {
+			Object value = externalOptions.get(anExternalOption);
+			if (value == null) {
+				continue;
+			}
+			if (value.toString().length() == 0) {
+				continue;
+			}
+			content.append(anExternalOption);
+			content.append("=");
+			content.append(value.toString());
+			content.append("\n");
+		}
+		Path path = Paths.get(params.getPropertiesFilename());
+		Files.write(path, content.toString().getBytes());
+		File file = path.toFile();
+		file.setReadable(true, false);
+		file.setWritable(true, false);
+	}
+	
+	
+	
+	
+	
+	
 	private void generateSystemdFile(InstallScriptParameters params) throws Exception {
 		final StringBuilder content3 = new StringBuilder(loadFileTemplate(SYSTEMD_CONFIGURATION_TEMPLATE));
 		params.getUser().ifPresent(value -> replaceString(content3, "{{username}}", value));
