@@ -1,7 +1,6 @@
 package com.essec.microservices;
 
 import java.io.File;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -39,21 +38,18 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.expression.WebExpressionVoter;
-import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 @Configuration
 @EnableWebSecurity
 @EnableScheduling
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
- 
+
 	@Autowired
 	private ResourceLoader resourceLoader;
-	
-	
+
 	Logger logger = LoggerFactory.getLogger(WebSecurityConfig.class);
-	
-	
+
 	@Bean
 	public ReloadableUserDetailsManager userDetailsManager() {
 		try {
@@ -75,15 +71,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			return new ReloadableUserDetailsManager(inMemoryUserDetailsManager);
 		}
 	}
-	
+
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return ReloadableUserDetailsManager.passwordEncoder();
 	}
 
-	
-	
-	
 	@Scheduled(initialDelay = 0, fixedDelay = 60000)
 	public void refreshUsers() {
 		UserDetailsManager userDetailsManager = userDetailsManager();
@@ -91,30 +84,32 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			((ReloadableUserDetailsManager) userDetailsManager).refresh();
 		}
 	}
-	
-	
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-    	http.csrf().disable();
-    	// Secure access to services catalog
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http.csrf().disable();
+		// Secure access to services catalog
 		http.authorizeRequests().requestMatchers(catalogRequestMatcher()).authenticated().accessDecisionManager(accessDecisionManager());
 		http.httpBasic();
-    }
-    
-    /**
-     * Secure access to services catalog. <br/>
-     * If a user is declared in users.properties (such as demo=password,ROLE_DEMO,enabled), <br/>
-     * and his role equals a service name (in uppercase and prefixed by ROLE_), access this specific catalog <br/>
-     * is automatically secured.<br/>
-     * 
-     * If there's any user with a role that matches a service name, this service is public (not authentication required) <br/>
-     * 
-     * @return r
-     */
-    @Bean
-    public RequestMatcher catalogRequestMatcher() {
-    	ReloadableUserDetailsManager reloadableUserDetailsManager = userDetailsManager();
-    	return new RequestMatcher() {
+	}
+
+	/**
+	 * Secure access to services catalog. <br/>
+	 * If a user is declared in users.properties (such as
+	 * demo=password,ROLE_DEMO,enabled), <br/>
+	 * and his role equals a service name (in uppercase and prefixed by ROLE_),
+	 * access this specific catalog <br/>
+	 * is automatically secured.<br/>
+	 * 
+	 * If there's any user with a role that matches a service name, this service
+	 * is public (not authentication required) <br/>
+	 * 
+	 * @return r
+	 */
+	@Bean
+	public RequestMatcher catalogRequestMatcher() {
+		ReloadableUserDetailsManager reloadableUserDetailsManager = userDetailsManager();
+		return new RequestMatcher() {
 			@Override
 			public boolean matches(HttpServletRequest request) {
 				String requestURI = request.getRequestURI();
@@ -132,19 +127,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				return false;
 			}
 		};
-    }
-    
-    
-    
-    /**
-     * Confirm if a user has access to a services catalog <br/>
-     * Filtering is based on custom Swagger proxy loader url <br/>
-     * 
-     * @return a
-     */
-    @Bean
-    public AccessDecisionVoter<FilterInvocation> propertiesBasedVoter() {
-    	return new AccessDecisionVoter<FilterInvocation>() {
+	}
+
+	/**
+	 * Confirm if a user has access to a services catalog <br/>
+	 * Filtering is based on custom Swagger proxy loader url <br/>
+	 * 
+	 * @return a
+	 */
+	@Bean
+	public AccessDecisionVoter<FilterInvocation> propertiesBasedVoter() {
+		return new AccessDecisionVoter<FilterInvocation>() {
 			@Override
 			public boolean supports(ConfigAttribute attribute) {
 				return true;
@@ -177,27 +170,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				return ACCESS_DENIED;
 			}
 		};
-    }
-    
-    @Bean
-    public AccessDecisionManager accessDecisionManager() {
-        List<AccessDecisionVoter<? extends Object>> decisionVoters = new ArrayList<>();
-        decisionVoters.add(new WebExpressionVoter());
-        decisionVoters.add(new RoleVoter());
-        decisionVoters.add(new AuthenticatedVoter());
-        decisionVoters.add(propertiesBasedVoter());
-        return new UnanimousBased(decisionVoters);
-    }
+	}
 
-    
-    
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-    	web.ignoring().antMatchers("/", "/index.html", "/favicon.ico", "/**/*.css", "/**/*.js", "/img/**");
-    	web.ignoring().antMatchers("/admin", "/admin/**");
-    	web.ignoring().antMatchers("/catalog", "/catalog/swagger-ui/index.html");
-    }
-    
-    
+
+	@Bean
+	public AccessDecisionManager accessDecisionManager() {
+		List<AccessDecisionVoter<? extends Object>> decisionVoters = new ArrayList<>();
+		decisionVoters.add(new WebExpressionVoter());
+		decisionVoters.add(new RoleVoter());
+		decisionVoters.add(new AuthenticatedVoter());
+		decisionVoters.add(propertiesBasedVoter());
+		return new UnanimousBased(decisionVoters);
+	}
+
+	@Override
+	public void configure(WebSecurity web) throws Exception {
+		web.ignoring().antMatchers("/", "/index.html", "/favicon.ico", "/**/*.css", "/**/*.js", "/img/**"); // Let access to portal web resources
+		web.ignoring().antMatchers("/admin", "/admin/**"); // Let access to management server (authentication is delegated to authentication server 
+		web.ignoring().antMatchers("/catalog", "/catalog/swagger-ui/index.html");  // Let access to Swagger HTML resources
+		web.ignoring().antMatchers("/openapi/default.json"); // Let access to defauit api definition
+	}
+	
 
 }

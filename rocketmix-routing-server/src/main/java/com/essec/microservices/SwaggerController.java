@@ -46,6 +46,7 @@ public class SwaggerController {
 	@Autowired
 	private EurekaClient eurekaClient;
 
+	
 	@RequestMapping(value = "/catalog/swagger-ui/index.html", method = RequestMethod.GET)
 	public @ResponseBody byte[] index() throws IOException {
 		ClassPathResource htmlResource = new ClassPathResource("/META-INF/resources/webjars/swagger-ui/3.19.5/index.html");
@@ -58,6 +59,7 @@ public class SwaggerController {
 		content = content.replace("window.ui = ui", "window.ui = ui;\r\n" + jsContent);
 		return content.getBytes();
 	}
+
 	
 	@RequestMapping(value = "/catalog/swagger-ui/swagger-ui.css", method = RequestMethod.GET)
 	public @ResponseBody byte[] css() throws IOException {
@@ -69,10 +71,13 @@ public class SwaggerController {
 		content = content.replaceFirst("\\.swagger-ui \\.info \\.title[ ]*\\{[^\\}]*\\}", ".swagger-ui .info .title{font-size: 24px;margin-top: 0px; margin-bottom: 50px; margin-left: auto; margin-right: auto; padding-top: 30px; padding-bottom: 30px;font-family:sans-serif;color: #FFFFFF; max-width: 1400px; letter-spacing: 2px;}");
 		content = content.replaceFirst("\\.swagger-ui \\.info a[ ]*\\{[^\\}]*\\}", ".swagger-ui .info a{visibility: hidden;display: none;}");
 		content = content.replaceFirst("\\.swagger-ui \\.opblock-tag[ ]*\\{[^\\}]*\\}", ".swagger-ui .opblock-tag{visibility: hidden;display: none;}");
+		content = content.replaceFirst("\\.swagger-ui \\.errors-wrapper \\.error-wrapper[ ]*\\{[^\\}]*\\}", ".swagger-ui .errors-wrapper .error-wrapper{visibility: hidden;display: none;}");
 		content = content.replace("#547f00", "#42d3a5");
 		content = content.replace("#3b4151", "#7a7a7a");
 		content = content + " div.information-container.wrapper {max-width: 100%; background-color: #42d3a5;} ";
 		content = content + " div.servers,span.servers-title {display:none;} ";
+		content = content + " .swagger-ui .errors-wrapper hgroup > button {display:none;} ";
+		content = content + " .swagger-ui .errors-wrapper div:first-child:after {content:\"Access denied\";} ";
 		return content.getBytes();
 	}
 	
@@ -80,6 +85,10 @@ public class SwaggerController {
 	private String getUrls() {
 		StringBuilder builder = new StringBuilder();
 		JsonArray serversArray = new JsonArray();
+		JsonObject welcomeServer = new JsonObject();
+		welcomeServer.addProperty("url", "/openapi/default.json");
+		welcomeServer.addProperty("name", "DEFAULT");
+		serversArray.add(welcomeServer);
 		builder.append("urls: ");
 		try {
 			List<Application> applications = eurekaClient.getApplications().getRegisteredApplications();

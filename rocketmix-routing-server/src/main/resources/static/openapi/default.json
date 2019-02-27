@@ -1,0 +1,14 @@
+{
+	"openapi": "3.0.1",
+	"info": {
+		"title": "Please select a spec to display available APIs",
+		"contact": {
+			"name": "RocketMiX API Portal",
+			"url": "https://rocketmix.github.io"
+		},
+		"license": {
+			"name": "Apache 2.0",
+			"url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+		}
+	}
+}
