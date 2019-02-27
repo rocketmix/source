@@ -24,6 +24,7 @@ logging:
   level:
     com.netflix.discovery: off # Disable Eureka exception logging when management server is unreachable 
     org.springframework.security: debug
+    org.springframework.boot.context.config: debug
     org.springframework.cloud.netflix.zuul.filters.post: off
 
 # Zuul is the router. It acts as proxy and dispatched all requests to their endpoints

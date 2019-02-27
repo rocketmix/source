@@ -9,6 +9,7 @@ spring:
 logging:
   level:
     org.springframework.security: debug   
+    org.springframework.boot.context.config: debug
     com.netflix.discovery: off # Disable Eureka exception logging when management server is unreachable
 
 server:
