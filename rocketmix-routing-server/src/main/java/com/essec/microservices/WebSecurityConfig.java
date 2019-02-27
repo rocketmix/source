@@ -60,7 +60,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			if (!resource.exists()) {
 				File newFile = resource.getFile();
 				newFile.createNewFile();
-				Files.write(newFile.toPath(), "guest=password,ROLE_GUEST,enabled".getBytes(Charset.defaultCharset()));
+				Files.write(newFile.toPath(), "admin=admin,ROLE_ADMIN,enabled\nguest=password,ROLE_GUEST,enabled".getBytes(Charset.defaultCharset()));
 				logger.info("New ACL file created at : " + newFile.toPath());
 			}
 			return new ReloadableUserDetailsManager(resource);

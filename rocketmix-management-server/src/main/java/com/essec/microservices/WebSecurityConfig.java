@@ -35,22 +35,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	Logger logger = LoggerFactory.getLogger(WebSecurityConfig.class);
 
 	@Bean
-	public UserDetailsManager userDetailsManager() {
+	public ReloadableUserDetailsManager userDetailsManager() {
 		try {
 			InstallScriptParameters installScriptParameters = InstallScriptParameters.getInstance();
 			String installPath = installScriptParameters.getInstallPath();
-			String serviceName = installScriptParameters.getServiceName();
-			String fullpath = "file://" + installPath + File.separator + serviceName + "-users.properties";
+			String fullpath = "file://" + installPath + File.separator + "users.properties";
 			Resource resource = resourceLoader.getResource(fullpath);
 			if (!resource.exists()) {
 				File newFile = resource.getFile();
 				newFile.createNewFile();
-				Files.write(newFile.toPath(), "admin=admin,ROLE_ADMIN,enabled".getBytes(Charset.defaultCharset()));
+				Files.write(newFile.toPath(), "admin=admin,ROLE_ADMIN,enabled\nguest=password,ROLE_GUEST,enabled".getBytes(Charset.defaultCharset()));
 			}
 			return new ReloadableUserDetailsManager(resource);
 		} catch (Throwable t) {
 			logger.error(t.getMessage());
-			return new InMemoryUserDetailsManager(User.withUsername("admin").password(ReloadableUserDetailsManager.passwordEncoder().encode("admin")).roles("ADMIN").build());
+			InMemoryUserDetailsManager inMemoryUserDetailsManager = new InMemoryUserDetailsManager(User.withUsername("admin").password(ReloadableUserDetailsManager.passwordEncoder().encode("admin")).roles("ADMIN").build());
+			ReloadableUserDetailsManager reloadableUserDetailsManager = new ReloadableUserDetailsManager(inMemoryUserDetailsManager);
+			return reloadableUserDetailsManager;
 		}
 	}
 	
