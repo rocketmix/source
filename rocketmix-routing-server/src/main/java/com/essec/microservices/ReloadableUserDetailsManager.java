@@ -1,9 +1,15 @@
 package com.essec.microservices;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,18 +22,51 @@ public class ReloadableUserDetailsManager implements UserDetailsManager {
 
 	private Resource usersResource;
 	
+	private List<String> currentRoles = new ArrayList<>(); 
+	
+	private Logger logger = LoggerFactory.getLogger(ReloadableUserDetailsManager.class);
+	
+	
 	public ReloadableUserDetailsManager(Resource usersResource) {
 		this.usersResource = usersResource;
 	}
 	
+	public ReloadableUserDetailsManager(InMemoryUserDetailsManager userDetailsManager) {
+		this.wrappedUserDetailsManager = userDetailsManager;
+	}
+	
+	
 	public void refresh() {
 		try {
+			if (this.usersResource == null) {
+				logger.info("ACL not refreshed because it is static");
+				return;
+			}
 			Properties properties = new Properties();
 			properties.load(this.usersResource.getInputStream());
-			this.wrappedUserDetailsManager = new InMemoryUserDetailsManager(properties);
+			List<String> newRoles = new ArrayList<>(); 
+			this.wrappedUserDetailsManager = new InMemoryUserDetailsManager(properties) {
+				@Override
+				public void createUser(UserDetails user) {
+					Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
+					for (GrantedAuthority anAuthority : authorities) {
+						String role = anAuthority.getAuthority();
+						newRoles.add(role);
+						logger.info("New role detected : " + role);
+					}
+					super.createUser(user);
+				}
+			};
+			currentRoles.clear();
+			currentRoles.addAll(newRoles);
+			logger.info("ACL refreshed from : " + this.usersResource.getURI().getPath());
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	public boolean roleExists(String role) {
+		return this.currentRoles.contains(role);
 	}
 	
 	public static PasswordEncoder passwordEncoder() {
@@ -52,22 +91,22 @@ public class ReloadableUserDetailsManager implements UserDetailsManager {
 
 	@Override
 	public void createUser(UserDetails user) {
-		this.wrappedUserDetailsManager.createUser(user);
+		throw new RuntimeException("Feature not supported because automatic reloading should alter user details");
 	}
 
 	@Override
 	public void updateUser(UserDetails user) {
-		this.wrappedUserDetailsManager.updateUser(user);
+		throw new RuntimeException("Feature not supported because automatic reloading should alter user details");
 	}
 
 	@Override
 	public void deleteUser(String username) {
-		this.wrappedUserDetailsManager.deleteUser(username);
+		throw new RuntimeException("Feature not supported because automatic reloading should alter user details");
 	}
 
 	@Override
 	public void changePassword(String oldPassword, String newPassword) {
-		this.wrappedUserDetailsManager.changePassword(oldPassword, newPassword);
+		throw new RuntimeException("Feature not supported because automatic reloading should alter user details");
 	}
 
 	@Override

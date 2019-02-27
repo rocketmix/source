@@ -1,6 +1,7 @@
 package com.essec.microservices;
 
 import java.io.File;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
@@ -24,15 +26,14 @@ import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.vote.AuthenticatedVoter;
 import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.access.vote.UnanimousBased;
-import org.springframework.security.config.annotation.web.HttpSecurityBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
@@ -43,6 +44,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 
 @Configuration
 @EnableWebSecurity
+@EnableScheduling
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
  
 	@Autowired
@@ -53,22 +55,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	
 	@Bean
-	public UserDetailsManager userDetailsManager() {
+	public ReloadableUserDetailsManager userDetailsManager() {
 		try {
 			InstallScriptParameters installScriptParameters = InstallScriptParameters.getInstance();
 			String installPath = installScriptParameters.getInstallPath();
-			String serviceName = installScriptParameters.getServiceName();
-			String fullpath = "file://" + installPath + File.separator + serviceName + "-users.properties";
+			String fullpath = "file://" + installPath + File.separator + "users.properties";
 			Resource resource = resourceLoader.getResource(fullpath);
 			if (!resource.exists()) {
 				File newFile = resource.getFile();
 				newFile.createNewFile();
 				Files.write(newFile.toPath(), "guest=password,ROLE_GUEST,enabled".getBytes(Charset.defaultCharset()));
+				logger.info("New ACL file created at : " + newFile.toPath());
 			}
 			return new ReloadableUserDetailsManager(resource);
 		} catch (Throwable t) {
-			logger.error(t.getMessage());
-			return new InMemoryUserDetailsManager(User.withUsername("guest").password(ReloadableUserDetailsManager.passwordEncoder().encode("password")).roles("GUEST").build());
+			UserDetails guestUser = User.withUsername("guest").password(ReloadableUserDetailsManager.passwordEncoder().encode("password")).roles("GUEST").build();
+			UserDetails demoUser = User.withUsername("demo").password(ReloadableUserDetailsManager.passwordEncoder().encode("demo")).roles("DEMO").build();
+			InMemoryUserDetailsManager inMemoryUserDetailsManager = new InMemoryUserDetailsManager(guestUser, demoUser);
+			return new ReloadableUserDetailsManager(inMemoryUserDetailsManager);
 		}
 	}
 	
@@ -80,12 +84,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	
 	
-	@Scheduled(fixedDelay = 60000)
+	@Scheduled(initialDelay = 0, fixedDelay = 60000)
 	public void refreshUsers() {
 		UserDetailsManager userDetailsManager = userDetailsManager();
 		if (ReloadableUserDetailsManager.class.isInstance(userDetailsManager)) {
 			((ReloadableUserDetailsManager) userDetailsManager).refresh();
-			this.logger.info("ACL refreshed");
 		}
 	}
 	
@@ -93,12 +96,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
     	http.csrf().disable();
+    	// Secure access to services catalog
 		http.authorizeRequests().requestMatchers(catalogRequestMatcher()).authenticated().accessDecisionManager(accessDecisionManager());
 		http.httpBasic();
     }
     
+    /**
+     * Secure access to services catalog. <br/>
+     * If a user is declared in users.properties (such as demo=password,ROLE_DEMO,enabled), <br/>
+     * and his role equals a service name (in uppercase and prefixed by ROLE_), access this specific catalog <br/>
+     * is automatically secured.<br/>
+     * 
+     * If there's any user with a role that matches a service name, this service is public (not authentication required) <br/>
+     * 
+     * @return r
+     */
     @Bean
     public RequestMatcher catalogRequestMatcher() {
+    	ReloadableUserDetailsManager reloadableUserDetailsManager = userDetailsManager();
     	return new RequestMatcher() {
 			@Override
 			public boolean matches(HttpServletRequest request) {
@@ -110,8 +125,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				if (StringUtils.isBlank(service)) {
 					return false;
 				}
-				System.out.println(service);
-				if (service.equalsIgnoreCase("visioaxess")) {
+				service = "ROLE_" + service.toUpperCase();
+				if (reloadableUserDetailsManager.roleExists(service)) {
 					return true;
 				}
 				return false;
@@ -119,6 +134,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		};
     }
     
+    
+    
+    /**
+     * Confirm if a user has access to a services catalog <br/>
+     * Filtering is based on custom Swagger proxy loader url <br/>
+     * 
+     * @return a
+     */
     @Bean
     public AccessDecisionVoter<FilterInvocation> propertiesBasedVoter() {
     	return new AccessDecisionVoter<FilterInvocation>() {
@@ -134,12 +157,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 			@Override
 			public int vote(Authentication authentication, FilterInvocation object, Collection<ConfigAttribute> attributes) {
+				HttpServletRequest request = object.getHttpRequest();
+				String requestURI = request.getRequestURI();
+				if (!requestURI.equalsIgnoreCase("/catalog/swagger-docs/proxy")) {
+					return ACCESS_ABSTAIN;
+				}
+				String service = request.getParameter("vipaddress");
+				if (StringUtils.isBlank(service)) {
+					return ACCESS_ABSTAIN;
+				}
+				service = "ROLE_" + service.toUpperCase();
 				Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 				for (GrantedAuthority authority : authorities) {
 					String role = authority.getAuthority();
-					System.out.println(role);
+					if (service.equals(role)) {
+						return ACCESS_GRANTED;
+					}
 				}
-				return ACCESS_GRANTED;
+				return ACCESS_DENIED;
 			}
 		};
     }
@@ -161,9 +196,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     	web.ignoring().antMatchers("/", "/index.html", "/favicon.ico", "/**/*.css", "/**/*.js", "/img/**");
     	web.ignoring().antMatchers("/admin", "/admin/**");
     	web.ignoring().antMatchers("/catalog", "/catalog/swagger-ui/index.html");
-    	web.securityInterceptor(new FilterSecurityInterceptor() {
-    		
-    	});
     }
     
     
