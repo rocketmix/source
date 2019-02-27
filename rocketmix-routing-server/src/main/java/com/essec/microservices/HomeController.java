@@ -32,7 +32,7 @@ public class HomeController {
 	private ResourceLoader resourceLoader;	
 	
 
-	@RequestMapping(value = "")
+	@RequestMapping(value = {"", "index.html"})
 	public @ResponseBody byte[] index() throws IOException {
 		ClassPathResource htmlResource = new ClassPathResource("/static/index.html");
 		InputStream htmlStream = htmlResource.getInputStream();
