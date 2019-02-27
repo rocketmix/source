@@ -122,7 +122,7 @@ public class InstallScriptParameters {
 				continue;
 			}
 		}
-		builder.append("-Dspring.config.name=").append(getServiceName());
+		builder.append("-Dspring.config.additional-location=file:./").append(getServiceName()).append(".properties");
 		return builder.toString();
 	}
 	

@@ -55,12 +55,12 @@ public class InstallScriptGenerator {
 			System.out.println("* " + getFixedLengthString(params.getPropertiesFilename(), maxFilenameLength) + " <-- configuration properties");
 		}
 		System.out.println("* " + getFixedLengthString(params.getSystemdFilename(), maxFilenameLength) + " <-- systemd service file");
-		System.out.println("* " + getFixedLengthString(params.getInstallScriptFilename(), maxFilenameLength) + " <-- install script (run it AS ROOT ONLY to deploy this as a Linux service)");
-		System.out.println("* " + getFixedLengthString(params.getUninstallScriptFilename(), maxFilenameLength) + " <-- uninstall script (run it AS ROOT ONLY to undeploy Linux service)");
+		System.out.println("* " + getFixedLengthString(params.getInstallScriptFilename(), maxFilenameLength) + " <-- install script (run it AS ROOT to deploy this as a Linux service)");
+		System.out.println("* " + getFixedLengthString(params.getUninstallScriptFilename(), maxFilenameLength) + " <-- uninstall script (run it AS ROOT to undeploy Linux service)");
 		System.out.println(" ");
 		System.out.println("You can adapt " + params.getSpringConfigurationFilename() + " and " + params.getSystemdFilename() + " as you need.");
 		System.out.println(" ");
-		System.out.println("Please run sudo ./" + params.getInstallScriptFilename() + " to finish installation.");
+		System.out.println("Please run ./" + params.getInstallScriptFilename() + " AS ROOT (sudo or su-) to finish installation.");
 		System.out.println(" ");
 		System.out.println(" ");
 	}
