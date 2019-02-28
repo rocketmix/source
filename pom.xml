@@ -187,6 +187,9 @@
 							<!-- Then, to sign artifact, make explicit call mvn gpg:sign -->
 							<skip>false</skip>
 						</configuration>
+						<goals>
+							<goal>sign</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>
