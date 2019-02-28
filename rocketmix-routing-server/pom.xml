@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>io.github.rocketmix</groupId>
 		<artifactId>rocketmix-parent</artifactId>
-		<version>1.0.20-SNAPSHOT</version>
+		<version>1.0.20</version>
 	</parent>
 	<dependencies>
 		<!-- ROUTER (start) -->
