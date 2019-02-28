@@ -16,7 +16,7 @@
 		<dependency>
 			<groupId>${project.parent.groupId}</groupId>
 			<artifactId>rocketmix-spring-boot-starter</artifactId>
-			<version>${project.parent.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<!-- CUSTOM SPRINT BOOT MODULE (end) -->
 		<!-- JDK 11 COMPATIBILITY MODULES (start) -->
