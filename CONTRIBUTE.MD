@@ -19,3 +19,5 @@ mvn clean release:clean release:prepare
 git push
 ```
 This will update version and create a tag detected by Travis.
+
+\>\>\> [Go to Travis CI](https://travis-ci.org/rocketmix/rocketmix.source "https://travis-ci.org/rocketmix/rocketmix.source") (Continuous integration build status: [![build_status](https://travis-ci.org/rocketmix/rocketmix.source.svg?branch=master)](https://travis-ci.org/rocketmix/rocketmix.source)) <<<
