@@ -5,6 +5,11 @@ spring:
 server:
   port: 8080
   
+management.metrics.export:
+  elastic.enabled: true
+  elastic.host: http://localhost:9200 # Export metrics to local ElasticSearch node     
+  elastic.step: 5s
+  
 management:
   endpoints:
     web:
@@ -26,6 +31,8 @@ logging:
     org.springframework.security: debug
     org.springframework.boot.context.config: debug
     org.springframework.cloud.netflix.zuul.filters.post: off
+    io.micrometer: debug
+    org.elasticsearch: debug
 
 # Zuul is the router. It acts as proxy and dispatched all requests to their endpoints
 zuul:
