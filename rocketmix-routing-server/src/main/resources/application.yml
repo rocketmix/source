@@ -5,10 +5,11 @@ spring:
 server:
   port: 8080
   
-management.metrics.export:
-  elastic.enabled: true
-  elastic.host: http://localhost:9200 # Export metrics to local ElasticSearch node     
-  elastic.step: 5s
+management.metrics.export.elastic:
+  enabled: true # You will probably want disable Elastic publishing in a local development profile.
+  host: http://localhost:9200 # Export metrics to local ElasticSearch node     
+  step: 5s # The interval at which metrics are sent to Elastic. The default is 1 minute.
+  index: metrics # The index to store metrics in, defaults to "metrics"
   
 management:
   endpoints:
