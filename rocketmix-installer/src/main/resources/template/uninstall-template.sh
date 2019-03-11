@@ -12,6 +12,13 @@ EOF
 )"
 printf "$BANNER\n"
 
+# Permission check
+touch /etc/systemd/system
+if [ $? -ne 0 ]; then  
+	printf "Unable to access to /etc/systemd/system/ directory. Be carefull to run this script AS ROOT (sudo or su -c)\n"
+	exit 1
+fi
+
 # Already exist check
 systemctl is-enabled $SERVICE_NAME.service
 if [ $? -ne 0 ]; then
@@ -19,14 +26,6 @@ if [ $? -ne 0 ]; then
 	printf "Run ./$INSTALL_SCRIPT AS ROOT (sudo or su -) if you want to re-install this service\n";
 	exit 1
 fi  
-
-
-# Permission check
-touch /etc/systemd/system
-if [ $? -ne 0 ]; then  
-	printf "Unable to access to /etc/systemd/system/ directory. Be carefull to run this script AS ROOT \n"
-	#exit 1
-fi
 
 
 # Systemd configuration file check

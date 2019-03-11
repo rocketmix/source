@@ -12,26 +12,26 @@ EOF
 )"
 printf "$BANNER\n"
 
+# Permission check
+touch /etc/systemd/system
+if [ $? -ne 0 ]; then  
+	printf "Unable to access to /etc/systemd/system/ directory. Be carefull to run this script AS ROOT (sudo or su -c)\n"
+	exit 1
+fi
+
+
 # Already exist check
 systemctl is-enabled $SERVICE_NAME.service
 if [ $? -eq 0 ]; then
 	printf "Service already enabled.\n"
 	printf "You can use :\n"
-	printf "* sudo systemctl start $filename.service to start your service\n"
-	printf "* sudo systemctl status $filename.service to see if your service is running\n"
-	printf "* sudo systemctl stop $filename.service to stop your service\n"
-	printf "* sudo journalctl -f to view and follow all logs\n"
-	printf "Run ./$UNINSTALL_SCRIPT AS ROOT (sudo or su -) to uninstall this service\n";
+	printf "* (sudo or su -c) systemctl start $filename.service to start your service\n"
+	printf "* (sudo or su -c) systemctl status $filename.service to see if your service is running\n"
+	printf "* (sudo or su -c) systemctl stop $filename.service to stop your service\n"
+	printf "* (sudo or su -c) journalctl -f to view and follow all logs\n"
+	printf "Run ./$UNINSTALL_SCRIPT AS ROOT (sudo or su -c) to uninstall this service\n";
 	exit 1
 fi  
-
-
-# Permission check
-touch /etc/systemd/system
-if [ $? -ne 0 ]; then  
-	printf "Unable to access to /etc/systemd/system/ directory. Be carefull to run this script as root\n"
-	#exit 1
-fi
 
 
 # Systemd configuration file check
@@ -76,9 +76,9 @@ systemctl start $filename.service
 systemctl status $filename.service
 printf "\nDone! Service is registered to start automatically on reboot.\n"
 printf "You can use :\n"
-printf "* sudo systemctl start $filename.service to start your service\n"
-printf "* sudo systemctl status $filename.service to see if your service is running\n"
-printf "* sudo systemctl stop $filename.service to stop your service\n"
-printf "* sudo journalctl -f to view and follow all logs\n"
+printf "* (sudo or su -c) systemctl start $filename.service to start your service\n"
+printf "* (sudo or su -c) systemctl status $filename.service to see if your service is running\n"
+printf "* (sudo or su -c) systemctl stop $filename.service to stop your service\n"
+printf "* (sudo or su -c) journalctl -f to view and follow all logs\n"
 printf "Run ./$UNINSTALL_SCRIPT AS ROOT (sudo or su -) to uninstall this service\n";
 printf "Enjoy :)\n" 
