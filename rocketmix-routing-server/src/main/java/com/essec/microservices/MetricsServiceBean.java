@@ -8,7 +8,7 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Component;
 
 @Component
-@ManagedResource(objectName="RocketMiX Routing Statistics")
+@ManagedResource(objectName="RocketMiX:name=Routing Statistics")
 public class MetricsServiceBean {
 
 	private Map<String, Integer> serviceCounter = new HashMap<>();
