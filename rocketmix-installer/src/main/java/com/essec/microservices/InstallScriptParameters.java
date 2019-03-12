@@ -47,7 +47,7 @@ public class InstallScriptParameters {
 				throw new RuntimeException("Application doesn't seem to run from a war or a jar file. Cannot create scripts if it runs directly from class files");
 			}
 			String name = executableFile.getName();
-			name = name.replaceFirst("(?i)-([0-9.]+)(-SNAPSHOT|-RELEASE)*\\.(war|jar)$", "");
+			name = name.replaceFirst("(?i)-([0-9.\\-]+)(-SNAPSHOT|-RELEASE)*\\.(war|jar)$", "");
 			name = name.trim();
 			this.serviceName = name;
 		}
@@ -94,7 +94,11 @@ public class InstallScriptParameters {
 	public Optional<String> getGroup() {
 		return group;
 	}
-
+	
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
+	}
+	
 	public void setServerPort(Integer serverPort) {
 		this.serverPort = Optional.of(serverPort);
 	}
@@ -110,7 +114,7 @@ public class InstallScriptParameters {
 	public String getOptionsString() {
 		StringBuilder builder = new StringBuilder();
 		serverPort.ifPresent(value -> builder.append("-Dserver.port=").append(value).append(" "));
-		managementServerURL.ifPresent(value -> builder.append("-Deureka.server.uri=").append(value).append(" "));
+		managementServerURL.ifPresent(value -> builder.append("-Dmanagement.server.uri=").append(value).append(" "));
 		for (String anExternalOption : externalOptions.keySet()) {
 			Object value = externalOptions.get(anExternalOption);
 			if (value == null) {
@@ -155,7 +159,8 @@ public class InstallScriptParameters {
 				URI uri = new URI(path);
 				// Case 1 : current class is in a directory
 				if (uri.getScheme() == null) {
-					return null;
+					this.executableFile = new File(sourceLocation.toURI());
+					return this.executableFile;
 				}
 				// Case 2 : current class is in a jar file
 				// We get current path and go back from root dir to jar file

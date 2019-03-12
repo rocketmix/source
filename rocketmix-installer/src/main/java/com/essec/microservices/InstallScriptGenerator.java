@@ -27,7 +27,7 @@ public class InstallScriptGenerator {
 	
 	public void generateAll(InstallScriptParameters params) {
 		try {
-			checkPrerequisite(params);
+			//checkPrerequisite(params);
 			generateInstallScript(params);
 			generateUninstallScript(params);
 			generateConfigFile(params);

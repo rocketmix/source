@@ -50,7 +50,7 @@ public class InstallableSpringApplication {
 		CommandLineParser parser = new DefaultParser();
 		try {
 			// parse the command line arguments
-			CommandLine line = parser.parse(options, args);
+			CommandLine line = parser.parse(options, args, true);
 			if (line.hasOption("help")) {
 				formatter.printHelp(" ", options);
 				return;
@@ -71,11 +71,13 @@ public class InstallableSpringApplication {
 
 	}
 
-	private void getApplicationName() {
-	}
+
 
 	public static Options init(Options options) {
 		options.addOption("?", "help", false, "Display this help");
+		if (options.getMatchingOptions("name").isEmpty()) {
+			options.addOption(null, "name", true, "Force application name");
+		}
 		if (options.getMatchingOptions("port").isEmpty()) {
 			options.addOption(null, "port", true, "Change HTTP port (default: 8080)");
 		}
@@ -95,6 +97,8 @@ public class InstallableSpringApplication {
 		InstallScriptParameters result = InstallScriptParameters.getInstance();
 		for (Option anOption : line.getOptions()) {
 			switch (anOption.getLongOpt()) {
+			case "name":
+				result.setServiceName(line.getOptionValue("name"));
 			case "install":
 				String[] userParams = line.getOptionValues("install");
 				if (userParams == null || (userParams != null && userParams.length != 2)) {
