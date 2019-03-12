@@ -46,7 +46,7 @@ You project will run with or without the routing server and management server. I
 ```
 application.name=super-api-project
 server.port=8084
-management.server.url=http://dev-server:8761
+management.server.url=http://127.0.0.1:8761
 ```
 # Let's deploy my own API!
 
