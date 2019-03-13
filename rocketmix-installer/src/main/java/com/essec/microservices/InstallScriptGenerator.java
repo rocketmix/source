@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -121,22 +122,22 @@ public class InstallScriptGenerator {
 		if (!params.isPropertiesFileNeeded()) {
 			return;
 		}
-		Map<String, Object> externalOptions = params.getExternalOptions();
+		Map<String, List<String>> externalOptions = params.getExternalOptions();
 		if (externalOptions.isEmpty()) {
 			return;
 		}
 		StringBuilder content = new StringBuilder();
 		for (String anExternalOption : externalOptions.keySet()) {
-			Object value = externalOptions.get(anExternalOption);
-			if (value == null) {
+			List<String> values = externalOptions.get(anExternalOption);
+			if (values == null) {
 				continue;
 			}
-			if (value.toString().length() == 0) {
+			if (values.toString().length() == 0) {
 				continue;
 			}
 			content.append(anExternalOption);
 			content.append("=");
-			content.append(value.toString());
+			content.append(values.stream().collect(Collectors.joining(",")));
 			content.append("\n");
 		}
 		Path path = Paths.get(params.getPropertiesFilename());

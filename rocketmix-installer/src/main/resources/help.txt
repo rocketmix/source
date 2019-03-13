@@ -1,0 +1,14 @@
+usage:
+ -?,--help                        Display this help
+    --install <user:group>        Generate install scripts to
+                                  deploy/undeploy as Linux SystemV
+                                  service. You need to provide which Linux
+                                  user/group will be used to run the
+                                  service. You can combine this option
+                                  with other options
+    --managementServerURL <arg>   Set URL (with network port) of the
+                                  management server (default:
+                                  http://127.0.0.1:8761, used when
+                                  management server is executed on the
+                                  same machine)
+    --port <arg>                  Change HTTP port (default: 8080)

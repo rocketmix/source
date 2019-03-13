@@ -1,6 +1,6 @@
 package com.essec.microservices;
 
-import org.apache.commons.cli.Options;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -21,7 +21,7 @@ public class RouterApplication {
 	
 	
 	public static void main(String[] args) {
-		InstallableSpringApplication.run(RouterApplication.class, getOptions(), args);
+		SpringApplication.run(RouterApplication.class, args);
 	}
 	
 	@Bean
@@ -42,12 +42,12 @@ public class RouterApplication {
 	}
 	
 	
-	public static Options getOptions() {
-		Options options = new Options();
-		options.addOption(null, "companyName", true, "Override de company name display on the API Portal");
-		options.addOption(null, "logoURL", true, "Set a logo displayed on the API Portal instead of the rocket logo. Should be a transparent PNG. URL must be absolute. Ex : http://www.acme.com/static/logo.png");
-		return options;
-	}
+//	public static Options getOptions() {
+//		Options options = new Options();
+//		options.addOption(null, "companyName", true, "Override de company name display on the API Portal");
+//		options.addOption(null, "logoURL", true, "Set a logo displayed on the API Portal instead of the rocket logo. Should be a transparent PNG. URL must be absolute. Ex : http://www.acme.com/static/logo.png");
+//		return options;
+//	}
 	
 	
 	

@@ -1,13 +1,14 @@
 package com.essec.microservices;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -22,9 +23,7 @@ public class InstallScriptParameters {
 	
 	private Optional<String> user = Optional.empty();
 	private Optional<String> group = Optional.empty();
-	private Optional<Integer> serverPort = Optional.empty();
-	private Optional<String> managementServerURL = Optional.empty();
-	private Map<String, Object> externalOptions = new HashMap<>();
+	private Map<String, List<String>> externalOptions = new HashMap<>();
 	
 	private String serviceName;
 	private String installPath;
@@ -78,7 +77,6 @@ public class InstallScriptParameters {
 		return MessageFormat.format(SYMBOLIC_LINK_FILENAME, getServiceName());
 	}
 	
-	
 	public void setUser(String user) {
 		this.user = Optional.of(user);
 	}
@@ -99,22 +97,17 @@ public class InstallScriptParameters {
 		this.serviceName = serviceName;
 	}
 	
-	public void setServerPort(Integer serverPort) {
-		this.serverPort = Optional.of(serverPort);
-	}
-
-	public void setManagementServerURL(String managementServerURL) {
-		this.managementServerURL = Optional.of(managementServerURL);
+	public void addExternalOption(String argName, List<String> values) {
+		this.externalOptions.put(argName, values);
 	}
 	
-	public void addExternalOption(String argName, Object value) {
-		this.externalOptions.put(argName, value);
+	public void addExternalOption(String argName, String value) {
+		this.externalOptions.put(argName, Arrays.asList(value));
 	}
+
 
 	public String getOptionsString() {
 		StringBuilder builder = new StringBuilder();
-		serverPort.ifPresent(value -> builder.append("-Dserver.port=").append(value).append(" "));
-		managementServerURL.ifPresent(value -> builder.append("-Dmanagement.server.uri=").append(value).append(" "));
 		for (String anExternalOption : externalOptions.keySet()) {
 			Object value = externalOptions.get(anExternalOption);
 			if (value == null) {
@@ -144,7 +137,7 @@ public class InstallScriptParameters {
 		return false;
 	}
 	
-	public Map<String, Object> getExternalOptions() {
+	public Map<String, List<String>> getExternalOptions() {
 		return this.externalOptions;
 	}
 	
