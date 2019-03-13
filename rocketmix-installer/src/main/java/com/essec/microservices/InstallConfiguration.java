@@ -1,82 +1,116 @@
 package com.essec.microservices;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
-import org.springframework.beans.factory.annotation.Value;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.Resource;
+import org.springframework.util.StringUtils;
 
 @Configuration
 public class InstallConfiguration implements ApplicationRunner {
 
-	@Value("classpath:/help.txt")
-	private Resource resourceFile;
+	
+	@Autowired
+	private ApplicationContext context;
+	
+	private static HelpFormatter formatter = new HelpFormatter();
 	
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		Set<String> optionNames = args.getOptionNames();
-		List<String> nonOptionArgs = args.getNonOptionArgs();
-		if (optionNames.contains("help") || nonOptionArgs.contains("-?")) {
-			InputStream inputStream = this.getClass().getResourceAsStream("/help.txt");
-			String result = new BufferedReader(new InputStreamReader(inputStream))
-					  .lines().collect(Collectors.joining("\n"));
-			inputStream.close();
-			System.out.println(result);
-			System.exit(0);
-		}
-		if (optionNames.contains("install")) {
-			InstallScriptParameters params = buildInstallerParams(args);
-			InstallScriptGenerator scriptGenerator = new InstallScriptGenerator();
-			scriptGenerator.generateAll(params);
-			System.exit(0);
+		Map<String, Option> optionBeans = this.context.getBeansOfType(Option.class);
+		Options options = new Options();
+		optionBeans.values().stream().forEach(o -> options.addOption(o));
+		
+		// create the parser
+		CommandLineParser parser = new DefaultParser();
+		try {
+			// parse the command line arguments
+			CommandLine line = parser.parse(options, args.getSourceArgs(), true);
+			if (line.hasOption("help")) {
+				formatter.printHelp(" ", options);
+				System.exit(0);
+				return;
+			}
+			if (line.hasOption("install")) {
+				InstallScriptParameters params = buildInstallerParams(args, line);
+				InstallScriptGenerator scriptGenerator = new InstallScriptGenerator();
+				scriptGenerator.generateAll(params);
+				System.exit(0);
+				return;
+			}
+		} catch (ParseException exp) {
+			// oops, something went wrong
+			System.err.println("Parsing failed.  Reason: " + exp.getMessage());
+			formatter.printHelp(" ", options);
 		}
 	}
+	
+	
 
 	
-	private static InstallScriptParameters buildInstallerParams(ApplicationArguments args) {
+	private static InstallScriptParameters buildInstallerParams(ApplicationArguments args, CommandLine line) {
 		InstallScriptParameters result = InstallScriptParameters.getInstance();
-		for (String anOption : args.getOptionNames()) {
-			switch (anOption) {
-			case "name":
-				result.setServiceName(args.getOptionValues("name").get(0));
+		// Step 1 : parse with Apache command line
+		for (Option anOption : line.getOptions()) {
+			switch (anOption.getLongOpt()) {
 			case "install":
-				List<String> userParams = args.getOptionValues("install");
-				if (userParams.size() == 1 && userParams.get(0).contains(":")) {
-					String[] split = userParams.get(0).split(":");
-					result.setUser(split[0]);
-					result.setGroup(split[1]);
-					break;
+				String[] userParams = line.getOptionValues("install");
+				if (userParams == null || (userParams != null && userParams.length != 2)) {
+					String username = System.getProperty("user.name");
+					result.setUser(username);
+					result.setGroup(username);
 				}
-				String username = System.getProperty("user.name");
-				result.setUser(username);
-				result.setGroup(username);
+				if (userParams != null && userParams.length == 2) {
+					result.setUser(userParams[0]);
+					result.setGroup(userParams[1]);
+				}
 				break;
 			case "managementServerURL":
-				List<String> urlParams = args.getOptionValues("managementServerURL");
-				if (urlParams.size() == 1) {
-					result.addExternalOption("management.server.uri", urlParams.get(0));
+				String urlParam = line.getOptionValue("managementServerURL");
+				if (StringUtils.hasText(urlParam)) {
+					result.addExternalOption("management.server.uri", urlParam);
 				}
 				break;
 			case "port":
-				List<String> portParams = args.getOptionValues("port");
-				if (portParams.size() == 1) {
-					result.addExternalOption("server.port", portParams.get(0));
+				String portParam = line.getOptionValue("port");
+				if (StringUtils.hasText(portParam)) {
+					result.addExternalOption("server.port", portParam);
 				}
 				break;
 			default:
-				result.addExternalOption(anOption, args.getOptionValues(anOption));
 				break;
 			}
 		}
+		// Step 2 : add additional options 
+		for (String anOption : args.getOptionNames()) {
+			if ("name".equals(anOption)) {
+				result.setServiceName(args.getOptionValues("name").get(0));
+				continue;
+			}
+			if ("install".equals(anOption)) {
+				continue;
+			}
+			if ("managementServerURL".equals(anOption)) {
+				continue;
+			}
+			if ("port".equals(anOption)) {
+				continue;
+			}
+			result.addExternalOption(anOption, args.getOptionValues(anOption));
+		}
+		// Step 3 : fill with jvm args
 		for (String anOption : args.getNonOptionArgs()) {
 			if (!anOption.startsWith("-D")) {
 				continue;
@@ -84,11 +118,34 @@ public class InstallConfiguration implements ApplicationRunner {
 			if (!anOption.contains("=")) {
 				continue;
 			}
-			String substring = anOption.substring(0, 2);
+			String substring = anOption.substring(2);
 			String[] split = substring.split("=");
 			result.addExternalOption(split[0], split[1]);
 		}
 		return result;
+	}
+
+	@Bean
+	public Option getHelpCommandLineOption() {
+		return Option.builder().argName("?").longOpt("help").required(false).hasArg(false).desc("Display this help").build();
+	}
+	
+	
+	@Bean
+	public Option getInstallCommandLineOption() {
+		return Option.builder().longOpt("install")
+		.desc("Generate install scripts to deploy/undeploy as Linux SystemV service. You need to provide which Linux user/group will be used to run the service. You can combine this option with other options").longOpt("install")
+		.hasArgs().optionalArg(true).numberOfArgs(2).argName("user:group").valueSeparator(':').build();
+	}
+	
+	@Bean
+	public Option getPortCommandLineOption() {
+		return Option.builder().longOpt("port").argName("port").required(false).hasArg().optionalArg(false).desc("Change HTTP port (default: 8080)").build();
+	}
+	
+	@Bean
+	public Option getManagementServerURLCommandLineOption() {
+		return Option.builder().longOpt("managementServerURL").argName("url").required(false).hasArg().optionalArg(false).desc("Set URL (with network port) of the management server (default: http://127.0.0.1:8761, used when management server is executed on the same machine)").build();
 	}
 	
 	
