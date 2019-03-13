@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>io.github.rocketmix</groupId>
 		<artifactId>rocketmix-parent</artifactId>
-		<version>1.0.22-SNAPSHOT</version>
+		<version>1.0.22</version>
 	</parent>
 	<dependencies>
 		<!-- CUSTOM SPRINT BOOT MODULE (start) -->
