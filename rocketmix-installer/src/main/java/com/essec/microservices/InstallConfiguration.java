@@ -127,7 +127,7 @@ public class InstallConfiguration implements ApplicationRunner {
 
 	@Bean
 	public Option getHelpCommandLineOption() {
-		return Option.builder().argName("?").longOpt("help").required(false).hasArg(false).desc("Display this help").build();
+		return Option.builder("?").longOpt("help").required(false).hasArg(false).desc("Display this help").build();
 	}
 	
 	
