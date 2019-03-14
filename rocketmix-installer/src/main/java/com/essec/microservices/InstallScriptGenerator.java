@@ -5,8 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,12 +26,12 @@ public class InstallScriptGenerator {
 	
 	public void generateAll(InstallScriptParameters params) {
 		try {
-			//checkPrerequisite(params);
+			checkPrerequisite(params);
 			generateInstallScript(params);
 			generateUninstallScript(params);
 			generateConfigFile(params);
 			generateSystemdFile(params);
-			generateSymbolicLink(params);
+			generateExecutableLink(params);
 			generatePropertiesFile(params);
 			showResult(params);
 		} catch (Exception e) {
@@ -48,8 +46,8 @@ public class InstallScriptGenerator {
 		System.out.println(" ");
 		System.out.println("You should find in this directory :");
 		System.out.println("* " + getFixedLengthString(params.getExecutableFile().getName(), maxFilenameLength) + " <-- main executable file");
-		if (params.getExecutableFile() != null && !params.getSymbolicLinkFilename().equals(params.getExecutableFile().getName())) {
-			System.out.println("* " + getFixedLengthString(params.getSymbolicLinkFilename(), maxFilenameLength) + " <-- symbolic link to executable file");
+		if (params.getExecutableFile() != null && !params.getExecutableLinkFilename().equals(params.getExecutableFile().getName())) {
+			System.out.println("* " + getFixedLengthString(params.getExecutableLinkFilename(), maxFilenameLength) + " <-- symbolic link to executable file");
 		}
 		System.out.println("* " + getFixedLengthString(params.getSpringConfigurationFilename(), maxFilenameLength) + " <-- configuration options");
 		if (params.isPropertiesFileNeeded()) {
@@ -67,7 +65,7 @@ public class InstallScriptGenerator {
 	}
 
 	private int getMaxFilenameLength(InstallScriptParameters params) {
-		return Arrays.asList(params.getExecutableFile().getName(), params.getSymbolicLinkFilename(), params.getInstallScriptFilename(), params.getSpringConfigurationFilename(), params.getSystemdFilename()).stream()
+		return Arrays.asList(params.getExecutableFile().getName(), params.getExecutableLinkFilename(), params.getInstallScriptFilename(), params.getSpringConfigurationFilename(), params.getSystemdFilename()).stream()
 				.max(Comparator.comparingInt(String::length)).get().length();
 	}
 
@@ -165,20 +163,20 @@ public class InstallScriptGenerator {
 		file.setWritable(true, false);
 	}
 
-	private void generateSymbolicLink(InstallScriptParameters params) throws Exception {
+	private void generateExecutableLink(InstallScriptParameters params) throws Exception {
 		File executableFile = params.getExecutableFile();
 		if (executableFile == null) {
 			return;
 		}
-		String symbolicLinkFilename = params.getSymbolicLinkFilename();
-		if (executableFile.getName().equals(symbolicLinkFilename)) {
+		String executableLinkFilename = params.getExecutableLinkFilename();
+		if (executableFile.getName().equals(executableLinkFilename)) {
 			return; // Do not create if filename has no version number suffix
 		}
-		Path link = Paths.get(symbolicLinkFilename);
+		Path link = Paths.get(executableLinkFilename);
 		if (Files.exists(link)) {
 			Files.delete(link);
 		}
-		Files.createSymbolicLink(link, executableFile.toPath());
+		Files.createLink(link, executableFile.toPath());
 	}
 
 	private String getFixedLengthString(String text, int length) {

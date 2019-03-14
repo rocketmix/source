@@ -73,7 +73,7 @@ public class InstallScriptParameters {
 		return MessageFormat.format(PROPERTIES_FILENAME, getServiceName());
 	}
 	
-	public String getSymbolicLinkFilename() {
+	public String getExecutableLinkFilename() {
 		return MessageFormat.format(SYMBOLIC_LINK_FILENAME, getServiceName());
 	}
 	
