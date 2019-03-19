@@ -19,7 +19,7 @@ import com.essec.microservices.SwaggerConfiguration;
 @EnableDiscoveryClient
 @EnableCircuitBreaker
 @EnableHystrixDashboard
-@Import({ SecurityConfiguration.class, SwaggerConfiguration.class, CxfAutoConfiguration.class, JaxRsConfiguration.class })
+@Import({SecurityConfiguration.class, SwaggerConfiguration.class, CxfAutoConfiguration.class, JaxRsConfiguration.class })
 public class ApiProviderAutoConfiguration {
 
 	

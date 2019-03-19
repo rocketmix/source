@@ -15,7 +15,7 @@
 		<!-- SPRING BOOT - MINIMUM REQUIRED (start) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot</artifactId>
+			<artifactId>spring-boot-autoconfigure</artifactId>
 		</dependency>
 		<!-- SPRING BOOT - MINIMUM REQUIRED (end) -->
 		<!-- CLI (start) -->

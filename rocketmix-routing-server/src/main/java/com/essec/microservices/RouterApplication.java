@@ -15,6 +15,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 @EnableZuulProxy
 @EnableCircuitBreaker
 @EnableHystrixDashboard
+@EnableInstaller
 @SpringBootApplication
 public class RouterApplication {
 
