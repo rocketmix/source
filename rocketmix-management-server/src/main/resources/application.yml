@@ -13,7 +13,7 @@ logging:
     com.netflix.discovery: off # Disable Eureka exception logging when management server is unreachable
 
 server:
-  port: 8761
+  port: ${port:8761}
   
 eureka:
   client:

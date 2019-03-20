@@ -3,7 +3,7 @@ spring:
     name: ZuulServer
 
 server:
-  port: 8080
+  port: ${port:8080}
   
   
 management:
@@ -41,7 +41,7 @@ zuul:
       path: /admin/**
       strip-prefix: true
       sensitive-headers: # blank value needed to keep authorization http headers  
-      url: ${management.server.uri:http://127.0.0.1:8761}/admin
+      url: ${managementServerURL:http://127.0.0.1:8761}/admin
 
 # Ribbon acts as load balancer between microservices
 ribbon: 
@@ -69,7 +69,7 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: ${management.server.uri:http://127.0.0.1:8761}/eureka/
+      defaultZone: ${managementServerURL:http://127.0.0.1:8761}/eureka/
 
 
           
