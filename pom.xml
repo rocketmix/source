@@ -100,6 +100,7 @@
 					<warName>${project.build.finalName}</warName>
 					<failOnMissingWebXml>false</failOnMissingWebXml>
 					<recompressZippedFiles>false</recompressZippedFiles>
+					<attachClasses>true</attachClasses>
 					<archive>
 						<compress>false</compress>
 						<!-- ATTENTION!!! Suppression du manifest d'origine sinon ne peut pas 

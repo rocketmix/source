@@ -28,12 +28,12 @@ public class RouterConfiguration {
 
 	@Bean
 	public Option getCompanyNameCommandLineOption() {
-		return Option.builder().longOpt("companyName").valueSeparator('=').argName("text").required(false).hasArg(true).desc("Override the company name displayed on API Portal").build();
+		return Option.builder().longOpt("companyName").argName("text").required(false).hasArg(true).desc("Override the company name displayed on API Portal").build();
 	}
 
 	@Bean
 	public Option getLogoURLCommandLineOption() {
-		return Option.builder().longOpt("logoURL").valueSeparator('=').argName("url").required(false).hasArg(true)
+		return Option.builder().longOpt("logoURL").argName("url").required(false).hasArg(true)
 				.desc("Set a logo displayed on the API Portal instead of the rocket logo. Should be a transparent PNG. URL must be absolute. Ex : http://www.acme.com/static/logo.png").build();
 	}
 

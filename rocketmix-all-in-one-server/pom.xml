@@ -14,14 +14,16 @@
 	<dependencies>
 		<!-- BUNDLE PACK (start) -->
 		<dependency>
-			<groupId>${project.parent.groupId}</groupId>
+			<groupId>io.github.rocketmix</groupId>
 			<artifactId>rocketmix-routing-server</artifactId>
-			<version>${project.version}</version>
+			<version>${project.parent.version}</version>
+			<classifier>classes</classifier>
 		</dependency>
 		<dependency>
-			<groupId>${project.parent.groupId}</groupId>
+			<groupId>io.github.rocketmix</groupId>
 			<artifactId>rocketmix-management-server</artifactId>
-			<version>${project.version}</version>
+			<version>${project.parent.version}</version>
+			<classifier>classes</classifier>
 		</dependency>
 		<!-- BUNDLE PACK (end) -->
 		<!-- JDK 11 COMPATIBILITY MODULES (start) -->
