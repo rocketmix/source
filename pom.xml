@@ -44,6 +44,7 @@
 		<module>rocketmix-spring-boot-starter</module>
 		<module>rocketmix-services-demo</module>
 		<module>rocketmix-installer</module>
+		<module>rocketmix-all-in-one-server</module>
 	</modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

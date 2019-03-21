@@ -1,16 +1,23 @@
 package com.essec.microservices;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
+import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboard;
+import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 
-@EnableAutoConfiguration(exclude = ErrorMvcAutoConfiguration.class)
+import de.codecentric.boot.admin.server.config.EnableAdminServer;
+
+
+@EnableDiscoveryClient
+@EnableZuulProxy
+@EnableCircuitBreaker
+@EnableHystrixDashboard
+@EnableInstaller
+@EnableEurekaServer
+@EnableAdminServer
 @SpringBootApplication
 public class BundleServerApplication {
 

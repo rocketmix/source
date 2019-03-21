@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
@@ -25,6 +26,7 @@ import org.springframework.security.provisioning.UserDetailsManager;
 @Configuration
 @EnableWebSecurity
 @EnableScheduling
+@ConditionalOnMissingBean(WebSecurityConfig.class)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	
@@ -83,5 +85,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().anyRequest().permitAll();
 		http.httpBasic();
 	}
+	
 
 }

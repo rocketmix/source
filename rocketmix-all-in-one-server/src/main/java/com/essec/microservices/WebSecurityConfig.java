@@ -44,7 +44,6 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 @Configuration
 @EnableWebSecurity
 @EnableScheduling
-@ConditionalOnMissingBean(WebSecurityConfig.class)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
