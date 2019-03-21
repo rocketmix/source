@@ -26,12 +26,13 @@ public class InstallBootstrap {
 	
 	private static HelpFormatter formatter = new HelpFormatter();
 	
+
 	@PostConstruct
 	public void run() throws Exception {
+		formatter.setLongOptSeparator("=");
 		Map<String, Option> optionBeans = context.getBeansOfType(Option.class);
 		Options options = new Options();
 		optionBeans.values().stream().forEach(o -> options.addOption(o));
-		
 		// create the parser
 		CommandLineParser parser = new DefaultParser();
 		try {
