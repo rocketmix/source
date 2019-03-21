@@ -6,6 +6,7 @@ import java.net.URL;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -17,15 +18,20 @@ public class InstallScriptParameters {
 	private static final String SYMBOLIC_LINK_FILENAME = "{0}.war";
 	private static final String INSTALL_SCRIPT_FILENAME = "{0}-install.sh";
 	private static final String UNINSTALL_SCRIPT_FILENAME = "{0}-uninstall.sh";
+	private static final String START_SCRIPT_FILENAME = "{0}-start.sh";
+	private static final String STOP_SCRIPT_FILENAME = "{0}-stop.sh";
+	private static final String STATUS_SCRIPT_FILENAME = "{0}-status.sh";
 	private static final String SPRING_CONFIGURATION_FILENAME = "{0}.conf";
 	private static final String SYSTEMD_FILENAME = "{0}.service";
 	private static final String PROPERTIES_FILENAME = "{0}.properties";
 	
+	private String serviceName;
 	private Optional<String> user = Optional.empty();
 	private Optional<String> group = Optional.empty();
-	private Map<String, List<String>> externalOptions = new HashMap<>();
+	private Integer debugPort;
+	private Map<String, List<String>> programOptions = new HashMap<>();
+	private List<String> jvmOptions = new ArrayList<>();
 	
-	private String serviceName;
 	private String installPath;
 	private File executableFile;
 	
@@ -59,6 +65,18 @@ public class InstallScriptParameters {
 
 	public String getUninstallScriptFilename() {
 		return MessageFormat.format(UNINSTALL_SCRIPT_FILENAME, getServiceName());
+	}
+
+	public String getStartScriptFilename() {
+		return MessageFormat.format(START_SCRIPT_FILENAME, getServiceName());
+	}
+	
+	public String getStopScriptFilename() {
+		return MessageFormat.format(STOP_SCRIPT_FILENAME, getServiceName());
+	}
+	
+	public String getStatusScriptFilename() {
+		return MessageFormat.format(STATUS_SCRIPT_FILENAME, getServiceName());
 	}
 	
 	public String getSpringConfigurationFilename() {
@@ -97,48 +115,41 @@ public class InstallScriptParameters {
 		this.serviceName = serviceName;
 	}
 	
-	public void addExternalOption(String argName, List<String> values) {
-		this.externalOptions.put(argName, values);
+	public void addProgramOption(String argName, List<String> values) {
+		this.programOptions.put(argName, values);
 	}
 	
-	public void addExternalOption(String argName, String value) {
-		this.externalOptions.put(argName, Arrays.asList(value));
+	public void addProgramOption(String argName, String value) {
+		this.programOptions.put(argName, Arrays.asList(value));
 	}
-
-
-	public String getOptionsString() {
+	
+	public void addJvmOption(String... jvmOption) {
+		this.jvmOptions.addAll(Arrays.asList(jvmOption));
+	}
+	
+	public void setDebugPort(Integer debugPort) {
+		this.debugPort = debugPort;
+	}
+	
+	public String getJvmOptionsString() {
 		StringBuilder builder = new StringBuilder();
-		for (String anExternalOption : externalOptions.keySet()) {
-			Object value = externalOptions.get(anExternalOption);
-			if (value == null) {
-				builder.append("-D").append(anExternalOption);
-				continue;
-			}
-			if (value.toString().length() == 0) {
-				builder.append("-D").append(anExternalOption);
-				continue;
-			}
+		for (String option : jvmOptions) {
+			builder.append(option);
+			builder.append(" ");
 		}
 		builder.append("-Dspring.config.additional-location=file:./").append(getServiceName()).append(".properties");
+		if (this.debugPort != null) {
+			builder.append(" -Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=").append(this.debugPort);
+		}
 		return builder.toString();
 	}
 	
 	public boolean isPropertiesFileNeeded() {
-		for (String anExternalOption : externalOptions.keySet()) {
-			Object value = externalOptions.get(anExternalOption);
-			if (value == null) {
-				continue;
-			}
-			if (value.toString().length() == 0) {
-				continue;
-			}
-			return true; // return true if one option has a value
-		}
-		return false;
+		return !this.programOptions.isEmpty();
 	}
 	
-	public Map<String, List<String>> getExternalOptions() {
-		return this.externalOptions;
+	public Map<String, List<String>> getProgramOptions() {
+		return this.programOptions;
 	}
 	
 	

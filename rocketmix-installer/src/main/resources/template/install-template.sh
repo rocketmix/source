@@ -15,13 +15,17 @@ printf "$BANNER\n"
 # Permission check
 touch /etc/systemd/system
 if [ $? -ne 0 ]; then  
-	printf "Unable to access to /etc/systemd/system/ directory. Be carefull to run this script AS ROOT (sudo or su -c)\n"
-	exit 1
+	printf "Unable to access to /etc/systemd/system/ directory. sudo permissions required.\n"
+  	SUDO="sudo"
+    sudo echo "" # Always prompt for password
+	if [ $? -ne 0 ]; then 
+        exit 1
+    fi
 fi
 
 
 # Already exist check
-systemctl is-enabled $SERVICE_NAME.service
+$SUDO systemctl is-enabled $SERVICE_NAME.service
 if [ $? -eq 0 ]; then
 	printf "Service already enabled.\n"
 	printf "You can use :\n"
@@ -59,21 +63,21 @@ executablefilename=$SERVICE_NAME
 executablefilename0="$INSTALL_DIR/$filename.war"
 executablefilename1="$INSTALL_DIR/$filename.conf"
 executablefilename2="$INSTALL_DIR/$filename.service"
-chmod 766 $executablefilename0
-chmod 766 $executablefilename1
-chmod 666 $executablefilename2
+$SUDO chmod 766 $executablefilename0
+$SUDO chmod 766 $executablefilename1
+$SUDO chmod 666 $executablefilename2
 
 
 # Declare service
 filename=$SERVICE_NAME
 servicefile="$INSTALL_DIR/$filename.service"
-systemctl enable $servicefile
+$SUDO systemctl enable $servicefile
 if [ $? -ne 0 ]; then  
 	printf "Service registration failed when trying to run : sudo systemctl enable $servicefile\n"
 	exit 1
 fi
-systemctl start $filename.service
-systemctl status $filename.service
+$SUDO systemctl start $filename.service
+$SUDO systemctl status $filename.service
 printf "\nDone! Service is registered to start automatically on reboot.\n"
 printf "You can use :\n"
 printf "* (sudo or su -c) systemctl start $filename.service to start your service\n"

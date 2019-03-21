@@ -1,5 +1,8 @@
 package com.essec.microservices;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -14,7 +17,6 @@ import org.apache.commons.cli.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.context.ApplicationContext;
-import org.springframework.util.StringUtils;
 
 public class InstallBootstrap {
 
@@ -34,7 +36,13 @@ public class InstallBootstrap {
 		CommandLineParser parser = new DefaultParser();
 		try {
 			// parse the command line arguments
-			CommandLine line = parser.parse(options, args.getSourceArgs(), true);
+			List<String> optionsArgs = new ArrayList<>(Arrays.asList(args.getSourceArgs()));
+			for (String jvmArg : args.getNonOptionArgs()) {
+				if (jvmArg.startsWith("-D")) {
+					optionsArgs.remove(jvmArg);
+				}
+			}
+			CommandLine line = parser.parse(options, optionsArgs.toArray(new String[optionsArgs.size()]), true);
 			if (line.hasOption("help")) {
 				formatter.printHelp(" ", options);
 				System.exit(0);
@@ -74,17 +82,11 @@ public class InstallBootstrap {
 					result.setGroup(userParams[1]);
 				}
 				break;
-			case "managementServerURL":
-				String urlParam = line.getOptionValue("managementServerURL");
-				if (StringUtils.hasText(urlParam)) {
-					result.addExternalOption("management.server.uri", urlParam);
-				}
+			case "name":
+				result.setServiceName(args.getOptionValues("name").get(0));
 				break;
-			case "port":
-				String portParam = line.getOptionValue("port");
-				if (StringUtils.hasText(portParam)) {
-					result.addExternalOption("server.port", portParam);
-				}
+			case "debug":
+				result.setDebugPort(Integer.parseInt(line.getOptionValue("debug")));
 				break;
 			default:
 				break;
@@ -93,31 +95,21 @@ public class InstallBootstrap {
 		// Step 2 : add additional options 
 		for (String anOption : args.getOptionNames()) {
 			if ("name".equals(anOption)) {
-				result.setServiceName(args.getOptionValues("name").get(0));
 				continue;
 			}
 			if ("install".equals(anOption)) {
 				continue;
 			}
-			if ("managementServerURL".equals(anOption)) {
+			if ("debug".equals(anOption)) {
 				continue;
 			}
-			if ("port".equals(anOption)) {
-				continue;
-			}
-			result.addExternalOption(anOption, args.getOptionValues(anOption));
+			result.addProgramOption(anOption, args.getOptionValues(anOption));
 		}
 		// Step 3 : fill with jvm args
 		for (String anOption : args.getNonOptionArgs()) {
-			if (!anOption.startsWith("-D")) {
-				continue;
+			if (anOption.startsWith("-D")) {
+				result.addJvmOption(anOption);
 			}
-			if (!anOption.contains("=")) {
-				continue;
-			}
-			String substring = anOption.substring(2);
-			String[] split = substring.split("=");
-			result.addExternalOption(split[0], split[1]);
 		}
 		return result;
 	}

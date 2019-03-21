@@ -15,12 +15,16 @@ printf "$BANNER\n"
 # Permission check
 touch /etc/systemd/system
 if [ $? -ne 0 ]; then  
-	printf "Unable to access to /etc/systemd/system/ directory. Be carefull to run this script AS ROOT (sudo or su -c)\n"
-	exit 1
+	printf "Unable to access to /etc/systemd/system/ directory. sudo permissions required.\n"
+  	SUDO="sudo"
+    sudo echo "" # Always prompt for password
+	if [ $? -ne 0 ]; then 
+        exit 1
+    fi
 fi
 
 # Already exist check
-systemctl is-enabled $SERVICE_NAME.service
+$SUDO systemctl is-enabled $SERVICE_NAME.service
 if [ $? -ne 0 ]; then
 	printf "\nService not found. Did you run install script before running this one ?\n"
 	printf "Run ./$INSTALL_SCRIPT AS ROOT (sudo or su -) if you want to re-install this service\n";
@@ -40,8 +44,8 @@ fi
 
 # Remove service
 filename=$SERVICE_NAME
-systemctl kill $filename.service
-systemctl disable $filename.service
+$SUDO systemctl kill $filename.service
+$SUDO systemctl disable $filename.service
 if [ $? -ne 0 ]; then  
 	printf "\nService uninstall failed when trying to run : sudo systemctl disable $filename.service\n"
 	exit 1

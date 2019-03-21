@@ -19,6 +19,9 @@ public class InstallScriptGenerator {
 
 	private static final String INSTALL_SCRIPT_TEMPLATE = "template/install-template.sh";
 	private static final String UNINSTALL_SCRIPT_TEMPLATE = "template/uninstall-template.sh";
+	private static final String START_SCRIPT_TEMPLATE = "template/start-template.sh";
+	private static final String STOP_SCRIPT_TEMPLATE = "template/stop-template.sh";
+	private static final String STATUS_SCRIPT_TEMPLATE = "template/status-template.sh";
 	private static final String SPRING_CONFIGURATION_FILE_TEMPLATE = "template/spring-configuration-template.conf";
 	private static final String SYSTEMD_CONFIGURATION_TEMPLATE = "template/systemd-configuration-template.service";
 	private static final String BANNER_FILE = "template/banner.txt";
@@ -29,6 +32,9 @@ public class InstallScriptGenerator {
 			checkPrerequisite(params);
 			generateInstallScript(params);
 			generateUninstallScript(params);
+			generateStartScript(params);
+			generateStopScript(params);
+			generateStatusScript(params);
 			generateConfigFile(params);
 			generateSystemdFile(params);
 			generateExecutableLink(params);
@@ -56,6 +62,9 @@ public class InstallScriptGenerator {
 		System.out.println("* " + getFixedLengthString(params.getSystemdFilename(), maxFilenameLength) + " <-- systemd service file");
 		System.out.println("* " + getFixedLengthString(params.getInstallScriptFilename(), maxFilenameLength) + " <-- install script (run it AS ROOT to deploy this as a Linux service)");
 		System.out.println("* " + getFixedLengthString(params.getUninstallScriptFilename(), maxFilenameLength) + " <-- uninstall script (run it AS ROOT to undeploy Linux service)");
+		System.out.println("* " + getFixedLengthString(params.getStartScriptFilename(), maxFilenameLength) + " <-- start service if installed (run it AS ROOT)");
+		System.out.println("* " + getFixedLengthString(params.getStopScriptFilename(), maxFilenameLength) + " <-- stop service if running (run it AS ROOT)");
+		System.out.println("* " + getFixedLengthString(params.getStatusScriptFilename(), maxFilenameLength) + " <-- get current service status (run it AS ROOT)");
 		System.out.println(" ");
 		System.out.println("You can adapt " + params.getSpringConfigurationFilename() + " and " + params.getSystemdFilename() + " as you need.");
 		System.out.println(" ");
@@ -106,9 +115,55 @@ public class InstallScriptGenerator {
 		file.setExecutable(true, false);
 	}	
 	
+	private void generateStartScript(InstallScriptParameters params) throws Exception {
+		StringBuilder content1 = new StringBuilder(loadFileTemplate(START_SCRIPT_TEMPLATE));
+		replaceString(content1, "{{servicename}}", params.getServiceName());
+		replaceString(content1, "{{installpath}}", params.getInstallPath());
+		replaceString(content1, "{{installscript}}", params.getInstallScriptFilename());
+		String banner = loadFileTemplate(BANNER_FILE);
+		replaceString(content1, "{{banner}}", banner);
+		Path path = Paths.get(params.getStartScriptFilename());
+		Files.write(path, content1.toString().getBytes());
+		File file = path.toFile();
+		file.setReadable(true, false);
+		file.setWritable(true, false);
+		file.setExecutable(true, false);
+	}	
+		
+	private void generateStopScript(InstallScriptParameters params) throws Exception {
+		StringBuilder content1 = new StringBuilder(loadFileTemplate(STOP_SCRIPT_TEMPLATE));
+		replaceString(content1, "{{servicename}}", params.getServiceName());
+		replaceString(content1, "{{installpath}}", params.getInstallPath());
+		replaceString(content1, "{{installscript}}", params.getInstallScriptFilename());
+		String banner = loadFileTemplate(BANNER_FILE);
+		replaceString(content1, "{{banner}}", banner);
+		Path path = Paths.get(params.getStopScriptFilename());
+		Files.write(path, content1.toString().getBytes());
+		File file = path.toFile();
+		file.setReadable(true, false);
+		file.setWritable(true, false);
+		file.setExecutable(true, false);
+	}	
+
+	private void generateStatusScript(InstallScriptParameters params) throws Exception {
+		StringBuilder content1 = new StringBuilder(loadFileTemplate(STATUS_SCRIPT_TEMPLATE));
+		replaceString(content1, "{{servicename}}", params.getServiceName());
+		replaceString(content1, "{{installpath}}", params.getInstallPath());
+		replaceString(content1, "{{installscript}}", params.getInstallScriptFilename());
+		String banner = loadFileTemplate(BANNER_FILE);
+		replaceString(content1, "{{banner}}", banner);
+		Path path = Paths.get(params.getStatusScriptFilename());
+		Files.write(path, content1.toString().getBytes());
+		File file = path.toFile();
+		file.setReadable(true, false);
+		file.setWritable(true, false);
+		file.setExecutable(true, false);
+	}	
+
+	
 	private void generateConfigFile(InstallScriptParameters params) throws Exception {
 		String content2 = loadFileTemplate(SPRING_CONFIGURATION_FILE_TEMPLATE);
-		content2 = content2.replace("{{options}}", params.getOptionsString());
+		content2 = content2.replace("{{options}}", params.getJvmOptionsString());
 		Path path = Paths.get(params.getSpringConfigurationFilename());
 		Files.write(path, content2.getBytes());
 		File file = path.toFile();
@@ -120,7 +175,7 @@ public class InstallScriptGenerator {
 		if (!params.isPropertiesFileNeeded()) {
 			return;
 		}
-		Map<String, List<String>> externalOptions = params.getExternalOptions();
+		Map<String, List<String>> externalOptions = params.getProgramOptions();
 		if (externalOptions.isEmpty()) {
 			return;
 		}
