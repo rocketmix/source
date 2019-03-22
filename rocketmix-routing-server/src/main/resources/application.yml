@@ -36,6 +36,7 @@ zuul:
   thread-pool:
     use-separate-thread-pools: true
   ignoredPatterns: /admin/logout # used by AdminController to redirect user to portal main page
+  sensitive-headers: # blank value needed to keep authorization http headers
   routes:
     admin:
       path: /admin/**

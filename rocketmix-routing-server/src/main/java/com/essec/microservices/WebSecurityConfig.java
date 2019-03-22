@@ -164,6 +164,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 				for (GrantedAuthority authority : authorities) {
 					String role = authority.getAuthority();
+					if ("ROLE_ADMIN".equals(role)) {
+						return ACCESS_GRANTED;
+					}
 					if (service.equals(role)) {
 						return ACCESS_GRANTED;
 					}
