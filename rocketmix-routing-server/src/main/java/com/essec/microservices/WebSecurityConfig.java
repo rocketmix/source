@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -13,7 +14,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
@@ -41,14 +41,23 @@ import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.expression.WebExpressionVoter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
+import com.netflix.appinfo.InstanceInfo;
+import com.netflix.discovery.EurekaClient;
+import com.netflix.discovery.shared.Application;
+
 @Configuration
 @EnableWebSecurity
 @EnableScheduling
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+	private static final List<String> IGNORED_APPLICATION_NAMES = Arrays.asList("ZUULSERVER", "EUREKASERVER");
+	
 	@Autowired
 	private ResourceLoader resourceLoader;
 
+	@Autowired
+	private EurekaClient eurekaClient;
+	
 	Logger logger = LoggerFactory.getLogger(WebSecurityConfig.class);
 
 	@Bean
@@ -193,6 +202,42 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		web.ignoring().antMatchers("/admin", "/admin/**"); // Let access to management server (authentication is delegated to authentication server 
 		web.ignoring().antMatchers("/catalog", "/catalog/swagger-ui/index.html");  // Let access to Swagger HTML resources
 		web.ignoring().antMatchers("/openapi/default.json"); // Let access to defauit api definition
+		web.ignoring().requestMatchers(getRegisteredServiceRequestMatcher()); // Let access to all API (authentication managed by API itself
+	}
+	
+	
+	@Bean
+	public RequestMatcher getRegisteredServiceRequestMatcher() {
+		return new RequestMatcher() {
+			
+			@Override
+			public boolean matches(HttpServletRequest request) {
+				String requestURI = request.getRequestURI();
+				if (!requestURI.contains("/services/")) {
+					return false;
+				}
+				List<Application> applications = eurekaClient.getApplications().getRegisteredApplications();
+				for (Application application : applications) {
+					try {
+						List<InstanceInfo> applicationsInstances = application.getInstances();
+						for (InstanceInfo applicationsInstance : applicationsInstances) {
+							String name = applicationsInstance.getAppName();
+							if (IGNORED_APPLICATION_NAMES.contains(name)) {
+								continue;
+							}
+							if (requestURI.startsWith("/" + applicationsInstance.getVIPAddress() + "/services/")) {
+								return true;
+							}
+						}
+					} catch (Exception e1) {
+						e1.printStackTrace();
+						continue;
+					}
+				}
+				return false;
+			}
+		};
+		
 	}
 	
 
