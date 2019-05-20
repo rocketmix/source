@@ -4,6 +4,10 @@ spring:
 
 server:
   port: ${port:8080}
+  servlet:
+    session:
+      cookie:
+        name: ROCKETMIX_ROUTER_SESSIONID
   
   
 management:
