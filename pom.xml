@@ -118,6 +118,7 @@
 				<configuration>
 					<addResources>true</addResources>
 					<executable>true</executable>
+					<embeddedLaunchScript>${project.basedir}/../rocketmix-installer/src/main/resources/template/install.sh</embeddedLaunchScript>
 					<layout>WAR</layout>
 				</configuration>
 				<executions>
