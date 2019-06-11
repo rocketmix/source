@@ -266,6 +266,44 @@ run() {
   return "$result"
 }
 
+# CUSTOM MODIFICATION TO SPRING STANDARD SCRIPT
+service_template="$(cat <<-EOF
+[Unit]
+Description={{servicename}}
+Requires=network.target
+After=network.target
+
+# If needed, enable this option to reboot immediately in process failure
+# OnFailure=systemd-reboot.service
+
+[Service]
+Type=simple
+User={{username}}
+Group={{groupname}}
+ExecStart={{jarfile}}
+SuccessExitStatus=143
+RemainAfterExit=no
+Restart=on-failure
+RestartSec=10s
+TimeoutStartSec=0
+
+[Install]
+WantedBy=multi-user.target
+EOF
+)"
+
+install() {
+	servicename=$(basename $jarfile | sed 's/-[0-9]\+.*//' | sed 's/\.jar//I' | sed 's/\.war//I')
+	service_template=${service_template/\{\{servicename\}\}/$servicename}
+	service_template=${service_template/\{\{jarfile\}\}/$jarfile}
+	username=$(ls -ld "$jarfile" | awk '{print $3}')
+	groupname=$(ls -ld "$jarfile" | awk '{print $4}')
+	service_template=${service_template/\{\{username\}\}/$username}
+	service_template=${service_template/\{\{groupname\}\}/$groupname}
+	echo "$service_template"
+}
+
+
 # Call the appropriate action function
 case "$action" in
 start)
@@ -282,8 +320,10 @@ status)
   status "$@"; exit $?;;
 run)
   run "$@"; exit $?;;
+install)
+  install "$@"; exit $?;;
 *)
-  echo "Usage: $0 {start|stop|force-stop|restart|force-reload|status|run}"; exit 1;
+  echo "Usage: $0 {start|stop|force-stop|restart|force-reload|status|run|install}"; exit 1;
 esac
 
 exit 0
