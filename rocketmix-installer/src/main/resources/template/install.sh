@@ -300,7 +300,11 @@ install() {
 	groupname=$(ls -ld "$jarfile" | awk '{print $4}')
 	service_template=${service_template/\{\{username\}\}/$username}
 	service_template=${service_template/\{\{groupname\}\}/$groupname}
-	echo "$service_template"
+	# Make sure only root can run this script
+  [[ $EUID -ne 0 ]] && { echoRed "You must be root to install this program"; return 1 }
+  # Check if service already installed
+  [[ $(systemctl is-enabled $servicename 2>&1) && $? -eq 0 ]] && { echoGreen "Service $servicename already installed"; return 0 } 
+  echo "$service_template"
 }
 
 
