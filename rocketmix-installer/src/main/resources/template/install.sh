@@ -269,7 +269,7 @@ run() {
 # CUSTOM MODIFICATION TO SPRING STANDARD SCRIPT
 service_template="$(cat <<-EOF
 [Unit]
-Description={{servicename}}
+Description={{service_name}}
 Requires=network.target
 After=network.target
 
@@ -280,7 +280,9 @@ After=network.target
 Type=simple
 User={{username}}
 Group={{groupname}}
-ExecStart={{jarfile}}
+ExecStart={{jarfile}} start
+ExecStop={{jarfile}} stop
+ExecReload={{jarfile}} restart
 SuccessExitStatus=143
 RemainAfterExit=no
 Restart=on-failure
@@ -293,18 +295,42 @@ EOF
 )"
 
 install() {
-	servicename=$(basename $jarfile | sed 's/-[0-9]\+.*//' | sed 's/\.jar//I' | sed 's/\.war//I')
-	service_template=${service_template/\{\{servicename\}\}/$servicename}
-	service_template=${service_template/\{\{jarfile\}\}/$jarfile}
-	username=$(ls -ld "$jarfile" | awk '{print $3}')
-	groupname=$(ls -ld "$jarfile" | awk '{print $4}')
-	service_template=${service_template/\{\{username\}\}/$username}
-	service_template=${service_template/\{\{groupname\}\}/$groupname}
+  working_dir=$(dirname "$jarfile")
+  #service_name=$(basename $jarfile | sed 's/-[0-9]\+.*//' | sed 's/\.jar//I' | sed 's/\.war//I')
+  service_name="$(basename "${jarfile%.*}")"
+  service_template=${service_template/\{\{service_name\}\}/$service_name}
+  service_template=${service_template/\{\{jarfile\}\}/$jarfile}
+  username=$(ls -ld "$jarfile" | awk '{print $3}')
+  groupname=$(ls -ld "$jarfile" | awk '{print $4}')
+  service_template=${service_template/\{\{username\}\}/$username}
+  service_template=${service_template/\{\{groupname\}\}/$groupname}
 	# Make sure only root can run this script
   [[ $EUID -ne 0 ]] && { echoRed "You must be root to install this program"; return 1; }
   # Check if service already installed
-  [[ $(systemctl is-enabled $servicename 2>&1) && $? -eq 0 ]] && { echoGreen "Service $servicename already installed"; return 0; } 
-  echo "$service_template"
+  [[ $(systemctl is-enabled $service_name 2>&1) && $? -eq 0 ]] && { echoGreen "Service $service_name already installed"; return 0; } 
+  # Generate service file
+  service_file="$working_dir/$service_name.service"
+  printf "$service_template" > "$service_file" 
+  # Install service
+  systemctl enable $service_file 2>&1
+  [[ $? -ne 0 ]]  && { echoRed "Installation failed"; return 1; }
+  # Start service
+  systemctl start $service_name 2>&1
+  [[ $? -ne 0 ]]  && { echoYellow "Installation succeeded but failed to start service"; return 1; }
+  systemctl status $service_name
+  echoGreen "Installation done"
+  # Stop service
+  systemctl stop $service_name 2>&1
+  [[ $? -ne 0 ]]  && { echoRed "Failed to stop service"; return 1; }
+  systemctl status $service_name
+  echoGreen "Service stopped"
+  # Remove service
+  systemctl disable $service_name 2>&1
+  [[ $? -ne 0 ]]  && { echoRed "Failed to uninstall service"; return 1; }
+  echoGreen "Service uninstalled"
+	return 0
+fi
+
 }
 
 
