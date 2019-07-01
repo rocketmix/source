@@ -329,8 +329,6 @@ install() {
   [[ $? -ne 0 ]]  && { echoRed "Failed to uninstall service"; return 1; }
   echoGreen "Service uninstalled"
 	return 0
-fi
-
 }
 
 
