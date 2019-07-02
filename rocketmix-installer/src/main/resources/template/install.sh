@@ -298,12 +298,12 @@ install() {
   working_dir=$(dirname "$jarfile")
   #service_name=$(basename $jarfile | sed 's/-[0-9]\+.*//' | sed 's/\.jar//I' | sed 's/\.war//I')
   service_name="$(basename "${jarfile%.*}")"
-  service_template=${service_template/\{\{service_name\}\}/$service_name}
-  service_template=${service_template/\{\{jarfile\}\}/$jarfile}
+  service_template=${service_template//\{\{service_name\}\}/$service_name}
+  service_template=${service_template//\{\{jarfile\}\}/$jarfile}
   username=$(ls -ld "$jarfile" | awk '{print $3}')
   groupname=$(ls -ld "$jarfile" | awk '{print $4}')
-  service_template=${service_template/\{\{username\}\}/$username}
-  service_template=${service_template/\{\{groupname\}\}/$groupname}
+  service_template=${service_template//\{\{username\}\}/$username}
+  service_template=${service_template//\{\{groupname\}\}/$groupname}
 	# Make sure only root can run this script
   [[ $EUID -ne 0 ]] && { echoRed "You must be root to install this program"; return 1; }
   # Check if service already installed
@@ -311,6 +311,7 @@ install() {
   # Generate service file
   service_file="$working_dir/$service_name.service"
   printf "$service_template" > "$service_file" 
+  chown username:groupname $service_file
   # Install service
   systemctl enable $service_file 2>&1
   [[ $? -ne 0 ]]  && { echoRed "Installation failed"; return 1; }
