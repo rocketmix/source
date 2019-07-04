@@ -317,9 +317,9 @@ install() {
   [[ $? -ne 0 ]]  && { echoRed "Installation failed"; return 1; }
   # Start service
   systemctl start $service_name 2>&1
-  [[ $? -ne 0 ]]  && { echoYellow "Installation succeeded but failed to start service"; return 1; }
+  [[ $? -ne 0 ]]  && { echoYellow "Service successfully installed but failed to start service"; return 1; }
   systemctl status $service_name
-  echoGreen "Installation done"
+  echoGreen "Service successfully installed"
   # Stop service
   systemctl stop $service_name 2>&1
   [[ $? -ne 0 ]]  && { echoRed "Failed to stop service"; return 1; }
@@ -330,6 +330,48 @@ install() {
   [[ $? -ne 0 ]]  && { echoRed "Failed to uninstall service"; return 1; }
   echoGreen "Service uninstalled"
 	return 0
+}
+
+uninstall() {
+  working_dir=$(dirname "$jarfile")
+  #service_name=$(basename $jarfile | sed 's/-[0-9]\+.*//' | sed 's/\.jar//I' | sed 's/\.war//I')
+  service_name="$(basename "${jarfile%.*}")"
+  service_template=${service_template//\{\{service_name\}\}/$service_name}
+  service_template=${service_template//\{\{jarfile\}\}/$jarfile}
+  username=$(ls -ld "$jarfile" | awk '{print $3}')
+  groupname=$(ls -ld "$jarfile" | awk '{print $4}')
+  service_template=${service_template//\{\{username\}\}/$username}
+  service_template=${service_template//\{\{groupname\}\}/$groupname}
+	# Make sure only root can run this script
+  [[ $EUID -ne 0 ]] && { echoRed "You must be root to install this program"; return 1; }
+  # Check if service already installed
+  [[ $(systemctl is-enabled $service_name 2>&1) && $? -ne 0 ]] && { echoYellow "Service $service_name not found"; return 1; } 
+  # Uninstall service
+  systemctl disable $service_file 2>&1
+  [[ $? -ne 0 ]]  && { echoRed "Uninstallation failed"; return 1; }
+  echoGreen "Service successfully uninstalled"
+	return 0
+}
+
+do_stop_systemctl() {
+working_dir=$(dirname "$jarfile")
+  #service_name=$(basename $jarfile | sed 's/-[0-9]\+.*//' | sed 's/\.jar//I' | sed 's/\.war//I')
+  service_name="$(basename "${jarfile%.*}")"
+  service_template=${service_template//\{\{service_name\}\}/$service_name}
+  service_template=${service_template//\{\{jarfile\}\}/$jarfile}
+  username=$(ls -ld "$jarfile" | awk '{print $3}')
+  groupname=$(ls -ld "$jarfile" | awk '{print $4}')
+  service_template=${service_template//\{\{username\}\}/$username}
+  service_template=${service_template//\{\{groupname\}\}/$groupname}
+  # Check if service already installed
+  [[ $(systemctl is-enabled $service_name 2>&1) && $? -ne 0 ]] && { return 0; } 
+	# Make sure only root can run this script
+  [[ $EUID -ne 0 ]] && { echoRed "You must be root to install this program"; return 2; }
+  # Stop service
+  systemctl stop $service_name 2>&1
+  [[ $? -ne 0 ]]  && { echoRed "Failed to stop service"; return 1; }
+  systemctl status $service_name
+  echoGreen "Service stopped"
 }
 
 
@@ -351,8 +393,10 @@ run)
   run "$@"; exit $?;;
 install)
   install "$@"; exit $?;;
+uninstall)
+  uninstall "$@"; exit $?;;
 *)
-  echo "Usage: $0 {start|stop|force-stop|restart|force-reload|status|run|install}"; exit 1;
+  echo "Usage: $0 {start|stop|force-stop|restart|force-reload|status|run|install|uninstall}"; exit 1;
 esac
 
 exit 0
