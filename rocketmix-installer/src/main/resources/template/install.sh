@@ -146,6 +146,9 @@ arguments=(-Dsun.misc.URLClassPath.disableJarChecking=true $JAVA_OPTS -jar "$jar
 
 # Action functions
 start() {
+  # Custom line to get service status : begin
+  if is_installed; then { do_service_start; return 0; }; fi; 
+  # Custom line to get service status : end
   if [[ -f "$pid_file" ]]; then
     pid=$(cat "$pid_file")
     isRunning "$pid" && { echoYellow "Already running [$pid]"; return 0; }
@@ -196,6 +199,9 @@ do_start() {
 }
 
 stop() {
+  # Custom line to get service status : begin
+  if is_installed; then { do_service_stop; return 0; }; fi; 
+  # Custom line to get service status : end
   working_dir=$(dirname "$jarfile")
   pushd "$working_dir" > /dev/null
   [[ -f $pid_file ]] || { echoYellow "Not running (pidfile not found)"; return 0; }
@@ -216,6 +222,9 @@ do_stop() {
 }
 
 force_stop() {
+  # Custom line to get service status : begin
+  if is_installed; then { do_service_force_stop; return 0; }; fi; 
+  # Custom line to get service status : end
   [[ -f $pid_file ]] || { echoYellow "Not running (pidfile not found)"; return 0; }
   pid=$(cat "$pid_file")
   isRunning "$pid" || { echoYellow "Not running (process ${pid}). Removing stale pid file."; rm -f "$pid_file"; return 0; }
@@ -234,10 +243,16 @@ do_force_stop() {
 }
 
 restart() {
+  # Custom line to get service status : begin
+  if is_installed; then { do_service_restart; return 0; }; fi; 
+  # Custom line to get service status : end
   stop && start
 }
 
 force_reload() {
+  # Custom line to get service status : begin
+  if is_installed; then { do_service_force_reload; return 0; }; fi; 
+  # Custom line to get service status : end
   working_dir=$(dirname "$jarfile")
   pushd "$working_dir" > /dev/null
   [[ -f $pid_file ]] || { echoRed "Not running (pidfile not found)"; return 7; }
@@ -249,6 +264,9 @@ force_reload() {
 }
 
 status() {
+  # Custom line to get service status : begin
+  if is_installed; then { do_service_status; return 0; }; fi; 
+  # Custom line to get service status : end
   working_dir=$(dirname "$jarfile")
   pushd "$working_dir" > /dev/null
   [[ -f "$pid_file" ]] || { echoRed "Not running"; return 3; }
@@ -293,7 +311,13 @@ EOF
 )"
 
 service_config_template="$(cat <<-EOF
-JAVA_OPTS="-server -XX:+AlwaysPreTouch -XX:+UseG1GC -XX:+ScavengeBeforeFullGC -XX:+DisableExplicitGC -Xms1024M -Xmx1024M -XX:+ExitOnOutOfMemoryError"
+JAVA_OPTS="-server -Dspring.config.additional-location=file:./{{service_name}}.properties-XX:+AlwaysPreTouch -XX:+UseG1GC -XX:+ScavengeBeforeFullGC -XX:+DisableExplicitGC -Xms1024M -Xmx1024M -XX:+ExitOnOutOfMemoryError"
+EOF
+)"
+
+service_additional_properties_template="$(cat <<-EOF
+port=8085
+managementServerURL=http://localhost:8761
 EOF
 )"
 
@@ -309,7 +333,7 @@ install() {
   service_template=${service_template//\{\{username\}\}/$username}
   service_template=${service_template//\{\{groupname\}\}/$groupname}
 	# Make sure only root can run this script
-  [[ $EUID -ne 0 ]] && { echoRed "You must be root to install this program"; return 1; }
+  [[ $EUID -ne 0 ]] && { echoRed "You must be root to run this command"; return 1; }
   # Check if service already installed
   [[ $(systemctl is-enabled $service_name 2>&1) && $? -eq 0 ]] && { echoGreen "Service $service_name already installed"; return 0; } 
   # Generate service file
@@ -317,12 +341,20 @@ install() {
   [[ -f $service_file ]] || { printf "$service_template" > "$service_file"; }
   [[ -f $service_file ]] && { chown $username:$groupname $service_file; }
   # Generate spring boot config file if needed
+  service_config_template=${service_config_template//\{\{service_name\}\}/$service_name}
   service_config_file_shortname="$working_dir/$service_shortname.conf"
   service_config_file_fullname="$working_dir/$service_name.conf"
   [[ -f $service_config_file_shortname ]] || { printf "$service_config_template" > "$service_config_file_shortname"; echoGreen "Spring Boot config file $service_config_file_shortname generated"; }
   [[ -f $service_config_file_fullname ]] || { ln -s $service_config_file_shortname $service_config_file_fullname; echoGreen "Symboloc link $service_config_file_fullname generated"; }
   [[ -f $service_config_file_shortname ]] && { chown $username:$groupname $service_config_file_shortname; }
   [[ -h $service_config_file_fullname ]] && { chown -h $username:$groupname $service_config_file_fullname; }
+  # Generate spring boot additional properties file
+  service_additional_properties_file_shortname="$working_dir/$service_shortname.properties"
+  service_additional_properties_file_fullname="$working_dir/$service_name.properties"
+  [[ -f $service_additional_properties_file_shortname ]] || { printf "$service_additional_properties_template" > "$service_additional_properties_file_shortname"; echoGreen "Spring Boot properties file $service_additional_properties_file_shortname generated"; }
+  [[ -f $service_additional_properties_file_fullname ]] || { ln -s $service_additional_properties_file_shortname $service_additional_properties_file_fullname; echoGreen "Symboloc link $service_additional_properties_file_fullname generated"; }
+  [[ -f $service_additional_properties_file_shortname ]] && { chown $username:$groupname $service_additional_properties_file_shortname; }
+  [[ -h $service_additional_properties_file_fullname ]] && { chown -h $username:$groupname $service_additional_properties_file_fullname; }
   # Install service
   systemctl enable $service_file 2>&1
   [[ $? -ne 0 ]]  && { echoRed "Installation failed"; return 1; }
@@ -331,15 +363,6 @@ install() {
   [[ $? -ne 0 ]]  && { echoYellow "Service successfully installed but failed to start service"; return 1; }
   systemctl status $service_name
   echoGreen "Service successfully installed"
-  # Stop service
-  #systemctl stop $service_name 2>&1
-  #[[ $? -ne 0 ]]  && { echoRed "Failed to stop service"; return 1; }
-  #systemctl status $service_name
-  #echoGreen "Service stopped"
-  # Remove service
-  #systemctl disable $service_name 2>&1
-  #[[ $? -ne 0 ]]  && { echoRed "Failed to uninstall service"; return 1; }
-  #echoGreen "Service uninstalled"
 	return 0
 }
 
@@ -354,7 +377,7 @@ uninstall() {
   service_template=${service_template//\{\{username\}\}/$username}
   service_template=${service_template//\{\{groupname\}\}/$groupname}
 	# Make sure only root can run this script
-  [[ $EUID -ne 0 ]] && { echoRed "You must be root to install this program"; return 1; }
+  [[ $EUID -ne 0 ]] && { echoRed "You must be root to run this command"; return 1; }
   # Check if service already installed
   [[ $(systemctl is-enabled $service_name 2>&1) && $? -ne 0 ]] && { echoYellow "Service $service_name not found"; return 1; } 
   # Stop service
@@ -367,6 +390,78 @@ uninstall() {
 	return 0
 }
 
+is_installed() {
+  # Check is deployed as Linux service
+  working_dir=$(dirname "$jarfile")
+  service_shortname=$(basename $jarfile | sed 's/-[0-9]\+.*//' | sed 's/\.jar//I' | sed 's/\.war//I')
+  service_name="$(basename "${jarfile%.*}")"
+  [[ $(systemctl is-enabled $service_name 2>&1) && $? -eq 0 ]] && { return 0;} # 0 = true 
+  return 1; # 1 = false
+}
+
+do_service_status() {
+  # Retreive Linux service status
+  working_dir=$(dirname "$jarfile")
+  service_shortname=$(basename $jarfile | sed 's/-[0-9]\+.*//' | sed 's/\.jar//I' | sed 's/\.war//I')
+  service_name="$(basename "${jarfile%.*}")"
+  systemctl status $service_name
+}
+
+do_service_start() {
+  # Start Linux service 
+  working_dir=$(dirname "$jarfile")
+  service_shortname=$(basename $jarfile | sed 's/-[0-9]\+.*//' | sed 's/\.jar//I' | sed 's/\.war//I')
+  service_name="$(basename "${jarfile%.*}")"
+  # Make sure only root can run this script
+  [[ $EUID -ne 0 ]] && { echoRed "You must be root to run this command"; return 1; }
+  systemctl start $service_name
+  [[ $? -ne 0 ]]  && { echoRed "Start failed"; return 1; }
+  echoGreen "Service successfully started"
+  return 0;
+}
+
+do_service_stop() {
+  # Stop Linux service 
+  working_dir=$(dirname "$jarfile")
+  service_shortname=$(basename $jarfile | sed 's/-[0-9]\+.*//' | sed 's/\.jar//I' | sed 's/\.war//I')
+  service_name="$(basename "${jarfile%.*}")"
+  # Make sure only root can run this script
+  [[ $EUID -ne 0 ]] && { echoRed "You must be root to run this command"; return 1; }
+  systemctl stop $service_name
+  [[ $? -ne 0 ]]  && { echoRed "Stop failed"; return 1; }
+  echoGreen "Service successfully stopped"
+  return 0;
+}
+
+do_service_restart() {
+  # Restart Linux service 
+  working_dir=$(dirname "$jarfile")
+  service_shortname=$(basename $jarfile | sed 's/-[0-9]\+.*//' | sed 's/\.jar//I' | sed 's/\.war//I')
+  service_name="$(basename "${jarfile%.*}")"
+  # Make sure only root can run this script
+  [[ $EUID -ne 0 ]] && { echoRed "You must be root to run this command"; return 1; }
+  systemctl restart $service_name
+  [[ $? -ne 0 ]]  && { echoRed "Restart failed"; return 1; }
+  echoGreen "Service successfully restarted"
+  return 0;
+}
+
+do_service_force_stop() {
+   # Kill Linux service 
+  working_dir=$(dirname "$jarfile")
+  service_shortname=$(basename $jarfile | sed 's/-[0-9]\+.*//' | sed 's/\.jar//I' | sed 's/\.war//I')
+  service_name="$(basename "${jarfile%.*}")"
+  # Make sure only root can run this script
+  [[ $EUID -ne 0 ]] && { echoRed "You must be root to run this command"; return 1; }
+  systemctl kill $service_name
+  [[ $? -ne 0 ]]  && { echoRed "Stop failed"; return 1; }
+  echoGreen "Service successfully stopped"
+  return 0;
+}
+
+do_service_force_reload() {
+  do_service_force_stop && do_service_restart
+}
 
 
 # Call the appropriate action function
