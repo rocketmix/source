@@ -1,22 +1,22 @@
 #!/bin/bash
 #
-#    .   ____          _            __ _ _
-#   /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
-#  ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
-#   \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
-#    '  |____| .__|_| |_|_| |_\__, | / / / /
-#   =========|_|==============|___/=/_/_/_/
-#   :: Spring Boot Startup Script ::
+#██████╗  ██████╗  ██████╗██╗  ██╗███████╗████████╗███╗   ███╗██╗██╗  ██╗
+#██╔══██╗██╔═══██╗██╔════╝██║ ██╔╝██╔════╝╚══██╔══╝████╗ ████║██║╚██╗██╔╝
+#██████╔╝██║   ██║██║     █████╔╝ █████╗     ██║   ██╔████╔██║██║ ╚███╔╝ 
+#██╔══██╗██║   ██║██║     ██╔═██╗ ██╔══╝     ██║   ██║╚██╔╝██║██║ ██╔██╗ 
+#██║  ██║╚██████╔╝╚██████╗██║  ██╗███████╗   ██║   ██║ ╚═╝ ██║██║██╔╝ ██╗
+#╚═╝  ╚═╝ ╚═════╝  ╚═════╝╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═╝     ╚═╝╚═╝╚═╝  ╚═╝
+#   :: RocketMiX Startup Script ::
 #
 
 ### BEGIN INIT INFO
-# Provides:          rocketmix-routing-server
+# Provides:          rocketmix
 # Required-Start:    $remote_fs $syslog $network
 # Required-Stop:     $remote_fs $syslog $network
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: RocketMiX Routing server
-# Description:       A repackaged version of Spring Cloud Zuul server combined with Swagger UI and a portal web page
+# Short-Description: RocketMiX packaged service
+# Description:       RocketMiX is a microservice plateform base on Spring Boot Zuul, Eureka, Ribbon and Swagger UI parts
 # chkconfig:         2345 99 01
 ### END INIT INFO
 

@@ -10,7 +10,6 @@ import de.codecentric.boot.admin.server.config.EnableAdminServer;
 @EnableEurekaServer
 @EnableAdminServer
 @EnableDiscoveryClient
-@EnableInstaller
 @SpringBootApplication
 public class ManagementServerApplication {
 

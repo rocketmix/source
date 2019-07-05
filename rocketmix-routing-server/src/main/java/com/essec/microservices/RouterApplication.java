@@ -11,7 +11,6 @@ import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 @EnableZuulProxy
 @EnableCircuitBreaker
 @EnableHystrixDashboard
-@EnableInstaller
 @SpringBootApplication
 public class RouterApplication {
 

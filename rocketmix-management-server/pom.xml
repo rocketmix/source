@@ -30,13 +30,6 @@
 			<version>2.0.0</version>
 		</dependency>
 		<!-- ADMIN SERVER (end) -->
-		<!-- LINUX SERVICE INSTALLER (start) -->
-		<dependency>
-			<groupId>io.github.rocketmix</groupId>
-			<artifactId>rocketmix-installer</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-		<!-- LINUX SERVICE INSTALLER (start) -->
 		<!-- SECURITY (start) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

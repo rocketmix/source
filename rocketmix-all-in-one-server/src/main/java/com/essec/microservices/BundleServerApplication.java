@@ -15,7 +15,6 @@ import de.codecentric.boot.admin.server.config.EnableAdminServer;
 @EnableZuulProxy
 @EnableCircuitBreaker
 @EnableHystrixDashboard
-@EnableInstaller
 @EnableEurekaServer
 @EnableAdminServer
 @SpringBootApplication
