@@ -280,9 +280,7 @@ After=network.target
 Type=simple
 User={{username}}
 Group={{groupname}}
-ExecStart={{jarfile}} start
-ExecStop={{jarfile}} stop
-ExecReload={{jarfile}} restart
+ExecStart={{jarfile}} run
 SuccessExitStatus=143
 RemainAfterExit=no
 Restart=on-failure
@@ -294,9 +292,15 @@ WantedBy=multi-user.target
 EOF
 )"
 
+service_config_template="$(cat <<-EOF
+JAVA_OPTS="-server -XX:+AlwaysPreTouch -XX:+UseG1GC -XX:+ScavengeBeforeFullGC -XX:+DisableExplicitGC -Xms1024M -Xmx1024M -XX:+ExitOnOutOfMemoryError"
+EOF
+)"
+
+
 install() {
   working_dir=$(dirname "$jarfile")
-  #service_name=$(basename $jarfile | sed 's/-[0-9]\+.*//' | sed 's/\.jar//I' | sed 's/\.war//I')
+  service_shortname=$(basename $jarfile | sed 's/-[0-9]\+.*//' | sed 's/\.jar//I' | sed 's/\.war//I')
   service_name="$(basename "${jarfile%.*}")"
   service_template=${service_template//\{\{service_name\}\}/$service_name}
   service_template=${service_template//\{\{jarfile\}\}/$jarfile}
@@ -310,8 +314,15 @@ install() {
   [[ $(systemctl is-enabled $service_name 2>&1) && $? -eq 0 ]] && { echoGreen "Service $service_name already installed"; return 0; } 
   # Generate service file
   service_file="$working_dir/$service_name.service"
-  printf "$service_template" > "$service_file" 
-  chown username:groupname $service_file
+  [[ -f $service_file ]] || { printf "$service_template" > "$service_file"; }
+  [[ -f $service_file ]] && { chown $username:$groupname $service_file; }
+  # Generate spring boot config file if needed
+  service_config_file_shortname="$working_dir/$service_shortname.conf"
+  service_config_file_fullname="$working_dir/$service_name.conf"
+  [[ -f $service_config_file_shortname ]] || { printf "$service_config_template" > "$service_config_file_shortname"; echoGreen "Spring Boot config file $service_config_file_shortname generated"; }
+  [[ -f $service_config_file_fullname ]] || { ln -s $service_config_file_shortname $service_config_file_fullname; echoGreen "Symboloc link $service_config_file_fullname generated"; }
+  [[ -f $service_config_file_shortname ]] && { chown $username:$groupname $service_config_file_shortname; }
+  [[ -h $service_config_file_fullname ]] && { chown -h $username:$groupname $service_config_file_fullname; }
   # Install service
   systemctl enable $service_file 2>&1
   [[ $? -ne 0 ]]  && { echoRed "Installation failed"; return 1; }
@@ -321,20 +332,20 @@ install() {
   systemctl status $service_name
   echoGreen "Service successfully installed"
   # Stop service
-  systemctl stop $service_name 2>&1
-  [[ $? -ne 0 ]]  && { echoRed "Failed to stop service"; return 1; }
-  systemctl status $service_name
-  echoGreen "Service stopped"
+  #systemctl stop $service_name 2>&1
+  #[[ $? -ne 0 ]]  && { echoRed "Failed to stop service"; return 1; }
+  #systemctl status $service_name
+  #echoGreen "Service stopped"
   # Remove service
-  systemctl disable $service_name 2>&1
-  [[ $? -ne 0 ]]  && { echoRed "Failed to uninstall service"; return 1; }
-  echoGreen "Service uninstalled"
+  #systemctl disable $service_name 2>&1
+  #[[ $? -ne 0 ]]  && { echoRed "Failed to uninstall service"; return 1; }
+  #echoGreen "Service uninstalled"
 	return 0
 }
 
 uninstall() {
   working_dir=$(dirname "$jarfile")
-  #service_name=$(basename $jarfile | sed 's/-[0-9]\+.*//' | sed 's/\.jar//I' | sed 's/\.war//I')
+  service_shortname=$(basename $jarfile | sed 's/-[0-9]\+.*//' | sed 's/\.jar//I' | sed 's/\.war//I')
   service_name="$(basename "${jarfile%.*}")"
   service_template=${service_template//\{\{service_name\}\}/$service_name}
   service_template=${service_template//\{\{jarfile\}\}/$jarfile}
@@ -346,33 +357,16 @@ uninstall() {
   [[ $EUID -ne 0 ]] && { echoRed "You must be root to install this program"; return 1; }
   # Check if service already installed
   [[ $(systemctl is-enabled $service_name 2>&1) && $? -ne 0 ]] && { echoYellow "Service $service_name not found"; return 1; } 
+  # Stop service
+  systemctl stop $service_name 2>&1
+  [[ $? -ne 0 ]]  && { echoYellow "Failed to stop service. Maybe already stopped ?"; }
   # Uninstall service
-  systemctl disable $service_file 2>&1
+  systemctl disable $service_name 2>&1
   [[ $? -ne 0 ]]  && { echoRed "Uninstallation failed"; return 1; }
   echoGreen "Service successfully uninstalled"
 	return 0
 }
 
-do_stop_systemctl() {
-working_dir=$(dirname "$jarfile")
-  #service_name=$(basename $jarfile | sed 's/-[0-9]\+.*//' | sed 's/\.jar//I' | sed 's/\.war//I')
-  service_name="$(basename "${jarfile%.*}")"
-  service_template=${service_template//\{\{service_name\}\}/$service_name}
-  service_template=${service_template//\{\{jarfile\}\}/$jarfile}
-  username=$(ls -ld "$jarfile" | awk '{print $3}')
-  groupname=$(ls -ld "$jarfile" | awk '{print $4}')
-  service_template=${service_template//\{\{username\}\}/$username}
-  service_template=${service_template//\{\{groupname\}\}/$groupname}
-  # Check if service already installed
-  [[ $(systemctl is-enabled $service_name 2>&1) && $? -ne 0 ]] && { return 0; } 
-	# Make sure only root can run this script
-  [[ $EUID -ne 0 ]] && { echoRed "You must be root to install this program"; return 2; }
-  # Stop service
-  systemctl stop $service_name 2>&1
-  [[ $? -ne 0 ]]  && { echoRed "Failed to stop service"; return 1; }
-  systemctl status $service_name
-  echoGreen "Service stopped"
-}
 
 
 # Call the appropriate action function
