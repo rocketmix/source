@@ -390,6 +390,14 @@ uninstall() {
 	return 0
 }
 
+do_extract_config_files() {
+  unzip -j "$jarfile" "WEB-INF/classes/application.yml"
+  if [ $? -eq 0 ];
+    then { echoGreen "Extracted application.yml that you can customize"; }; 
+    else { echoYellow "Failed to extract application.yml Spring config file from $jarfile"; };
+  fi;  
+}
+
 is_installed() {
   # Check is deployed as Linux service
   working_dir=$(dirname "$jarfile")
@@ -484,8 +492,10 @@ install)
   install "$@"; exit $?;;
 uninstall)
   uninstall "$@"; exit $?;;
+config)
+  do_extract_config_files "$@"; exit $?;; 
 *)
-  echo "Usage: $0 {start|stop|force-stop|restart|force-reload|status|run|install|uninstall}"; exit 1;
+  echo "Usage: $0 {start|stop|force-stop|restart|force-reload|status|run|install|uninstall|config}"; exit 1;
 esac
 
 exit 0
