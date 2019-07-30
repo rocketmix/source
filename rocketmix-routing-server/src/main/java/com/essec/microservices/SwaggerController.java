@@ -32,7 +32,7 @@ import com.netflix.discovery.EurekaClient;
 import com.netflix.discovery.shared.Application;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/catalog")
 public class SwaggerController {
 
 	private static final List<String> IGNORED_APPLICATION_NAMES = Arrays.asList("ZUULSERVER", "EUREKASERVER");
@@ -47,7 +47,7 @@ public class SwaggerController {
 	private EurekaClient eurekaClient;
 
 	
-	@RequestMapping(value = "/catalog/swagger-ui/index.html", method = RequestMethod.GET)
+	@RequestMapping(value = "/swagger-ui/index.html", method = RequestMethod.GET)
 	public @ResponseBody byte[] index() throws IOException {
 		ClassPathResource htmlResource = new ClassPathResource("/META-INF/resources/webjars/swagger-ui/3.19.5/index.html");
 		InputStream htmlStream = htmlResource.getInputStream();
@@ -61,7 +61,7 @@ public class SwaggerController {
 	}
 
 	
-	@RequestMapping(value = "/catalog/swagger-ui/swagger-ui.css", method = RequestMethod.GET)
+	@RequestMapping(value = "/swagger-ui/swagger-ui.css", method = RequestMethod.GET)
 	public @ResponseBody byte[] css() throws IOException {
 		ClassPathResource classPathResource = new ClassPathResource("/META-INF/resources/webjars/swagger-ui/3.19.5/swagger-ui.css");
 		InputStream inputStream = classPathResource.getInputStream();
@@ -125,7 +125,7 @@ public class SwaggerController {
 		return builder.toString();
 	}
 
-	@RequestMapping(value = "/catalog/swagger-docs/proxy", method = RequestMethod.GET)
+	@RequestMapping(value = "/swagger-docs/proxy", method = RequestMethod.GET)
 	public @ResponseBody byte[] proxy(@RequestParam String url, @RequestParam String vipaddress) throws IOException {
 		String currentServerURL = getCurrentRequest().getRequestURL().toString();
 		currentServerURL = fixReverseProxyProtocol(currentServerURL);

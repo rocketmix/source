@@ -8,8 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class BundleServerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(RouterApplication.class, args);
-		SpringApplication.run(ManagementServerApplication.class, args);
+		SpringApplication.run(BundleServerApplication.class, args);
 	}
 
 
