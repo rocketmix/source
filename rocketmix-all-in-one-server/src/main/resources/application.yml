@@ -1,10 +1,85 @@
+spring:
+  application:
+    name: AllInOneServer
+  boot:
+    admin:
+      context-path: /admin
+
+
 server:
   port: ${port:8080}
+  servlet:
+    session:
+      cookie:
+        name: ROCKETMIX_ROUTER_SESSIONID
   
+  
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+        - "*"
+      cors:
+        allowed-origins:
+        - "*"  
+    jmx:
+      exposure:
+        include:
+        - "*"    
+
+
+logging:
+  level:
+    com.netflix.discovery: off # Disable Eureka exception logging when management server is unreachable 
+    org.springframework.security: debug
+    org.springframework.boot.context.config: debug
+    org.springframework.cloud.netflix.zuul.filters.post: off
+    io.micrometer: debug
+    org.elasticsearch: debug
+
+# Zuul is the router. It acts as proxy and dispatched all requests to their endpoints
+zuul:
+  ribbon-isolation-strategy: thread
+  thread-pool:
+    use-separate-thread-pools: true
+  ignoredPatterns: /admin/logout # used by AdminController to redirect user to portal main page
+  sensitive-headers: # blank value needed to keep authorization http headers
+
+
+# Ribbon acts as load balancer between microservices
+ribbon: 
+  ConnectTimeout: 3000
+  ReadTimeout: 60000 
+
+
+# Hystrix wraps calls to microservices to detect failure and redirect response to a common fallback response
+# Circuit Breaker helps Hystrix by redirecting response automatically to fallback response if defined thresholds are reached 
+# Parameters set according to : https://github.com/Netflix/Hystrix/wiki/Configuration
+hystrix.command.default.execution.isolation.strategy: THREAD # Hystrix uses a dedicated threadpool to call microservices to avoid server saturation 
+hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 60000 # Redirect to fallback if microservice doesn't answer within 60s
+hystrix.command.default.circuitBreaker.sleepWindowInMilliseconds: 180000 # Opens circuit during 3 minutes to threshold reached
+hystrix.command.default.circuitBreaker.errorThresholdPercentage: 50 # Opens circuit if 50% of request failed within a rolling window of 3 minutes 
+hystrix.command.default.metrics.rollingStats.timeInMilliseconds: 180000 # Defines a rolling window of 3 minutes
+hystrix.command.default.circuitBreaker.requestVolumeThreshold: 20 # Opens circuit if 20 requests failed within a rolling window of 3 minutes 
+
+
+
+
+
 eureka:
-  dashboard:
-    enabled: false
   client:
-    service-url:
-      defaultZone: http://127.0.0.1:8080/eureka/     
+    enabled: true
+    registerWithEureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://127.0.0.1:${server.port:8761}/eureka/
+  instance:
+    preferIpAddress: true
+    metadataMap:
+      instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+  dashboard:
+    path: /eurekawebui          
      
+     
+          

@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>rocketmix-routing-server</artifactId>
-	<name>RocketMiX Routing server</name>
+	<name>RocketMiX Routing Server</name>
 	<description>A repackaged version of Spring Cloud Zuul server combined with Swagger UI and a portal web page</description>
 	<url>https://github.com/rocketmix/rocketmix.source</url>
 	<packaging>war</packaging>

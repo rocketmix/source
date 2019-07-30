@@ -391,11 +391,12 @@ uninstall() {
 }
 
 do_extract_config_files() {
-  unzip -j "$jarfile" "WEB-INF/classes/application.yml"
-  if [ $? -eq 0 ];
-    then { echoGreen "Extracted application.yml that you can customize"; }; 
-    else { echoYellow "Failed to extract application.yml Spring config file from $jarfile"; };
-  fi;  
+  working_dir=$(dirname "$jarfile")
+  unzip -j -C "$jarfile" "WEB-INF/classes/application.yml" "WEB-INF/classes/application.properties" -d $working_dir
+  if [ $? -eq 0 || $? -eq 11 ];
+    then { echoGreen "Extracted application.yml and application.properties that you can customize"; }; 
+    else { echoYellow "Failed to extract application.yml neither application.properties Spring config file from $jarfile"; };
+  fi;
 }
 
 is_installed() {
@@ -492,10 +493,10 @@ install)
   install "$@"; exit $?;;
 uninstall)
   uninstall "$@"; exit $?;;
-config)
+configure)
   do_extract_config_files "$@"; exit $?;; 
 *)
-  echo "Usage: $0 {start|stop|force-stop|restart|force-reload|status|run|install|uninstall|config}"; exit 1;
+  echo "Usage: $0 {start|stop|force-stop|restart|force-reload|status|run|install|uninstall|configure}"; exit 1;
 esac
 
 exit 0

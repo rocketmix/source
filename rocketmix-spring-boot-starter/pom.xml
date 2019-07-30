@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>rocketmix-spring-boot-starter</artifactId>
-	<name>RocketMiX SpringBoot starter module</name>
+	<name>RocketMiX SpringBoot Starter Module</name>
 	<description>Shared configuration and tools. This project contains a custom spring boot module to facilitate new api project developpement startup process.</description>
 	<url>https://github.com/rocketmix/rocketmix.source</url>
 	<packaging>jar</packaging>
