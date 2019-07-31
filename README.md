@@ -44,40 +44,72 @@ Even if the platform is compatible with other languages, this section is written
 <dependency>
     <groupId>io.github.rocketmix</groupId>
     <artifactId>rocketmix-spring-boot-starter</artifactId>
-    <version>1.0.26</version>
+    <version>1.0.29</version>
 </dependency>
 ```
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.rocketmix/rocketmix-spring-boot-starter/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.rocketmix/rocketmix-spring-boot-starter)
 
-You project will run with or without the routing server and management server. It will start on port 8888 and try to register itself oto the management server on localhost:8761. You can customize this from command line or standard Spring Framework application.properties or application.yml such as :
+You project will run with or without any the routing server and management server. It will start on port 8080 and try to register itself oto the management server on localhost:8761. Be aware of port conflicts if everything run locally. You can customize this from command line or standard Spring Framework application.properties or application.yml such as :
 
 ```
 application.name=super-api-project
 server.port=8084
-management.server.url=http://127.0.0.1:8761
+managementServerURL=http://127.0.0.1:8761
 ```
-# Let's deploy my own API!
+
+You can also run your Spring Boot application with command line parameters like this :
+
+```
+./super-api-project.war --application.name=super-api-project --server.port=8084 --managementServerURL=http://127.0.0.1:8761
+```
+
+# Let's deploy your API on a server (as a Linux service) !
 
 Use our demo project to help you to let Maven create Linux executable from your API project. Then, when you build everything with mvn clean compile package, it generates an executable war file in your target/ directory. Just copy it on your server and run it! 
 
-You will probably want to override some parameters. It's quite simple with command line args such as :
+Without any command line recognized parameters, it will display running options :
 
 ```
-./super-api-project.war -Dserver.port=8090 -Dmanagement.server.url=http://prod-server:8761
+Usage: ./super-api-project.war {start|stop|force-stop|restart|force-reload|status|run|install|uninstall|configure}
 ```
 
-Of course, this is not enough and we will help you to install your executable as a Linux systemd service. Thus, it will auto start, auto stop and will be monitored and restarted automatically on crash. To do that, just run :
+According to Spring Boot documentation, 'run' will execute your app in the current console. 'start' will execute it as a daemon. 'install' and 'uninstall' would deploy your app as a Linux service (you must have sudo privileges to use this). 'configure' will extract 'application.properties' and/or 'application.yml' from your project to allow to to customize launching parameters depending on your environment. This is just options to help you. If you prefer, you can also use standard configuration files based on Spring profiles. 
+
+
+Let's customize some parameters by extracting 'application.properties' and/or 'application.yml' from your project :
 
 ```
-./super-api-project.war --install
+./super-api-project.war configure
+```
+Edit and change it as you want. Then, install your project as a service :
+
+```
+./super-api-project.war install
+```
+
+To start, stop, retart and check service status, simply do :
+
+```
+./super-api-project.war start|stop|restart|status
 ```
 
 # What about security ?
 
-We also tried to simplify security parts with a few rules :
-* Management server users are declared management-server-security.properties (located in the same directory as the war file). This file is reloaded every minutes. 
-* API projects must brings their own security. So RocketMix doesn't impose something you don't want. Look at the demo project to see a basic HTTP authentication. Of course, we encoruage you to implement common standards like JWT.   
+First of all, API projects must brings their own security. So RocketMix doesn't impose something you don't want. Look at the demo project to see a basic HTTP authentication. Of course, we encourage you to implement common standards like JWT.   
+
+By the way, RocketMix contains a security part to handle accesses to catalog parts and administration dashboard. To do that, Management server, Routing server or either "All in One" server automatically generate a users.properties file on startup. This file is reloaded every minutes. Thus, you can edit it and declare your users by adding a line per user like this :
+
+user=password,ROLE_service,enabled
+
+ROLE_service must set to ROLE_ADMIN to grant access to administration dashboard or ROLE_YOURAPI to grant access to API catalog part. Let's take an example :
+
+admin=admin,ROLE_ADMIN,enabled
+alex=asuperpassword,ROLE_ADMIN,enabled
+tom=bigpassword,ROLE_SUPERAPIPROJECT,enabled
+sam=bigbigpassword,ROLE_ADMIN,ROLE_SUPERAPIPROJECT,enabled
+
+
 
 
 
