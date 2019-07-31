@@ -12,19 +12,28 @@ RocketMiX is a free API plateform under Apache Licence 2.0 which helps you to pu
 
 Behind the hood, it's complex and you will not see it. If you want to know more about it, we can tell you that this is a bundled version of Spring Boot API components such as Zuul and Eureka. It also embeds the latests Swagger UI (compliant with OpenAPI specs). It uses Apache CXF (which is a major Jax-RS implementation) to develop API. All these bricks help you to develop your self documented APIs.
 
-# Why should I use RocketMix.github.io ?
+# Why should you use RocketMix.github.io ?
 
 Because it is made to be very very (VERY!) simple. It offers you the best result for the less efforts, without any compromises on architecture components. With RocketMix, you have a reverse proxy, a load balancer, a services directory, a portal, an gui to test your APIs, a monitoring dashboard, etc... All these components are embeded into RocketMix, self registered, self monitored.
 
-# I'm excited! How should I start ?
+# How to start ?
 
-You just need a Linux machine with OpenJDK (>= 8) installed. Download the three executables from Sourceforge to a Linux machine and launch them. 
+You just need a Linux machine with OpenJDK (>= 8) installed. Download a single executable called 'rocketmix-all-in-one-server.war' from Sourceforge to a Linux machine and launch it. It will start on http port 8080. It includes everything you need to a small API config : a routing server, an administration dashboard, an API catalog. 
 
 [![Download RocketMiX](https://img.shields.io/sourceforge/dt/rocketmix.svg)](https://sourceforge.net/projects/rocketmix/files/latest/download)
 
-* One is for the routing started on http port 8080.
-* One is for the managerment server. It runs on port 8761 but its web interface is accessible on port 8080 from the routing server.
-* The third one is just an Hello World API demo.
+```
+./rocketmix-all-in-one-server.war run
+```
+
+You can also download a demo API called 'rocketmix-services-demo.war'. It will run on port 8083
+
+```
+./rocketmix-services-demo.war run --server.port=8083 --managementServerURL=http://localhost:8080
+```
+
+Open a browser on http://localhost:8080 and navigate to your API catalog and administration dashboard (default credentials are admin:admin)
+
 
 # Now that I want to develop my own API, what should I do ?
 
