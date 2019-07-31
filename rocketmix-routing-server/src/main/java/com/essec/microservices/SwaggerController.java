@@ -35,7 +35,7 @@ import com.netflix.discovery.shared.Application;
 @RequestMapping("/catalog")
 public class SwaggerController {
 
-	private static final List<String> IGNORED_APPLICATION_NAMES = Arrays.asList("ZUULSERVER", "EUREKASERVER");
+	private static final List<String> IGNORED_APPLICATION_NAMES = Arrays.asList("ZUULSERVER", "EUREKASERVER", "ALLINONESERVER");
 	private static final String DOC_PATH = "/services/openapi.json";
 	private static final String PROXY_ROOT_PATH = "/catalog/swagger-docs/proxy";
 	private static final String PROXY_PATH = PROXY_ROOT_PATH + "?url={0}&vipaddress={1}";

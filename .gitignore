@@ -10,4 +10,4 @@ target/
 */.vscode/
 *.releaseBackup
 release.properties
-*/rebel.xml
+rebel.xml
