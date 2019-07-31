@@ -5,8 +5,11 @@ server:
   
   
 # Send data to admin server
-  client:
-    url: ${managementServerURL:http://127.0.0.1:8761}/admin/
+spring:
+  boot:
+    admin:
+      client:
+        url: ${managementServerURL:http://127.0.0.1:8761}/admin
     
 
 
@@ -28,12 +31,15 @@ management:
   endpoints:
     web:
       exposure: 
-        include: '*'
+        include: 
+          - '*'
       cors: 
-        allowed-origins: '*'
+        allowed-origins: 
+          - '*'
     jmx:
       exposure:
-        include: '*'      
+        include: 
+          - '*'      
 
 
 # Register microservices to eureka main directory

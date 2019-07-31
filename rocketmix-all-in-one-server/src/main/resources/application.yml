@@ -8,10 +8,7 @@ spring:
 
 server:
   port: ${port:8080}
-  servlet:
-    session:
-      cookie:
-        name: ROCKETMIX_ROUTER_SESSIONID
+
   
   
 management:
@@ -73,7 +70,7 @@ eureka:
     registerWithEureka: true
     fetch-registry: true
     serviceUrl:
-      defaultZone: http://127.0.0.1:${server.port:8761}/eureka/
+      defaultZone: http://127.0.0.1:${server.port}/eureka/
   instance:
     preferIpAddress: true
     metadataMap:

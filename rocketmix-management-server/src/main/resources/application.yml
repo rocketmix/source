@@ -30,6 +30,6 @@ eureka:
     preferIpAddress: true
     metadataMap:
       instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}
-      
+     
      
      
