@@ -6,7 +6,6 @@ server:
   port: 8083
   
   
+managementServerURL: http://srvapir1:8761  
 
 
-
-    

@@ -1,0 +1,63 @@
+# Default HTTP port
+server:
+  port: ${port:8080}
+  
+  
+  
+# Send data to admin server
+  client:
+    url: ${managementServerURL:http://127.0.0.1:8761}/admin/
+    
+
+
+# Logging configuration    
+logging:
+  level:
+    root: error
+    org.springframework.security: debug
+    org.springframework.web: debug   
+    org.springframework.web.servlet.handle: off
+    org.springframework.boot.context.config: debug
+    com.netflix.discovery: off # Disable Eureka exception logging when management server is unreachable
+
+
+
+
+# Allow actuator to expose statistics
+management:
+  endpoints:
+    web:
+      exposure: 
+        include: '*'
+      cors: 
+        allowed-origins: '*'
+    jmx:
+      exposure:
+        include: '*'      
+
+
+# Register microservices to eureka main directory
+eureka:
+  client:
+    enabled: true
+    serviceUrl:
+      defaultZone: ${managementServerURL:http://127.0.0.1:8761}/eureka/
+  instance:
+    preferIpAddress: true
+    metadataMap:
+      instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+      
+# Autoscan java annotation to detect JAX-RS annotated service to expose as @GET or @POST
+cxf.jaxrs.component-scan: true
+
+
+# Hystrix wraps calls to microservices to detect failure and redirect response to a common fallback response
+# Circuit Breaker helps Hystrix by redirecting response automatically to fallback response if defined thresholds are reached 
+# Parameters set according to : https://github.com/Netflix/Hystrix/wiki/Configuration
+hystrix.command.default.execution.isolation.strategy: THREAD 
+hystrix.command.default.execution.execution.timeout.enabled: false
+hystrix.command.default.fallback.enabled: false
+hystrix.command.default.circuitBreaker.enabled: false 
+hystrix.command.default.metrics.rollingStats.timeInMilliseconds: 600000
+hystrix.command.default.metrics.rollingStats.numBuckets: 600
+     

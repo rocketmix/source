@@ -393,7 +393,7 @@ uninstall() {
 do_extract_config_files() {
   working_dir=$(dirname "$jarfile")
   unzip -j -C "$jarfile" "WEB-INF/classes/application.yml" "WEB-INF/classes/application.properties" -d $working_dir
-  if [ $? -eq 0 || $? -eq 11 ];
+  if [[ $? -eq 0 || $? -eq 11 ]];
     then { echoGreen "Extracted application.yml and application.properties that you can customize"; }; 
     else { echoYellow "Failed to extract application.yml neither application.properties Spring config file from $jarfile"; };
   fi;

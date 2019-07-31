@@ -22,8 +22,6 @@ import com.essec.microservices.SwaggerConfiguration;
 @Import({SecurityConfiguration.class, SwaggerConfiguration.class, CxfAutoConfiguration.class, JaxRsConfiguration.class })
 public class ApiProviderAutoConfiguration {
 
-	
-
 
 
 }
