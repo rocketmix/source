@@ -1,6 +1,6 @@
 # Default HTTP port
 server:
-  port: ${port:8080}
+  port: ${port:8081}
   
   
   
@@ -9,7 +9,7 @@ spring:
   boot:
     admin:
       client:
-        url: ${managementServerURL:http://127.0.0.1:8761}/admin
+        url: ${managementServerURL:http://127.0.0.1:8080}/admin
     
 
 
@@ -47,7 +47,7 @@ eureka:
   client:
     enabled: true
     serviceUrl:
-      defaultZone: ${managementServerURL:http://127.0.0.1:8761}/eureka/
+      defaultZone: ${managementServerURL:http://127.0.0.1:8080}/eureka/
   instance:
     preferIpAddress: true
     metadataMap:

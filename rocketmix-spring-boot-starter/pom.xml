@@ -12,6 +12,20 @@
 		<version>1.0.32-SNAPSHOT</version>
 	</parent>
 	<dependencies>
+		<!-- JDK 11 COMPATIBILITY MODULES (start) -->
+		<dependency>
+			<groupId>javax.xml.ws</groupId>
+			<artifactId>jaxws-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.activation</groupId>
+			<artifactId>javax.activation-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jaxb</groupId>
+			<artifactId>jaxb-runtime</artifactId>
+		</dependency>
+		<!-- JDK 11 COMPATIBILITY MODULES (end) -->
 		<!-- EUREKA SERVICE DISCOVERY CLIENT (start) -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
@@ -66,13 +80,13 @@
 			<artifactId>metrics-core</artifactId>
 		</dependency>
 		<!-- SPRING ACTUATOR ENDPOINTS (end) -->
-		<!-- SPRING BOOT ADMIN (start) -->
+		<!-- SPRING BOOT ADMIN CLIENT (start) -->
 		<dependency>
 			<groupId>de.codecentric</groupId>
 			<artifactId>spring-boot-admin-client</artifactId>
-			<version>2.0.0</version>
+			<version>${spring.admin.version}</version>
 		</dependency>
-		<!-- SPRING BOOT ADMIN (start) -->
+		<!-- SPRING BOOT ADMIN CLIENT (end) -->
 		<!-- SWAGGER UI (start) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -111,12 +125,22 @@
 			<version>2.0.1.Final</version><!--$NO-MVN-MAN-VER$ -->
 		</dependency>
 		<!-- FIX HIBERNATE DEPENDENCY ISSUE (end) -->
-		<!-- FIX SLF4J LOGGING DEPENDENCY ISSUE (start) -->
+		<!-- FIX LOGBACK AND SLF4J LOGGING DEPENDENCY ISSUE (start) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-logging</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>ch.qos.logback</groupId>
+					<artifactId>logback-classic</artifactId>
+				</exclusion>
+			</exclusions>			
+		</dependency>		
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-jdk14</artifactId>
 		</dependency>
-		<!-- FIX SLF4J LOGGING DEPENDENCY ISSUE (end) -->
+		<!-- FIX LOGBACK AND SLF4J LOGGING DEPENDENCY ISSUE (end) -->
 	</dependencies>
 	<build>
 		<plugins>

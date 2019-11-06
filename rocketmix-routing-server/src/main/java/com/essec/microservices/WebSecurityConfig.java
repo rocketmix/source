@@ -75,8 +75,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			}
 			return new ReloadableUserDetailsManager(resource);
 		} catch (Throwable t) {
+			logger.error(t.getMessage());
 			UserDetails guestUser = User.withUsername("guest").password(ReloadableUserDetailsManager.passwordEncoder().encode("password")).roles("GUEST").build();
-			UserDetails demoUser = User.withUsername("demo").password(ReloadableUserDetailsManager.passwordEncoder().encode("demo")).roles("DEMO").build();
+			UserDetails demoUser = User.withUsername("admin").password(ReloadableUserDetailsManager.passwordEncoder().encode("admin")).roles("ADMIN").build();
 			InMemoryUserDetailsManager inMemoryUserDetailsManager = new InMemoryUserDetailsManager(guestUser, demoUser);
 			return new ReloadableUserDetailsManager(inMemoryUserDetailsManager);
 		}
@@ -100,6 +101,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.csrf().disable();
 		// Secure access to services catalog
 		http.authorizeRequests().requestMatchers(catalogRequestMatcher()).authenticated().accessDecisionManager(accessDecisionManager());
+		// Secure access to admin UI
+		http.authorizeRequests().antMatchers("/admin").hasAnyRole("ADMIN");
+		http.authorizeRequests().antMatchers("/admin/instances").permitAll();
+		http.authorizeRequests().antMatchers("/admin/instances/**").permitAll();
+		http.authorizeRequests().antMatchers("/admin/**").hasAnyRole("ADMIN");
+		http.authorizeRequests().anyRequest().permitAll();
 		http.httpBasic();
 	}
 
@@ -199,7 +206,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		web.ignoring().antMatchers("/", "/index.html", "/favicon.ico", "/**/*.css", "/**/*.js", "/img/**"); // Let access to portal web resources
-		web.ignoring().antMatchers("/admin", "/admin/**"); // Let access to management server (authentication is delegated to authentication server 
+		//web.ignoring().antMatchers("/admin", "/admin/**"); // Let access to management server (authentication is delegated to authentication server 
 		web.ignoring().antMatchers("/catalog", "/catalog/swagger-ui/index.html");  // Let access to Swagger HTML resources
 		web.ignoring().antMatchers("/openapi/default.json"); // Let access to defauit api definition
 		web.ignoring().requestMatchers(getRegisteredServiceRequestMatcher()); // Let access to all API (authentication managed by API itself

@@ -5,10 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 
-import de.codecentric.boot.admin.server.config.EnableAdminServer;
-
 @EnableEurekaServer
-@EnableAdminServer
 @EnableDiscoveryClient
 @SpringBootApplication
 public class ManagementServerApplication {

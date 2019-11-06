@@ -19,18 +19,6 @@
 			<version>${project.version}</version>
 		</dependency>
 		<!-- CUSTOM SPRINT BOOT MODULE (end) -->
-		<!-- JDK 11 COMPATIBILITY MODULES (start) -->
-		<dependency>
-			<groupId>javax.xml.ws</groupId>
-			<artifactId>jaxws-api</artifactId>
-			<version>2.3.1</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.activation</groupId>
-			<artifactId>javax.activation-api</artifactId>
-			<version>1.2.0</version>
-		</dependency>
-		<!-- JDK 11 COMPATIBILITY MODULES (end) -->		
 	</dependencies>
 	<build>
 		<plugins>

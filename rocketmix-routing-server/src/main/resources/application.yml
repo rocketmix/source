@@ -1,7 +1,11 @@
 spring:
   application:
     name: ZuulServer
-
+  boot:
+    admin:
+      context-path: /admin
+      
+      
 server:
   port: ${port:8080}
   servlet:
@@ -41,12 +45,6 @@ zuul:
     use-separate-thread-pools: true
   ignoredPatterns: /admin/logout # used by AdminController to redirect user to portal main page
   sensitive-headers: # blank value needed to keep authorization http headers
-  routes:
-    admin:
-      path: /admin/**
-      strip-prefix: true
-      sensitive-headers: # blank value needed to keep authorization http headers  
-      url: ${managementServerURL:http://127.0.0.1:8761}/admin
 
 # Ribbon acts as load balancer between microservices
 ribbon: 
@@ -65,7 +63,15 @@ hystrix.command.default.metrics.rollingStats.timeInMilliseconds: 180000 # Define
 hystrix.command.default.circuitBreaker.requestVolumeThreshold: 20 # Opens circuit if 20 requests failed within a rolling window of 3 minutes 
 
 
+# Enable Turbine aggregator for Hystrix streams   
+turbine:
+  appConfig: demo
+  clusterNameExpression: "'default'"
+  combineHostPort: true
+
 eureka:
+  dashboard:
+    path: /eureka-dashboard
   instance:
     prefer-ip-address: true
     metadataMap:
@@ -74,7 +80,6 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: ${managementServerURL:http://127.0.0.1:8761}/eureka/
-
+      defaultZone: http://127.0.0.1:${port:8080}/eureka/
 
           

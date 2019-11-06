@@ -32,7 +32,7 @@ public class DemoService {
 
 	@GET
 	@Path("/hello/{user}")
-	@PreAuthorize("hasRole('MOBAPP')")
+	//@PreAuthorize("hasRole('MOBAPP')")
 	@Produces({ MediaType.TEXT_PLAIN })
 	@Operation(summary = "Says hello", description = "Service demo with authentication. Login is 'guest' and password is 'password'", security = { @SecurityRequirement(name = "basicAuth") }, responses = { @ApiResponse(responseCode = "200", description = "Success"), @ApiResponse(responseCode = "401", description = "Unauthorized") })
 	@HystrixCommand

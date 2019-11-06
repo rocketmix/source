@@ -18,19 +18,6 @@
 			<artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
 		</dependency>
 		<!-- API REGISTRATION EUREKA SERVER (end) -->
-		<!-- ADMIN SERVER (start) -->
-		<dependency>
-			<groupId>de.codecentric</groupId>
-			<artifactId>spring-boot-admin-server</artifactId>
-			<version>2.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>de.codecentric</groupId>
-			<artifactId>spring-boot-admin-server-ui</artifactId>
-			<version>2.0.0</version>
-		</dependency>
-		<!-- ADMIN SERVER (end) -->
-		<!-- SECURITY (start) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
@@ -40,17 +27,14 @@
 		<dependency>
 			<groupId>javax.xml.ws</groupId>
 			<artifactId>jaxws-api</artifactId>
-			<version>2.3.1</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.activation</groupId>
 			<artifactId>javax.activation-api</artifactId>
-			<version>1.2.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.glassfish.jaxb</groupId>
 			<artifactId>jaxb-runtime</artifactId>
-			<version>2.3.0</version>
 		</dependency>
 		<!-- JDK 11 COMPATIBILITY MODULES (end) -->
 	</dependencies>
