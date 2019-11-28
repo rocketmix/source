@@ -6,7 +6,7 @@
 
 \>\>\> [Go to Travis CI](https://travis-ci.org/rocketmix/rocketmix.source "https://travis-ci.org/rocketmix/rocketmix.source") (Continuous integration build status: [![build_status](https://travis-ci.org/rocketmix/rocketmix.source.svg?branch=master)](https://travis-ci.org/rocketmix/rocketmix.source)) <<<
 
- [![Gitpod - Code Now](https://img.shields.io/badge/Gitpod-code%20now-blue.svg?longCache=true)](https://gitpod.io#https://github.com/rocketmix/rocketmix.source)
+\>\>\> Contribute [![Gitpod - Code Now](https://img.shields.io/badge/Gitpod-code%20now-blue.svg?longCache=true)](https://gitpod.io#https://github.com/rocketmix/rocketmix.source) <<<
 
 RocketMiX is a free API plateform under Apache Licence 2.0 which helps you to publish your APIs. As many products are complex to understand and complex to deploy, we made RocketMix to be as simple as possible. Just a few Linux executables, nothing more! 
 
