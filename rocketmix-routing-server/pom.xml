@@ -139,7 +139,7 @@
 						<goals>
 							<goal>deploy</goal>
 						</goals>
-						<phase>package</phase>
+						<phase>deploy</phase>
 						<configuration>
 							<appName>rocketmix</appName>
 							<jdkVersion>1.8</jdkVersion>
