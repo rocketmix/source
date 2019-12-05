@@ -129,6 +129,32 @@
 				</dependencies>
 			</plugin>
 			<!-- DEPLOY ON SOURCEFORGE (end) -->
+			<!-- DEPLOY ON HEROKU (start) -->
+			<plugin>
+				<groupId>com.heroku.sdk</groupId>
+				<artifactId>heroku-maven-plugin</artifactId>
+				<version>2.0.13</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>deploy</goal>
+						</goals>
+						<phase>package</phase>
+						<configuration>
+							<appName>rocketmix</appName>
+							<jdkVersion>1.8</jdkVersion>
+							<includeTarget>false</includeTarget>
+							<includes>
+								<include>${project.build.directory}/${project.build.finalName}.war</include>
+							</includes>
+							<processTypes>
+     							<web>java -jar target/${project.build.finalName}.war --server.port=$PORT</web>
+  							</processTypes>
+						</configuration>
+					</execution>
+				</executions>						
+			</plugin>
+			<!-- DEPLOY ON HEROKU (start) -->			
 		</plugins>
 	</build>
 </project>
