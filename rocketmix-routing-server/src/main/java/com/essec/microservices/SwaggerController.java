@@ -35,7 +35,8 @@ import com.netflix.discovery.shared.Application;
 @RequestMapping("/catalog")
 public class SwaggerController {
 
-	private static final List<String> IGNORED_APPLICATION_NAMES = Arrays.asList("ZUULSERVER", "EUREKASERVER", "ALLINONESERVER");
+	private static final List<String> IGNORED_APPLICATION_NAMES = Arrays.asList("ZUULSERVER");
+	private static final String LOCAL_SERVER = "ROUTINGSERVER";
 	private static final String DOC_PATH = "/services/openapi.json";
 	private static final String PROXY_ROOT_PATH = "/catalog/swagger-docs/proxy";
 	private static final String PROXY_PATH = PROXY_ROOT_PATH + "?url={0}&vipaddress={1}";
@@ -105,6 +106,9 @@ public class SwaggerController {
 						jsonAPIDefinitionUrl = jsonAPIDefinitionUrl.replace("//", "/");
 						jsonAPIDefinitionUrl = jsonAPIDefinitionUrl.replace(":/", "://");
 						String url = MessageFormat.format(PROXY_PATH, URLEncoder.encode(jsonAPIDefinitionUrl, "UTF-8"), URLEncoder.encode(applicationsInstance.getVIPAddress(), "UTF-8"));
+						if (LOCAL_SERVER.equals(name)) {
+							url = jsonAPIDefinitionUrl;
+						}
 						JsonObject aServer = new JsonObject();
 						aServer.addProperty("url", url);
 						aServer.addProperty("name", name);

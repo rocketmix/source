@@ -1,6 +1,6 @@
 spring:
   application:
-    name: ZuulServer
+    name: RoutingServer
   boot:
     admin:
       context-path: /admin
@@ -45,6 +45,8 @@ zuul:
     use-separate-thread-pools: true
   ignoredPatterns: /admin/logout # used by AdminController to redirect user to portal main page
   sensitive-headers: # blank value needed to keep authorization http headers
+  ignore-local-service: false
+
 
 # Ribbon acts as load balancer between microservices
 ribbon: 

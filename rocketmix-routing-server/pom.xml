@@ -77,17 +77,6 @@
 			<groupId>de.codecentric</groupId>
 			<artifactId>spring-boot-admin-server</artifactId>
 			<version>${spring.admin.version}</version>
-			<!-- Exclude Tomcat to avoid bug (https://stackoverflow.com/questions/53614994/spring-boot-2-1-1-eureka-discovery-spring-boot-admin-server) -->
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-starter-tomcat</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-reactor-netty</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>de.codecentric</groupId>
@@ -95,7 +84,13 @@
 			<version>${spring.admin.version}</version>
 		</dependency>
 		<!-- ADMIN SERVER (end) -->
-		<!-- SECURITY (start) -->
+		<!-- API DEMO (start) -->
+		<dependency>
+			<groupId>${project.parent.groupId}</groupId>
+			<artifactId>rocketmix-spring-boot-starter</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<!-- API DEMO (end) -->
 		<!-- SECURITY (start) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
