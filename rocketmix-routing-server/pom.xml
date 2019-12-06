@@ -156,8 +156,7 @@
 								<include>${project.build.directory}/${project.build.finalName}.war</include>
 							</includes>
 							<processTypes>
-								<web>java -jar target/${project.build.finalName}.war
-									--server.port=$PORT</web>
+								<web>java $JAVA_OPTS -jar target/${project.build.finalName}.war -Dserver.port=$PORT $JAR_OPTS</web>
 							</processTypes>
 						</configuration>
 					</execution>
