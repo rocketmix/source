@@ -4,10 +4,14 @@ spring:
   boot:
     admin:
       context-path: /admin
+      client:
+        url: http://127.0.0.1:${server.port}/admin # Allow local health check sample API to send data to admin server       
       
+
+
       
 server:
-  port: ${port:8080}
+  port: 8080
   servlet:
     session:
       cookie:
@@ -45,7 +49,6 @@ zuul:
     use-separate-thread-pools: true
   ignoredPatterns: /admin/logout # used by AdminController to redirect user to portal main page
   sensitive-headers: # blank value needed to keep authorization http headers
-  ignore-local-service: false
 
 
 # Ribbon acts as load balancer between microservices
@@ -82,6 +85,6 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://127.0.0.1:${port:8080}/eureka/
+      defaultZone: http://127.0.0.1:${server.port}/eureka/
 
           
