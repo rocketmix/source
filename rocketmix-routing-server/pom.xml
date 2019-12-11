@@ -138,6 +138,7 @@
 			</plugin>
 			<!-- DEPLOY ON SOURCEFORGE (end) -->
 			<!-- DEPLOY ON HEROKU (start) -->
+			<!-- ACCOUNT EMAIL IS : alexandre.de.pellegrin+rocketmix - at -gmail.com. API KEY IS DECLARED AS ENV VAR ON TRAVIS -->
 			<plugin>
 				<groupId>com.heroku.sdk</groupId>
 				<artifactId>heroku-maven-plugin</artifactId>
