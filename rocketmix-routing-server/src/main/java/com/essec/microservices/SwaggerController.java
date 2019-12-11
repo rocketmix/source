@@ -3,14 +3,31 @@ package com.essec.microservices;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.net.ssl.SSLContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.client.fluent.Executor;
+import org.apache.http.client.fluent.Request;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.UrlResource;
@@ -107,7 +124,11 @@ public class SwaggerController {
 						jsonAPIDefinitionUrl = jsonAPIDefinitionUrl.replace(":/", "://");
 						String url = MessageFormat.format(PROXY_PATH, URLEncoder.encode(jsonAPIDefinitionUrl, "UTF-8"), URLEncoder.encode(applicationsInstance.getVIPAddress(), "UTF-8"));
 						if (LOCAL_SERVER.equals(name)) {
-							url = jsonAPIDefinitionUrl;
+							String currentServerURL = getCurrentRequest().getRequestURL().toString();
+							String servletPath = getCurrentRequest().getServletPath();
+							if (StringUtils.isNotBlank(currentServerURL) && StringUtils.isNotBlank(servletPath)) {
+								url = currentServerURL.replace(servletPath, DOC_PATH);
+							}
 						}
 						JsonObject aServer = new JsonObject();
 						aServer.addProperty("url", url);
@@ -134,9 +155,8 @@ public class SwaggerController {
 		String currentServerURL = getCurrentRequest().getRequestURL().toString();
 		currentServerURL = fixReverseProxyProtocol(currentServerURL);
 		currentServerURL = currentServerURL.replace(PROXY_ROOT_PATH, "");
-		UrlResource urlResource = new UrlResource(url);
-		InputStream inputStream = urlResource.getInputStream();
-		String content = IOUtils.toString(inputStream);
+		Executor executor = Executor.newInstance(noSslHttpClient());  
+		String content = executor.execute(Request.Get(url)).returnContent().asString();
 		Gson gson = new Gson();
 		JsonObject jsonObject = gson.fromJson(content, JsonObject.class);
 		jsonObject.remove("servers");
@@ -165,5 +185,19 @@ public class SwaggerController {
 		}
 		return url;
 	}
+	
+	
+	private static CloseableHttpClient noSslHttpClient() throws IOException {
+		try {
+			final SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, (x509CertChain, authType) -> true).build();
+			return HttpClientBuilder.create().setSSLContext(sslContext)
+					.setConnectionManager(new PoolingHttpClientConnectionManager(
+							RegistryBuilder.<ConnectionSocketFactory>create().register("http", PlainConnectionSocketFactory.INSTANCE).register("https", new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE)).build()))
+					.build();
+		} catch (Exception e) {
+			throw new IOException(e);
+		}
+	}
+
 
 }

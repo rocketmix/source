@@ -72,6 +72,12 @@
 			<version>${swagger-ui.version}</version>
 		</dependency>
 		<!-- SWAGGER UI (end) -->
+		<!-- SWAGGER SERVLET CALL TO GRAB OPENAPI JSON SERVICES DEFINITION (start) -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>fluent-hc</artifactId>
+		</dependency>
+		<!-- SWAGGER SERVLET CALL TO GRAB OPENAPI JSON SERVICES DEFINITION (end) -->		
 		<!-- ADMIN SERVER (start) -->
 		<dependency>
 			<groupId>de.codecentric</groupId>
