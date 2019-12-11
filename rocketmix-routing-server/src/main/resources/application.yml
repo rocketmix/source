@@ -5,7 +5,7 @@ spring:
     admin:
       context-path: /admin
       client:
-        url: http://127.0.0.1:${server.port}/admin # Allow local health check sample API to send data to admin server       
+        url: http://0.0.0.0:${server.port}/admin # Allow local health check sample API to send data to admin server       
       
 
 
@@ -85,6 +85,6 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://127.0.0.1:${server.port}/eureka/
+      defaultZone: http://0.0.0.0:${server.port}/eureka/
 
           
