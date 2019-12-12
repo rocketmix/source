@@ -1,6 +1,6 @@
 spring:
   application:
-    name: RoutingServer
+    name: ROCKETMIX-SERVER # Be carefull to keep this in uppercase. If not, Eureka client will not register local demo API
   boot:
     admin:
       context-path: /admin
@@ -41,6 +41,7 @@ logging:
     org.springframework.cloud.netflix.zuul.filters.post: off
     io.micrometer: debug
     org.elasticsearch: debug
+    com.essec.microservices: debug
 
 # Zuul is the router. It acts as proxy and dispatched all requests to their endpoints
 zuul:
@@ -49,6 +50,7 @@ zuul:
     use-separate-thread-pools: true
   ignoredPatterns: /admin/logout # used by AdminController to redirect user to portal main page
   sensitive-headers: # blank value needed to keep authorization http headers
+
 
 
 # Ribbon acts as load balancer between microservices

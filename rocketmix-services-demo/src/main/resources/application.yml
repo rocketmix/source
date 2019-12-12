@@ -1,6 +1,6 @@
 spring:
   application:
-    name: demo
+    name: DEMO
     
 server:
   port: 8083
