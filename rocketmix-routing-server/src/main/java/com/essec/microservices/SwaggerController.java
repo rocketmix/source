@@ -122,7 +122,7 @@ public class SwaggerController {
 							continue;
 						}
 						String homePageUrl = applicationsInstance.getHomePageUrl();
-						if (LOCAL_SERVER_NAME.equals(name)) {
+						if (LOCAL_SERVER_NAME.equals(name)) { // Need to get external address, not local ip
 							String currentServerURL = getCurrentRequest().getRequestURL().toString();
 							String servletPath = getCurrentRequest().getServletPath();
 							homePageUrl = currentServerURL.replace(servletPath, "/");
@@ -132,13 +132,6 @@ public class SwaggerController {
 						jsonAPIDefinitionUrl = jsonAPIDefinitionUrl.replace(":/", "://");
 						String url = MessageFormat.format(PROXY_PATH, URLEncoder.encode(jsonAPIDefinitionUrl, "UTF-8"),
 								URLEncoder.encode(applicationsInstance.getVIPAddress(), "UTF-8"));
-						if (LOCAL_SERVER_NAME.equals(name)) {
-							String currentServerURL = getCurrentRequest().getRequestURL().toString();
-							String servletPath = getCurrentRequest().getServletPath();
-							if (StringUtils.isNotBlank(currentServerURL) && StringUtils.isNotBlank(servletPath)) {
-								url = currentServerURL.replace(servletPath, DOC_PATH);
-							}
-						}
 						JsonObject aServer = new JsonObject();
 						aServer.addProperty("url", url);
 						aServer.addProperty("name", name);
