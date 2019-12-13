@@ -77,7 +77,7 @@
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>fluent-hc</artifactId>
 		</dependency>
-		<!-- SWAGGER SERVLET CALL TO GRAB OPENAPI JSON SERVICES DEFINITION (end) -->		
+		<!-- SWAGGER SERVLET CALL TO GRAB OPENAPI JSON SERVICES DEFINITION (end) -->
 		<!-- ADMIN SERVER (start) -->
 		<dependency>
 			<groupId>de.codecentric</groupId>
@@ -103,6 +103,13 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 		<!-- SECURITY (start) -->
+		<!-- NOSQL DB FOR LOGGING (start) -->
+		<dependency>
+			<groupId>org.dizitart</groupId>
+			<artifactId>nitrite</artifactId>
+			<version>3.3.0</version>
+		</dependency>
+		<!-- NOSQL DB FOR LOGGING (end) -->
 	</dependencies>
 	<build>
 		<plugins>
@@ -144,7 +151,8 @@
 			</plugin>
 			<!-- DEPLOY ON SOURCEFORGE (end) -->
 			<!-- DEPLOY ON HEROKU (start) -->
-			<!-- ACCOUNT EMAIL IS : alexandre.de.pellegrin+rocketmix - at -gmail.com. API KEY IS DECLARED AS ENV VAR ON TRAVIS -->
+			<!-- ACCOUNT EMAIL IS : alexandre.de.pellegrin+rocketmix - at -gmail.com. 
+				API KEY IS DECLARED AS ENV VAR ON TRAVIS -->
 			<plugin>
 				<groupId>com.heroku.sdk</groupId>
 				<artifactId>heroku-maven-plugin</artifactId>
@@ -163,7 +171,9 @@
 								<include>${project.build.directory}/${project.build.finalName}.war</include>
 							</includes>
 							<processTypes>
-								<web>java $JAVA_OPTS -Dserver.port=$PORT -Djava.net.preferIPv4Stack=true -jar target/${project.build.finalName}.war $JAR_OPTS</web>
+								<web>java $JAVA_OPTS -Dserver.port=$PORT
+									-Djava.net.preferIPv4Stack=true -jar
+									target/${project.build.finalName}.war $JAR_OPTS</web>
 							</processTypes>
 						</configuration>
 					</execution>
