@@ -1,4 +1,4 @@
-package com.essec.microservices;
+package com.essec.microservices.actuator.apicalls;
 
 import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.DEBUG_FILTER_ORDER;
 import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.PRE_TYPE;
@@ -15,16 +15,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.audit.AuditEvent;
 import org.springframework.boot.actuate.audit.AuditEventRepository;
 
+import com.essec.microservices.RouterApplication;
 import com.google.common.io.CharStreams;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 
-public class LogRequestFilter extends ZuulFilter {
+public class ApiCallRequestFilter extends ZuulFilter {
 
 	private static Logger log = LoggerFactory.getLogger(RouterApplication.class);
 	
 	@Autowired
-	private AuditEventRepository repository;
+	private ApiCallRespository repository;
 
 	@Override
 	public String filterType() {

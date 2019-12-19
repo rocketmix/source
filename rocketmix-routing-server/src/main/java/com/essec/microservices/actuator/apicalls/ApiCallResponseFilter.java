@@ -1,4 +1,4 @@
-package com.essec.microservices;
+package com.essec.microservices.actuator.apicalls;
 
 import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.POST_TYPE;
 import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.SEND_RESPONSE_FILTER_ORDER;
@@ -10,11 +10,12 @@ import java.io.InputStreamReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.essec.microservices.RouterApplication;
 import com.google.common.io.CharStreams;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 
-public class LogResponseFilter extends ZuulFilter {
+public class ApiCallResponseFilter extends ZuulFilter {
 
 	private static Logger log = LoggerFactory.getLogger(RouterApplication.class);
 

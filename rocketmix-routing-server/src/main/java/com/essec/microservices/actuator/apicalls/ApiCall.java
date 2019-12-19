@@ -1,15 +1,27 @@
-package com.essec.microservices;
+package com.essec.microservices.actuator.apicalls;
 
 import java.util.Date;
 
-public class LogHttpEvent {
+import org.dizitart.no2.IndexType;
+import org.dizitart.no2.objects.Id;
+import org.dizitart.no2.objects.Index;
+import org.dizitart.no2.objects.Indices;
+
+@Indices({
+    @Index(value = "requestURL", type = IndexType.Fulltext),
+    @Index(value = "requestData", type = IndexType.Fulltext),
+    @Index(value = "responseData", type = IndexType.Fulltext),
+    @Index(value = "responceCode", type = IndexType.Fulltext)
+})
+public class ApiCall {
 	
+	@Id
 	private int id;
 	
 	private Date date;
-	
+
 	private String requestURL;
-	
+
 	private String requestData;
 	
 	private String responseData;
