@@ -103,13 +103,50 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 		<!-- SECURITY (start) -->
-		<!-- NOSQL DB FOR LOGGING (start) -->
+		<!-- SPRING BOOT JPA (start) -->
 		<dependency>
-			<groupId>org.dizitart</groupId>
-			<artifactId>nitrite</artifactId>
-			<version>3.3.0</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
-		<!-- NOSQL DB FOR LOGGING (end) -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+		</dependency>
+		<!-- SPRING BOOT JPA (end) -->
+		<!-- DATA CACHE (start) -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+		</dependency>
+		<!-- DATA CACHE (end) -->		
+		<!-- SEARCH ENGINE (start) -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-search-engine</artifactId>
+			<version>5.11.4.Final</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jboss.logging</groupId>
+					<artifactId>jboss-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-search-orm</artifactId>
+			<version>5.11.4.Final</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jboss.logging</groupId>
+					<artifactId>jboss-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- SEARCH ENGINE (end) -->		
 	</dependencies>
 	<build>
 		<plugins>

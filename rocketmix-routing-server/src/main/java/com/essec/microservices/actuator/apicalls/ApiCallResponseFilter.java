@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.essec.microservices.RouterApplication;
 import com.google.common.io.CharStreams;
@@ -18,6 +19,9 @@ import com.netflix.zuul.context.RequestContext;
 public class ApiCallResponseFilter extends ZuulFilter {
 
 	private static Logger log = LoggerFactory.getLogger(RouterApplication.class);
+	
+	@Autowired
+	private ApiCallService service;	
 
 	@Override
 	public String filterType() {
@@ -39,6 +43,10 @@ public class ApiCallResponseFilter extends ZuulFilter {
 		RequestContext ctx = RequestContext.getCurrentContext();
 		try (final InputStream responseDataStream = ctx.getResponseDataStream()) {
 			final String responseData = CharStreams.toString(new InputStreamReader(responseDataStream, "UTF-8"));
+			Long id = (Long) ctx.get("id");
+			if (id != null) {
+				this.service.update(id, responseData, ctx.getResponseStatusCode());
+			}
 			String line = String.format("Response, %s \r\n", responseData);
 			log.debug(line);
 			ctx.setResponseBody(responseData);

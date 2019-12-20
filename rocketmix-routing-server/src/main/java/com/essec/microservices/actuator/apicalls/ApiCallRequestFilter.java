@@ -4,6 +4,7 @@ import static org.springframework.cloud.netflix.zuul.filters.support.FilterConst
 import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.PRE_TYPE;
 
 import java.security.Principal;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
@@ -12,8 +13,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.audit.AuditEvent;
-import org.springframework.boot.actuate.audit.AuditEventRepository;
 
 import com.essec.microservices.RouterApplication;
 import com.google.common.io.CharStreams;
@@ -25,7 +24,9 @@ public class ApiCallRequestFilter extends ZuulFilter {
 	private static Logger log = LoggerFactory.getLogger(RouterApplication.class);
 	
 	@Autowired
-	private ApiCallRespository repository;
+	private ApiCallService service;
+	
+	private AtomicLong threadSafeSeq = new AtomicLong(0);
 
 	@Override
 	public String filterType() {
@@ -57,8 +58,12 @@ public class ApiCallRequestFilter extends ZuulFilter {
 			if (userPrincipal != null && StringUtils.isNotBlank(userPrincipal.getName())) {
 				principal = userPrincipal.getName();
 			}
-			AuditEvent auditEvent = new AuditEvent(principal, "HTTP Request", line);
-			repository.add(auditEvent);
+			ApiCall apiCall = new ApiCall();
+			apiCall.setId(this.threadSafeSeq.incrementAndGet());
+			apiCall.setRequestURL(request.getRequestURI());
+			apiCall.setRequestData(requestData);
+			Long id = service.save(apiCall);
+			ctx.put("id", id);
 		} catch (Exception e) {
 			log.error("Error parsing request", e);
 		}

@@ -2,37 +2,54 @@ package com.essec.microservices.actuator.apicalls;
 
 import java.util.Date;
 
-import org.dizitart.no2.IndexType;
-import org.dizitart.no2.objects.Id;
-import org.dizitart.no2.objects.Index;
-import org.dizitart.no2.objects.Indices;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
-@Indices({
-    @Index(value = "requestURL", type = IndexType.Fulltext),
-    @Index(value = "requestData", type = IndexType.Fulltext),
-    @Index(value = "responseData", type = IndexType.Fulltext),
-    @Index(value = "responceCode", type = IndexType.Fulltext)
+import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
+import org.apache.lucene.analysis.core.WhitespaceTokenizerFactory;
+import org.apache.lucene.analysis.miscellaneous.ASCIIFoldingFilterFactory;
+import org.hibernate.search.annotations.AnalyzerDef;
+import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.TokenFilterDef;
+import org.hibernate.search.annotations.TokenizerDef;
+
+@Entity
+@Indexed
+@AnalyzerDef(name = "customanalyzer",
+tokenizer = @TokenizerDef(factory = WhitespaceTokenizerFactory.class),
+filters = {
+        @TokenFilterDef(factory = ASCIIFoldingFilterFactory.class), // Replace accented characeters by their simpler counterpart (è => e, etc.)
+        @TokenFilterDef(factory = LowerCaseFilterFactory.class) // Lowercase all characters
 })
 public class ApiCall {
 	
 	@Id
-	private int id;
+	@GeneratedValue
+	private Long id;
 	
-	private Date date;
+	@Field
+	private Date date = new Date();
 
+	@Field
 	private String requestURL;
 
+	@Field
 	private String requestData;
 	
+	@Field
 	private String responseData;
 	
-	private int responceCode;
+	@Field
+	private int responseCode;
 
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -68,12 +85,12 @@ public class ApiCall {
 		this.responseData = responseData;
 	}
 
-	public int getResponceCode() {
-		return responceCode;
+	public int getResponseCode() {
+		return responseCode;
 	}
 
-	public void setResponceCode(int responceCode) {
-		this.responceCode = responceCode;
+	public void setResponseCode(int responceCode) {
+		this.responseCode = responceCode;
 	}
 	
 	
