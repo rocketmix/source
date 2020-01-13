@@ -9,5 +9,7 @@ target/
 */target/
 */.vscode/
 *.releaseBackup
+*/.factorypath
+.factorypath
 release.properties
 rebel.xml
