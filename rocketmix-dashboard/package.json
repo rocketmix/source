@@ -1,0 +1,38 @@
+{
+  "name": "rocketmix-router-dashboard",
+  "version": "0.1.0",
+  "description": "RocketMiX ReactJS Dashboard embedded into Spring Boot Admin UI",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:rocketmix/rocketmix.source.git"
+  },
+  "keywords": [
+    "rest",
+    "rocketmix",
+    "actuator",
+    "dashboard",
+    "react"
+  ],
+  "author": "Alexandre de Pellegrin",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/rocketmix/rocketmix.source/issues"
+  },
+  "homepage": "https://rocketmix.github.io",
+  "dependencies": {
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "rest": "^2.0.0"
+  },
+  "scripts": {
+    "watch": "webpack --watch -d"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
+    "@babel/preset-react": "^7.8.3",
+    "babel-loader": "^8.0.6",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
+  }
+}

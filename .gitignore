@@ -10,6 +10,7 @@ target/
 */.vscode/
 *.releaseBackup
 */.factorypath
+*/node_modules
 .factorypath
 release.properties
 rebel.xml

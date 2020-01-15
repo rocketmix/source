@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>rocketmix-dashboard</artifactId>
+	<name>RocketMiX Routing Server Dashboard</name>
+	<description>A web dashboard to show router activities based on ReactJS</description>
+	<url>https://github.com/rocketmix/rocketmix.source</url>
+	<packaging>jar</packaging>
+	<parent>
+		<groupId>io.github.rocketmix</groupId>
+		<artifactId>rocketmix-parent</artifactId>
+		<version>1.0.32-SNAPSHOT</version>
+	</parent>
+	<build>
+		<plugins>
+			<!-- COMPILE JS WITH NODEJS (start) -->
+			<plugin>
+				<groupId>com.github.eirslett</groupId>
+				<artifactId>frontend-maven-plugin</artifactId>
+				<version>1.9.1</version>
+				<configuration>
+					<installDirectory>target</installDirectory>
+				</configuration>
+				<executions>
+					<execution>
+						<id>install node and npm</id>
+						<goals>
+							<goal>install-node-and-npm</goal>
+						</goals>
+						<configuration>
+							<nodeVersion>v12.14.1</nodeVersion>
+							<npmVersion>6.13.6</npmVersion>
+						</configuration>
+					</execution>
+					<execution>
+						<id>npm install</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<configuration>
+							<arguments>install</arguments>
+						</configuration>
+					</execution>
+					<execution>
+						<id>webpack build</id>
+						<goals>
+							<goal>webpack</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- COMPILE JS WITH NODEJS (end) -->
+		</plugins>
+	</build>
+</project>
