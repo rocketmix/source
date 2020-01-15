@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Spinner, Button, Form, FormGroup, Input } from 'reactstrap';
 
 class App extends Component {
   state = {
@@ -16,11 +17,23 @@ class App extends Component {
     const {apicalls, isLoading} = this.state;
 
     if (isLoading) {
-      return <p>Loading...</p>;
+      return (
+        <Spinner animation="border" role="status">
+          <span className="sr-only">Loading...</span>
+        </Spinner>
+      );
     }
 
     return (
       <div>
+        <Form>
+          <FormGroup controlId="formSearch">
+            <Input type="text" placeholder="Enter keyword to search" />
+          </FormGroup>
+          <Button variant="primary" type="submit">
+            Search
+          </Button>
+        </Form>
 		   blablabla
         <header >
           <div >
