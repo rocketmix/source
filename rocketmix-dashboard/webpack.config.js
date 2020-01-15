@@ -1,13 +1,20 @@
 var path = require('path');
 
 module.exports = {
-    entry: './src/main/js/app.js',
+    watch: true,
+    entry: './src/main/js/index.js',
     devtool: 'sourcemaps',
     cache: true,
     mode: 'development',
     output: {
-        path: __dirname,
-        filename: './src/main/resources/static/built/bundle.js'
+        path: path.join(__dirname, "./src/main/resources/static"),
+        filename: 'bundle.js',
+        publicPath: 'http://localhost:3000/'
+    },
+    devServer: {
+        contentBase: path.join(__dirname, './src/main/resources/static'),
+        compress: true,
+        port: 3000
     },
     module: {
         rules: [
@@ -17,7 +24,8 @@ module.exports = {
                 use: [{
                     loader: 'babel-loader',
                     options: {
-                        presets: ["@babel/preset-env", "@babel/preset-react"]
+                        presets: ["@babel/preset-env", "@babel/preset-react"],
+                        plugins: ["@babel/plugin-proposal-class-properties", "@babel/plugin-transform-runtime"]
                     }
                 }]
             }
