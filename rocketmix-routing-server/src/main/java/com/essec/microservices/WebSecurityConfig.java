@@ -108,6 +108,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().antMatchers("/admin/**").hasAnyRole("ADMIN");
 		http.authorizeRequests().anyRequest().permitAll();
 		http.httpBasic();
+		// Allow IFrame for dashboard
+		http.headers().frameOptions().sameOrigin();
 	}
 
 	/**

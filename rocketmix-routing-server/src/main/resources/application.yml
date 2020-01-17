@@ -8,10 +8,10 @@ spring:
         url: http://0.0.0.0:${server.port}/admin # Allow local health check sample API to send data to admin server       
       ui:
         external-views:
-          - label: "External view"
-            url: http://codecentric.de
+          - label: "Overview"
+            iframe: true         
+            url: /dashboard
             order: 2000
-
 
       
 server:

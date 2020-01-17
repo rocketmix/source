@@ -39,6 +39,7 @@
 		</developer>
 	</developers>
 	<modules>
+		<module>rocketmix-dashboard</module>
 		<module>rocketmix-routing-server</module>
 		<module>rocketmix-spring-boot-starter</module>
 		<module>rocketmix-services-demo</module>

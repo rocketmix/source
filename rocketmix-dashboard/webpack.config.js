@@ -1,14 +1,14 @@
 var path = require('path');
 
 module.exports = {
-    watch: true,
+    watch: false,
     entry: './src/main/js/index.js',
     devtool: 'sourcemaps',
     cache: true,
     mode: 'development',
     output: {
         path: path.join(__dirname, "./src/main/resources/static"),
-        filename: 'bundle.js',
+        filename: 'bundle-dashboard.js',
         publicPath: 'http://localhost:3000/'
     },
     devServer: {

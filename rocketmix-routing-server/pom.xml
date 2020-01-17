@@ -97,6 +97,13 @@
 			<version>${project.version}</version>
 		</dependency>
 		<!-- API DEMO (end) -->
+		<!-- DASHBOARD (start) -->
+		<dependency>
+			<groupId>${project.parent.groupId}</groupId>
+			<artifactId>rocketmix-dashboard</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<!-- DASHBOARD (end) -->
 		<!-- SECURITY (start) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
