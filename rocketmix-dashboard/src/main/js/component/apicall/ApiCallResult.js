@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import JSONPretty from 'react-json-pretty';
+require('react-json-pretty/themes/monikai.css');
 
-class Result extends Component {
+class ApiCallResult extends Component {
 
     state = {
         results: []
@@ -15,16 +17,12 @@ class Result extends Component {
     render() {
         if (this.state.results.length == 0) {
             return (
-                <div>No result</div>
+                <div className="alert alert-light" role="alert">No result</div>
             );
         }
         return (
             <div >
-                {this.state.results.map(result =>
-                    <div key={result.id}>
-                        {result.requestURL}
-                    </div>
-                )}
+                <JSONPretty id="json-pretty" data={this.state.results}></JSONPretty>
             </div>
         );
     }
@@ -32,4 +30,4 @@ class Result extends Component {
 
 }
 
-export default Result;
+export default ApiCallResult;
