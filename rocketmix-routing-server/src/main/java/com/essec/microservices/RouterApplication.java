@@ -6,7 +6,7 @@ import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboard;
-import org.springframework.cloud.netflix.turbine.EnableTurbine;
+import org.springframework.cloud.netflix.ribbon.RibbonClients;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 
 import de.codecentric.boot.admin.server.config.EnableAdminServer;
@@ -15,10 +15,10 @@ import de.codecentric.boot.admin.server.config.EnableAdminServer;
 @EnableDiscoveryClient
 @EnableZuulProxy
 @EnableCircuitBreaker
-@EnableTurbine
 @EnableHystrixDashboard
 @EnableAdminServer
 @SpringBootApplication
+@RibbonClients(defaultConfiguration = RibbonConfiguration.class)
 public class RouterApplication {
 
 

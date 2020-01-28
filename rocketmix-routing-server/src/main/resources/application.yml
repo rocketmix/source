@@ -8,11 +8,14 @@ spring:
         url: http://0.0.0.0:${server.port}/admin # Allow local health check sample API to send data to admin server       
       ui:
         external-views:
-          - label: "Overview"
+          - label: "Graph"
             iframe: true         
             url: /dashboard
             order: 2000
-
+          - label: "Exit"
+            iframe: false         
+            url: /../
+            order: 2001
       
 server:
   port: 8080
@@ -58,27 +61,22 @@ zuul:
 
 
 # Ribbon acts as load balancer between microservices
+# See RibbonConfiguration class for load balancing strategy
 ribbon: 
   ConnectTimeout: 3000
   ReadTimeout: 60000 
-
+  
 
 # Hystrix wraps calls to microservices to detect failure and redirect response to a common fallback response
 # Circuit Breaker helps Hystrix by redirecting response automatically to fallback response if defined thresholds are reached 
 # Parameters set according to : https://github.com/Netflix/Hystrix/wiki/Configuration
 hystrix.command.default.execution.isolation.strategy: THREAD # Hystrix uses a dedicated threadpool to call microservices to avoid server saturation 
-hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 60000 # Redirect to fallback if microservice doesn't answer within 60s
+hystrix.command.default.execution.timeout.enabled: false # Disabble Hystrix timeout to let this timeout management to Ribbon
 hystrix.command.default.circuitBreaker.sleepWindowInMilliseconds: 180000 # Opens circuit during 3 minutes to threshold reached
 hystrix.command.default.circuitBreaker.errorThresholdPercentage: 50 # Opens circuit if 50% of request failed within a rolling window of 3 minutes 
 hystrix.command.default.metrics.rollingStats.timeInMilliseconds: 180000 # Defines a rolling window of 3 minutes
 hystrix.command.default.circuitBreaker.requestVolumeThreshold: 20 # Opens circuit if 20 requests failed within a rolling window of 3 minutes 
 
-
-# Enable Turbine aggregator for Hystrix streams   
-turbine:
-  appConfig: demo
-  clusterNameExpression: "'default'"
-  combineHostPort: true
 
 eureka:
   dashboard:
