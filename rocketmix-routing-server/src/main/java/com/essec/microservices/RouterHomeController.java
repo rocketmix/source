@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/")
-public class HomeController {
+public class RouterHomeController {
 	
 	private static final String COMPANY_NAME_TEMPLATE_KEY = "Welcome to";
 	private static final String COMPANY_LOGO_TEMPLATE_KEY = "img/rocket-logo-min.png";

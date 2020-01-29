@@ -1,4 +1,4 @@
-package com.essec.microservices;
+package com.essec.microservices.security;
 
 import java.io.File;
 import java.net.URI;
@@ -6,18 +6,18 @@ import java.net.URL;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
 
-public class InstallScriptParameters {
+public class UserDetailsFilePathLocator {
 
 
 	private String installPath;
 	
-	private static final InstallScriptParameters instance = new InstallScriptParameters();
+	private static final UserDetailsFilePathLocator instance = new UserDetailsFilePathLocator();
 	
-	private InstallScriptParameters() {
+	private UserDetailsFilePathLocator() {
 		// Singleton
 	}
 	
-	public static InstallScriptParameters getInstance() {
+	public static UserDetailsFilePathLocator getInstance() {
 		return instance;
 	}
 

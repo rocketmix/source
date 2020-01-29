@@ -1,4 +1,4 @@
-package com.essec.microservices;
+package com.essec.microservices.metrics;
 
 import java.util.HashMap;
 import java.util.Map;

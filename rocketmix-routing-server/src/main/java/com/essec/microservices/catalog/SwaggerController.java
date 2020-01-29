@@ -1,4 +1,4 @@
-package com.essec.microservices;
+package com.essec.microservices.catalog;
 
 import java.io.IOException;
 import java.io.InputStream;

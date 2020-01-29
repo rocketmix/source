@@ -1,4 +1,4 @@
-package com.essec.microservices;
+package com.essec.microservices.circuitbreaker;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -12,7 +12,7 @@ import org.springframework.http.client.ClientHttpResponse;
 
 import com.netflix.hystrix.exception.HystrixTimeoutException;
 
-public class CircuitBreakerDefaultFallbackProvider implements FallbackProvider {
+public class HystrixDefaultFallbackProvider implements FallbackProvider {
 
 	@Override
 	public String getRoute() {

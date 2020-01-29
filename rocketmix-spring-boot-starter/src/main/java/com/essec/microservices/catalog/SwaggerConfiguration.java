@@ -1,4 +1,4 @@
-package com.essec.microservices;
+package com.essec.microservices.catalog;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;

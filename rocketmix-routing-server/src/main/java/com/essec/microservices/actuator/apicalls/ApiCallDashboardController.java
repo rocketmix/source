@@ -1,4 +1,4 @@
-package com.essec.microservices;
+package com.essec.microservices.actuator.apicalls;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,7 +17,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 @RestController
 @RequestMapping("/dashboard")
-public class DashboardController {
+public class ApiCallDashboardController {
 	
 	
 	private static final String DEFAULT_HOST = "http://localhost:8080";

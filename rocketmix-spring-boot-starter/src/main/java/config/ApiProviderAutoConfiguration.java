@@ -11,7 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 
 import com.essec.microservices.JaxRsConfiguration;
 import com.essec.microservices.SecurityConfiguration;
-import com.essec.microservices.SwaggerConfiguration;
+import com.essec.microservices.catalog.SwaggerConfiguration;
 
 @Configuration
 @EnableWebSecurity

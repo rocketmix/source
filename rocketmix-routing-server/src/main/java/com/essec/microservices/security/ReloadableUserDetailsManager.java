@@ -1,4 +1,4 @@
-package com.essec.microservices;
+package com.essec.microservices.security;
 
 import java.io.IOException;
 import java.util.ArrayList;

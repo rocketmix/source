@@ -8,10 +8,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 @Configuration
 public class RouterConfiguration {
 
-	@Bean
-	public FallbackProvider getCircuitBreakerFallbackProvider() {
-		return new CircuitBreakerDefaultFallbackProvider();
-	}
+
 
 	/**
 	 * Needed for injection with @Value annotation

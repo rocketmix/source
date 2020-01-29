@@ -9,6 +9,8 @@ import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboar
 import org.springframework.cloud.netflix.ribbon.RibbonClients;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 
+import com.essec.microservices.loadbalancer.RibbonConfiguration;
+
 import de.codecentric.boot.admin.server.config.EnableAdminServer;
 
 @EnableEurekaServer

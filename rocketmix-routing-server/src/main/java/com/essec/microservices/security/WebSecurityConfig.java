@@ -1,4 +1,4 @@
-package com.essec.microservices;
+package com.essec.microservices.security;
 
 import java.io.File;
 import java.nio.charset.Charset;
@@ -63,7 +63,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	public ReloadableUserDetailsManager userDetailsManager() {
 		try {
-			InstallScriptParameters installScriptParameters = InstallScriptParameters.getInstance();
+			UserDetailsFilePathLocator installScriptParameters = UserDetailsFilePathLocator.getInstance();
 			String installPath = installScriptParameters.getInstallPath();
 			String fullpath = "file://" + installPath + File.separator + "users.properties";
 			Resource resource = resourceLoader.getResource(fullpath);

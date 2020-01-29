@@ -1,4 +1,4 @@
-package com.essec.microservices;
+package com.essec.microservices.sample;
 
 import javax.validation.constraints.NotBlank;
 import javax.ws.rs.GET;
