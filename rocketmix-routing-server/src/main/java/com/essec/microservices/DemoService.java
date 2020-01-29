@@ -11,8 +11,6 @@ import javax.ws.rs.core.Response;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
-
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -29,7 +27,6 @@ public class DemoService {
 	@Path("/hello/{user}")
 	@Produces({ MediaType.TEXT_PLAIN })
 	@Operation(summary = "Says hello", responses = { @ApiResponse(responseCode = "200", description = "Success")})
-	@HystrixCommand
 	public Response sayHello(@Parameter(description = "User nickname who will receive this wonderfull hello") @PathParam("user") @NotBlank String user) {
 		String result = "Hello " + user;
 		return Response.ok(result).build();
