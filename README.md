@@ -8,22 +8,24 @@
 
 \>\>\> [Edit code or contribute](https://gitpod.io#https://github.com/rocketmix/rocketmix.source) with Theia Cloud IDE [![Gitpod - Code Now](https://img.shields.io/badge/Gitpod-code%20now-blue.svg?longCache=true)](https://gitpod.io#https://github.com/rocketmix/rocketmix.source) <<<
 
-RocketMiX is a free API plateform under Apache Licence 2.0 which helps you to publish your APIs. As many products are complex to understand and complex to deploy, we made RocketMix to be as simple as possible. Just a few Linux executables, nothing more! 
+RocketMiX is a free API plateform under Apache Licence 2.0 which helps you to publish your APIs. As many products are complex to understand and complex to deploy, we made RocketMix to be as simple as possible. Just only one Linux file to execute, nothing more! That makes this project so beautiful.
 
-Behind the hood, it's complex and you will not see it. If you want to know more about it, we can tell you that this is a bundled version of Spring Boot API components such as Zuul and Eureka. It also embeds the latests Swagger UI (compliant with OpenAPI specs). It uses Apache CXF (which is a major Jax-RS implementation) to develop API. All these bricks help you to develop your self documented APIs.
+Yes, behind the hood, it's complex because nothing is magic. But you will not see it. If you want to know more about it, we can tell you that this is a bundled version of Spring Boot API components (Zuul, Ribbon, Eureka, Admin UI, MVC, Seurity). It also embeds a Swagger UI compliant with OpenAPI specs. To simplify your task, we offer a Spring Boot Starter extension based on Apache CXF which helps you to develop your own API.
+
+Of course, thanks to OpenAPi specs, APIs are self documented. RocketMiX also acts as a portal and allows you to describe your APIs to your partners.
 
 # Why should you use RocketMix.github.io ?
 
-Because it is made to be very very (VERY!) simple. It offers you the best result for the less efforts, without any compromises on architecture components. With RocketMix, you have a reverse proxy, a load balancer, a services directory, a portal, an gui to test your APIs, a monitoring dashboard, etc... All these components are embeded into RocketMix, self registered, self monitored.
+Because it is made to be very very (VERY!) simple. It offers you the best result for the less efforts, without any compromises on architecture components. With RocketMix, you have a reverse proxy, a load balancer, a services directory, a portal, an UI to test your APIs, a monitoring dashboard, etc... All these components are embeded into RocketMix, self registered, self monitored.
 
 # How to start ?
 
-You just need a Linux machine with OpenJDK (>= 8) installed. Download a single executable called 'rocketmix-all-in-one-server.war' from Sourceforge to a Linux machine and launch it. It will start on http port 8080. It includes everything you need to a small API config : a routing server, an administration dashboard, an API catalog. 
+You just need a Linux machine with OpenJDK (>= 8) installed. Download a single executable called 'rocketmix-router.war' from Sourceforge to a Linux machine and launch it. It will start on http port 8080. It includes everything you need to a small API config : a routing server, an administration dashboard, an API catalog, a sample API (Hello World).
 
 [![Download RocketMiX](https://img.shields.io/sourceforge/dt/rocketmix.svg)](https://sourceforge.net/projects/rocketmix/files/latest/download)
 
 ```
-./rocketmix-all-in-one-server.war run
+./rocketmix-router.war run
 ```
 
 You can also download a demo API called 'rocketmix-services-demo.war'. It will run on port 8083
@@ -44,24 +46,24 @@ Even if the platform is compatible with other languages, this section is written
 <dependency>
     <groupId>io.github.rocketmix</groupId>
     <artifactId>rocketmix-spring-boot-starter</artifactId>
-    <version>1.0.29</version>
+    <version>1.0.32</version>
 </dependency>
 ```
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.rocketmix/rocketmix-spring-boot-starter/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.rocketmix/rocketmix-spring-boot-starter)
 
-You project will run with or without any the routing server and management server. It will start on port 8080 and try to register itself oto the management server on localhost:8761. Be aware of port conflicts if everything run locally. You can customize this from command line or standard Spring Framework application.properties or application.yml such as :
+You project will run with or without any the routing server and management server. It will start on port 8081 and try to register itself to the router server on localhost:8080. Be aware of port conflicts if everything run locally. You can customize this from command line or standard Spring Framework application.properties or application.yml such as :
 
 ```
 application.name=super-api-project
 server.port=8084
-managementServerURL=http://127.0.0.1:8761
+managementServerURL=http://127.0.0.1:8080
 ```
 
 You can also run your Spring Boot application with command line parameters like this :
 
 ```
-./super-api-project.war --application.name=super-api-project --server.port=8084 --managementServerURL=http://127.0.0.1:8761
+./super-api-project.war --application.name=super-api-project --server.port=8084 --managementServerURL=http://127.0.0.1:8080
 ```
 
 # Let's deploy your API on a server (as a Linux service) !
