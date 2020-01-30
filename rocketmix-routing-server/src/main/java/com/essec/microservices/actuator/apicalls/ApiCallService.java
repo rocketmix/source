@@ -28,6 +28,8 @@ public class ApiCallService {
 	private static final int MAX_RESULT = 100;
 	
 	private static final int REPOSITORY_MAX_SIZE = 50000;
+	
+	private static final int MAX_RESPONSE_SIZE = 4000;
 
 	@Autowired
 	@Qualifier("inmemoryEntityManager")
@@ -72,6 +74,7 @@ public class ApiCallService {
 		entity.setResponseCode(responseCode);
 		this.repository.save(entity);
 	}
+	
 	
 	@Scheduled(fixedDelay = 1000)
 	public void purgeExpiredentities() {

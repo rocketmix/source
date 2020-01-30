@@ -2,6 +2,10 @@
 server:
   port: 8081
   
+
+# HATEOAS resource links fix
+  forward-headers-strategy: framework   
+  
   
   
 # Send data to admin server
@@ -10,7 +14,6 @@ spring:
     admin:
       client:
         url: ${managementServerURL:http://127.0.0.1:8080}/admin
-    
 
 
 # Logging configuration    
@@ -41,6 +44,11 @@ management:
         include: 
           - '*'      
 
+# FIX /actuator/health alwoays returning DOWN
+  health:
+    defaults: 
+      enabled: false       
+
 
 # Register microservices to eureka main directory
 eureka:
@@ -66,4 +74,4 @@ hystrix.command.default.fallback.enabled: false
 hystrix.command.default.circuitBreaker.enabled: false 
 hystrix.command.default.metrics.rollingStats.timeInMilliseconds: 600000
 hystrix.command.default.metrics.rollingStats.numBuckets: 600
-     
+

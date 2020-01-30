@@ -3,6 +3,7 @@ package com.essec.microservices.catalog;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
@@ -99,6 +100,7 @@ public class SwaggerController {
 		content = content + " div.servers,span.servers-title {display:none;} ";
 		content = content + " .swagger-ui .errors-wrapper hgroup > button {display:none;} ";
 		content = content + " .swagger-ui .errors-wrapper div:first-child:after {content:\"Access denied\";} ";
+		content = content + " .swagger-ui .info .description {display:none;} ";
 		return content.getBytes();
 	}
 
@@ -158,7 +160,7 @@ public class SwaggerController {
 		currentServerURL = fixReverseProxyProtocol(currentServerURL);
 		currentServerURL = currentServerURL.replace(PROXY_ROOT_PATH, "");
 		Executor executor = Executor.newInstance(noSslHttpClient());
-		String content = executor.execute(Request.Get(url)).returnContent().asString();
+		String content = executor.execute(Request.Get(url)).returnContent().asString(StandardCharsets.UTF_8);
 		Gson gson = new Gson();
 		JsonObject jsonObject = gson.fromJson(content, JsonObject.class);
 		jsonObject.remove("servers");

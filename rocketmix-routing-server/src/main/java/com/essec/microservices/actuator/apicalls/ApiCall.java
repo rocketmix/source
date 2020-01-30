@@ -2,15 +2,16 @@ package com.essec.microservices.actuator.apicalls;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 
 import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
 import org.apache.lucene.analysis.core.WhitespaceTokenizerFactory;
 import org.apache.lucene.analysis.miscellaneous.ASCIIFoldingFilterFactory;
 import org.hibernate.search.annotations.AnalyzerDef;
-import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.TokenFilterDef;
@@ -26,6 +27,11 @@ filters = {
 })
 public class ApiCall {
 	
+	private static final int MAX_RESPONSE_LENGTH = 4000;
+	private static final int MAX_REQUEST_LENGTH = 4000;
+	private static final int MAX_URL_LENGTH = 2100;
+
+	
 	@Id
 	@GeneratedValue
 	private Long id;
@@ -34,12 +40,18 @@ public class ApiCall {
 	private Date date = new Date();
 
 	@Field
+	@Lob
+	@Column(length = 2100)
 	private String requestURL;
 
 	@Field
+	@Lob
+	@Column(length = 4000)
 	private String requestData;
 	
 	@Field
+	@Lob
+	@Column(length = 4000)
 	private String responseData;
 	
 	@Field
@@ -66,7 +78,7 @@ public class ApiCall {
 	}
 
 	public void setRequestURL(String requestURL) {
-		this.requestURL = requestURL;
+		this.requestURL = JpaUtil.truncate(requestURL, MAX_URL_LENGTH);
 	}
 
 	public String getRequestData() {
@@ -74,7 +86,7 @@ public class ApiCall {
 	}
 
 	public void setRequestData(String requestData) {
-		this.requestData = requestData;
+		this.requestData = JpaUtil.truncate(requestData, MAX_REQUEST_LENGTH);
 	}
 
 	public String getResponseData() {
@@ -82,7 +94,7 @@ public class ApiCall {
 	}
 
 	public void setResponseData(String responseData) {
-		this.responseData = responseData;
+		this.responseData = JpaUtil.truncate(responseData, MAX_RESPONSE_LENGTH);
 	}
 
 	public int getResponseCode() {
@@ -93,6 +105,12 @@ public class ApiCall {
 		this.responseCode = responceCode;
 	}
 	
+	
+	public static class JpaUtil {
+	    public static String truncate(String value, int length) {
+	        return value != null && value.length() > length ? value.substring(0, length) : value;
+	    }
+	}
 	
 
 }
