@@ -6,7 +6,7 @@
 	<name>RocketMiX Parent Maven Project</name>
 	<description>RocketMiX Parent Project contains all common stuff we need to build all sub projects</description>
 	<url>https://github.com/rocketmix/rocketmix.source</url>
-	<version>1.0.34</version>
+	<version>1.0.35-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<licenses>
 		<license>
@@ -28,7 +28,7 @@
 		<connection>scm:git:https://github.com/rocketmix/rocketmix.source.git</connection>
 		<developerConnection>scm:git:https://github.com/rocketmix/rocketmix.source.git</developerConnection>
 		<url>https://github.com/rocketmix/rocketmix.source</url>
-		<tag>rocketmix-parent-1.0.34</tag>
+		<tag>rocketmix-parent-1.0.33</tag>
 	</scm>
 	<developers>
 		<developer>
