@@ -8,6 +8,8 @@
 
 \>\>\> [Edit code or contribute](https://gitpod.io#https://github.com/rocketmix/rocketmix.source) with Theia Cloud IDE [![Gitpod - Code Now](https://img.shields.io/badge/Gitpod-code%20now-blue.svg?longCache=true)](https://gitpod.io#https://github.com/rocketmix/rocketmix.source) <<<
 
+\>\>\> [Go to the demo](https://rocketmix.herokuapp.com/ "https://rocketmix.herokuapp.com/") (hosted on a free Heroku server which could be down if we reach monthly offer limits) <<<
+
 RocketMiX is a free API plateform under Apache Licence 2.0 which helps you to publish your APIs. As many products are complex to understand and complex to deploy, we made RocketMix to be as simple as possible. Just only one Linux file to execute, nothing more! That makes this project so beautiful.
 
 Yes, behind the hood, it's complex because nothing is magic. But you will not see it. If you want to know more about it, we can tell you that this is a bundled version of Spring Boot API components (Zuul, Ribbon, Eureka, Admin UI, MVC, Seurity). It also embeds a Swagger UI compliant with OpenAPI specs. To simplify your task, we offer a Spring Boot Starter extension based on Apache CXF which helps you to develop your own API.
@@ -20,12 +22,12 @@ Because it is made to be very very (VERY!) simple. It offers you the best result
 
 # How to start ?
 
-You just need a Linux machine with OpenJDK (>= 8) installed. Download a single executable called 'rocketmix-router.war' from Sourceforge to a Linux machine and launch it. It will start on http port 8080. It includes everything you need to a small API config : a routing server, an administration dashboard, an API catalog, a sample API (Hello World).
+You just need a Linux machine with OpenJDK (>= 8) installed. Download a single executable called 'rocketmix-routing-server.war' from Sourceforge to a Linux machine and launch it. It will start on http port 8080. It includes everything you need to a small API config : a routing server, an administration dashboard, an API catalog, a sample API (Hello World).
 
 [![Download RocketMiX](https://img.shields.io/sourceforge/dt/rocketmix.svg)](https://sourceforge.net/projects/rocketmix/files/latest/download)
 
 ```
-./rocketmix-router.war run
+./rocketmix-routint-server.war run
 ```
 
 You can also download a demo API called 'rocketmix-services-demo.war'. It will run on port 8083
