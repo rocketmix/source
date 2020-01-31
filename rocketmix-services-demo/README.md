@@ -35,7 +35,7 @@ The idea is to change the standard Spring Boot shell script with our forked one 
       <configuration>
       	<includeArtifactIds>rocketmix-spring-boot-starter</includeArtifactIds>
       	<outputDirectory>${project.build.directory}</outputDirectory>
-      	<includes>/installer/install.sh</includes>
+      	<includes>installer/install.sh</includes>
       </configuration>
     	</execution>
     </executions>
