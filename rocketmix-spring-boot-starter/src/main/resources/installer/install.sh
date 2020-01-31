@@ -311,13 +311,12 @@ EOF
 )"
 
 service_config_template="$(cat <<-EOF
-JAVA_OPTS="-server -Dspring.config.additional-location=file:./{{service_name}}.properties-XX:+AlwaysPreTouch -XX:+UseG1GC -XX:+ScavengeBeforeFullGC -XX:+DisableExplicitGC -Xms1024M -Xmx1024M -XX:+ExitOnOutOfMemoryError"
+JAVA_OPTS="-server -Dspring.config.additional-location=file:./{{service_name}}.properties -XX:+AlwaysPreTouch -XX:+UseG1GC -XX:+ScavengeBeforeFullGC -XX:+DisableExplicitGC -Xms1024M -Xmx1024M -XX:+ExitOnOutOfMemoryError"
 EOF
 )"
 
 service_additional_properties_template="$(cat <<-EOF
-port=8085
-managementServerURL=http://localhost:8761
+managementServerURL=http://localhost:8080
 EOF
 )"
 
@@ -357,7 +356,7 @@ install() {
   [[ -h $service_additional_properties_file_fullname ]] && { chown -h $username:$groupname $service_additional_properties_file_fullname; }
   # Install service
   systemctl enable $service_file 2>&1
-  [[ $? -ne 0 ]]  && { echoRed "Installation failed"; return 1; }
+  [[ $? -ne 0 ]]  && { echoRed "Installation failed. Maybe you should do 'setenforce 0' to change security level"; return 1; }
   # Start service
   systemctl start $service_name 2>&1
   [[ $? -ne 0 ]]  && { echoYellow "Service successfully installed but failed to start service"; return 1; }
