@@ -58,8 +58,8 @@ The idea is to change the standard Spring Boot shell script with our forked one 
       </goals>
     	</execution>
     </executions>
-  	</plugin>
-  	<!-- TRANSFORM WAR TO LINUX EXECUTABLE FILE (end) -->
+   </plugin>
+   <!-- TRANSFORM WAR TO LINUX EXECUTABLE FILE (end) -->
   </plugins>
 </build>
 ```
