@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.rocketmix</groupId>
 	<artifactId>rocketmix-parent</artifactId>
@@ -112,6 +114,26 @@
 				</configuration>
 			</plugin>
 			<!-- ALLOW SERVLET 3 WITHOUT WEB.XML (end) -->
+			<!-- EXTRACT INSTALL SCRIPT (start) -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>unpack-dependencies</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>unpack-dependencies</goal>
+						</goals>
+						<configuration>
+							<includeArtifactIds>rocketmix-spring-boot-starter</includeArtifactIds>
+							<outputDirectory>${project.build.directory}</outputDirectory>
+							<includes>/installer/install.sh</includes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- EXTRACT INSTALL SCRIPT (end) -->
 			<!-- TRANSFORM WAR TO LINUX EXECUTABLE FILE (start) -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -119,7 +141,7 @@
 				<configuration>
 					<addResources>true</addResources>
 					<executable>true</executable>
-					<embeddedLaunchScript>${project.basedir}/../rocketmix-installer/src/main/resources/template/install.sh</embeddedLaunchScript>
+					<embeddedLaunchScript>${project.build.directory}/installer/install.sh</embeddedLaunchScript>
 					<layout>WAR</layout>
 				</configuration>
 				<executions>
@@ -202,7 +224,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
-				<version>2.5.1</version>
 				<configuration>
 					<autoVersionSubmodules>true</autoVersionSubmodules>
 					<preparationGoals>clean</preparationGoals>
