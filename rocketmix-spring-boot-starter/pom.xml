@@ -165,7 +165,8 @@
 				<executions>
 					<execution>
 						<goals>
-							<goal>repackage</goal>
+							<goal>build-info</goal> <!--  includes build info -->
+							<goal>repackage</goal> <!-- generates linux executable -->
 						</goals>
 					</execution>
 				</executions>

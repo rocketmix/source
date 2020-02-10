@@ -78,19 +78,9 @@ hystrix.command.default.metrics.rollingStats.timeInMilliseconds: 180000 # Define
 hystrix.command.default.circuitBreaker.requestVolumeThreshold: 20 # Opens circuit if 20 requests failed within a rolling window of 3 minutes 
 
 
+# Update default eureka dashboard url which is already taken by spring boot admin ui
 eureka:
   dashboard:
     path: /eureka-dashboard
-  instance:
-    initial-status: UP
-    lease-renewal-interval-in-seconds: 5
-    prefer-ip-address: true
-    metadataMap:
-      instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://0.0.0.0:${server.port}/eureka/
 
           

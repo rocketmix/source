@@ -59,7 +59,7 @@ eureka:
   instance:
     preferIpAddress: true
     metadataMap:
-      instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+      instanceId: ${spring.application.name}:${server.port}
       
 # Autoscan java annotation to detect JAX-RS annotated service to expose as @GET or @POST
 cxf.jaxrs.component-scan: true
