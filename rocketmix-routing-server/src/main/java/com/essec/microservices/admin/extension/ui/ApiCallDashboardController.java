@@ -1,4 +1,4 @@
-package com.essec.microservices.actuator.apicalls;
+package com.essec.microservices.admin.extension.ui;
 
 import java.io.IOException;
 import java.io.InputStream;

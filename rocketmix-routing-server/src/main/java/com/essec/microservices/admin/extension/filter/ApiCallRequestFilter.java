@@ -1,4 +1,4 @@
-package com.essec.microservices.actuator.apicalls;
+package com.essec.microservices.admin.extension.filter;
 
 import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.DEBUG_FILTER_ORDER;
 import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.PRE_TYPE;
@@ -15,6 +15,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.essec.microservices.RouterApplication;
+import com.essec.microservices.admin.extension.model.ApiCallEntry;
+import com.essec.microservices.admin.extension.service.ApiCallSearchService;
 import com.google.common.io.CharStreams;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
@@ -24,7 +26,7 @@ public class ApiCallRequestFilter extends ZuulFilter {
 	private static Logger log = LoggerFactory.getLogger(RouterApplication.class);
 	
 	@Autowired
-	private ApiCallService service;
+	private ApiCallSearchService service;
 	
 	private AtomicLong threadSafeSeq = new AtomicLong(0);
 
@@ -58,7 +60,7 @@ public class ApiCallRequestFilter extends ZuulFilter {
 			if (userPrincipal != null && StringUtils.isNotBlank(userPrincipal.getName())) {
 				principal = userPrincipal.getName();
 			}
-			ApiCall apiCall = new ApiCall();
+			ApiCallEntry apiCall = new ApiCallEntry();
 			apiCall.setId(this.threadSafeSeq.incrementAndGet());
 			apiCall.setRequestURL(request.getRequestURI());
 			apiCall.setRequestData(requestData);

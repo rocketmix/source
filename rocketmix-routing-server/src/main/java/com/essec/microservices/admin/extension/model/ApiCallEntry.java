@@ -1,4 +1,4 @@
-package com.essec.microservices.actuator.apicalls;
+package com.essec.microservices.admin.extension.model;
 
 import java.util.Date;
 
@@ -25,7 +25,7 @@ filters = {
         @TokenFilterDef(factory = ASCIIFoldingFilterFactory.class), // Replace accented characeters by their simpler counterpart (è => e, etc.)
         @TokenFilterDef(factory = LowerCaseFilterFactory.class) // Lowercase all characters
 })
-public class ApiCall {
+public class ApiCallEntry {
 	
 	private static final int MAX_RESPONSE_LENGTH = 4000;
 	private static final int MAX_REQUEST_LENGTH = 4000;
@@ -36,8 +36,10 @@ public class ApiCall {
 	@GeneratedValue
 	private Long id;
 	
+	private String serviceId;
+	
 	@Field
-	private Date date = new Date();
+	private Date activityDate = new Date();
 
 	@Field
 	@Lob
@@ -64,13 +66,21 @@ public class ApiCall {
 	public void setId(Long id) {
 		this.id = id;
 	}
-
-	public Date getDate() {
-		return date;
+	
+	public String getServiceId() {
+		return serviceId;
 	}
 
-	public void setDate(Date date) {
-		this.date = date;
+	public void setServiceId(String serviceId) {
+		this.serviceId = serviceId;
+	}
+
+	public Date getActivityDate() {
+		return activityDate;
+	}
+
+	public void setActivityDate(Date date) {
+		this.activityDate = date;
 	}
 
 	public String getRequestURL() {

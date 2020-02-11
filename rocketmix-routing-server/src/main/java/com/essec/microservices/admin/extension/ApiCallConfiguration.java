@@ -1,4 +1,4 @@
-package com.essec.microservices.actuator.apicalls;
+package com.essec.microservices.admin.extension;
 
 import java.util.HashMap;
 
@@ -14,6 +14,11 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.PlatformTransactionManager;
+
+import com.essec.microservices.admin.extension.filter.ApiCallRequestFilter;
+import com.essec.microservices.admin.extension.filter.ApiCallResponseFilter;
+import com.essec.microservices.admin.extension.model.ApiCallEntry;
+import com.essec.microservices.admin.extension.repository.ApiCallRespository;
 
 @Configuration
 @EnableScheduling
@@ -35,7 +40,7 @@ public class ApiCallConfiguration {
 	public LocalContainerEntityManagerFactoryBean inmemoryEntityManager() {
 		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
 		em.setDataSource(inmemoryDataSource());
-		em.setPackagesToScan(new String[] { ApiCall.class.getPackage().getName() });
+		em.setPackagesToScan(new String[] { ApiCallEntry.class.getPackage().getName() });
 
 		HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
 		em.setJpaVendorAdapter(vendorAdapter);

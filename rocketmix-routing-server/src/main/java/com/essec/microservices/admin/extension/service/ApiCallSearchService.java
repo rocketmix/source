@@ -1,4 +1,4 @@
-package com.essec.microservices.actuator.apicalls;
+package com.essec.microservices.admin.extension.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +21,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.essec.microservices.admin.extension.model.ApiCallEntry;
+import com.essec.microservices.admin.extension.repository.ApiCallRespository;
+
 @Service
 @Transactional(propagation = Propagation.REQUIRED, transactionManager = "inmemoryTransactionManager")
-public class ApiCallService {
+public class ApiCallSearchService {
 	
 	private static final int MAX_RESULT = 100;
 	
@@ -38,35 +41,35 @@ public class ApiCallService {
 	@Autowired
 	private ApiCallRespository repository; 
 	
-	public List<ApiCall> performSearch(String keyword) {
+	public List<ApiCallEntry> performSearch(String keyword) {
 		if (StringUtils.isNotBlank(keyword)) {
 			keyword = keyword + "*";
 		}
 		FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager);
-		QueryBuilder qb = fullTextEntityManager.getSearchFactory().buildQueryBuilder().forEntity(ApiCall.class).get();
+		QueryBuilder qb = fullTextEntityManager.getSearchFactory().buildQueryBuilder().forEntity(ApiCallEntry.class).get();
 		Query luceneQuery = qb.simpleQueryString().onFields("requestURL", "requestData", "responseData").boostedTo(1f)
 				.withAndAsDefaultOperator().matching(keyword).createQuery();
-		javax.persistence.Query jpaQuery = fullTextEntityManager.createFullTextQuery(luceneQuery, ApiCall.class);
+		javax.persistence.Query jpaQuery = fullTextEntityManager.createFullTextQuery(luceneQuery, ApiCallEntry.class);
 		jpaQuery.setMaxResults(MAX_RESULT);
 		try {
 			return jpaQuery.getResultList();
 		} catch (NoResultException nre) {
-			return new ArrayList<ApiCall>();
+			return new ArrayList<ApiCallEntry>();
 		}
 	}
 	
-	public List<ApiCall> findAll() {
-		Page<ApiCall> page = this.repository.findAll(PageRequest.of(0, MAX_RESULT));
+	public List<ApiCallEntry> findAll() {
+		Page<ApiCallEntry> page = this.repository.findAll(PageRequest.of(0, MAX_RESULT));
 		return page.stream().collect(Collectors.toList());
 	}
 	
-	public Long save(ApiCall entity) {
+	public Long save(ApiCallEntry entity) {
 		entity = this.repository.save(entity);
 		return entity.getId();
 	}
 	
 	public void update(Long id, String responseData, int responseCode) {
-		ApiCall entity = this.repository.getOne(id);
+		ApiCallEntry entity = this.repository.getOne(id);
 		if (entity == null) {
 			return;
 		}
@@ -82,13 +85,13 @@ public class ApiCallService {
 		if (count <= REPOSITORY_MAX_SIZE) {
 			return;
 		}
-		Page<ApiCall> page = this.repository.findLatest(PageRequest.of(0, REPOSITORY_MAX_SIZE));
+		Page<ApiCallEntry> page = this.repository.findLatest(PageRequest.of(0, REPOSITORY_MAX_SIZE));
 		if (page.isEmpty()) {
 			return;
 		}
 		long pageSize = page.stream().count();
-		ApiCall olderApiCall = page.stream().skip(pageSize - 1).findFirst().get(); // Last stream element
-		this.repository.deleteExpired(olderApiCall.getDate());
+		ApiCallEntry olderApiCall = page.stream().skip(pageSize - 1).findFirst().get(); // Last stream element
+		this.repository.deleteExpired(olderApiCall.getActivityDate());
 	}
 
 }

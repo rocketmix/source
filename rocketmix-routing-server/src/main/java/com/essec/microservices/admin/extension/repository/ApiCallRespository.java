@@ -1,4 +1,4 @@
-package com.essec.microservices.actuator.apicalls;
+package com.essec.microservices.admin.extension.repository;
 
 import java.util.Date;
 
@@ -11,12 +11,14 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.essec.microservices.admin.extension.model.ApiCallEntry;
+
 @Repository
 @Transactional(propagation = Propagation.REQUIRED, transactionManager = "inmemoryTransactionManager")
-public interface ApiCallRespository extends JpaRepository<ApiCall, Long> {
+public interface ApiCallRespository extends JpaRepository<ApiCallEntry, Long> {
 	
 	@Query("select t from ApiCall t order by t.date desc")
-    public Page<ApiCall> findLatest(Pageable pageable);
+    public Page<ApiCallEntry> findLatest(Pageable pageable);
 	
 	@Modifying
 	@Query("delete from ApiCall t where t.date < :expirationDate")
