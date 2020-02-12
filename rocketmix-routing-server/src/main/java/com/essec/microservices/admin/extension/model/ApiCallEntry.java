@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
 import org.apache.lucene.analysis.core.WhitespaceTokenizerFactory;
@@ -39,6 +41,7 @@ public class ApiCallEntry {
 	private String serviceId;
 	
 	@Field
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date activityDate = new Date();
 
 	@Field
