@@ -12,23 +12,21 @@ import com.essec.microservices.admin.extension.model.ApiCallEntry;
 import com.essec.microservices.admin.extension.service.ApiCallSearchService;
 
 @Component
-@Endpoint(id = "apicalls")
-public class ApiCallActuatorEndPoint {
+@Endpoint(id = "apicalls-search")
+public class ApiCallActuatorSearchEndPoint {
 
 	@Autowired
-	private ApiCallSearchService service; 
-
+	private ApiCallSearchService searchService; 
+	
 	@ReadOperation
 	public List<ApiCallEntry> findAll() {
-		return this.service.findAll();
+		return this.searchService.findAll();
 	}
-	
 	
 	@ReadOperation
 	public List<ApiCallEntry> find(@Selector String keyword) {
-		return this.service.performSearch(keyword);
+		return this.searchService.performSearch(keyword);
 	}
-
 
 
 }

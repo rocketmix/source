@@ -32,7 +32,7 @@ public interface ApiCallRespository extends JpaRepository<ApiCallEntry, Long> {
 	@Query("delete from ApiCallEntry t where t.activityDate < :expirationDate")
 	public void deleteExpired(Date expirationDate);
 	
-	@Query("select s as service, count(*) as counter from ApiCallEntry t as joint t.serviceId s where t.date >= :activityDate group by s")
+	@Query("select t.serviceId, count(t) from ApiCallEntry t where t.activityDate >= :activityDate group by t.serviceId")
 	public List<ApiCallServiceAndCount> countWithActivityDateAdter(@Param("activityDate") Date activityDateTime);
 
 }

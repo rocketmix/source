@@ -28,7 +28,7 @@ class ApiCall extends Component {
             this.apiCallResultComponent.current.setResults([]);
             return;
         }
-        fetch(this.host + '/actuator/apicalls/' + encodeURI(searchKeyword))
+        fetch(this.host + '/actuator/apicalls-search/' + encodeURI(searchKeyword))
             .then(response => response.json())
             .then(json => this.apiCallResultComponent.current.setResults(json));
     }
