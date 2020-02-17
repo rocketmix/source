@@ -23,6 +23,8 @@ import com.netflix.zuul.context.RequestContext;
 
 public class ApiCallRequestFilter extends ZuulFilter {
 
+	private static final String URL_SEARCHED_STRING = "/services/";
+
 	private static Logger log = LoggerFactory.getLogger(RouterApplication.class);
 	
 	@Autowired
@@ -62,6 +64,11 @@ public class ApiCallRequestFilter extends ZuulFilter {
 			}
 			ApiCallEntry apiCall = new ApiCallEntry();
 			apiCall.setId(this.threadSafeSeq.incrementAndGet());
+			String serviceId = request.getRequestURI();
+			if (serviceId != null && serviceId.contains(URL_SEARCHED_STRING)) {
+				serviceId = serviceId.substring(1, serviceId.indexOf(URL_SEARCHED_STRING));
+			}
+			apiCall.setServiceId(serviceId);
 			apiCall.setRequestURL(request.getRequestURI());
 			apiCall.setRequestData(requestData);
 			Long id = service.save(apiCall);
