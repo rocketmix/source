@@ -68,6 +68,7 @@ public class ApiCallRequestFilter extends ZuulFilter {
 			if (serviceId != null && serviceId.contains(URL_SEARCHED_STRING)) {
 				serviceId = serviceId.substring(1, serviceId.indexOf(URL_SEARCHED_STRING));
 			}
+			
 			apiCall.setServiceId(serviceId);
 			apiCall.setRequestURL(request.getRequestURI());
 			apiCall.setRequestData(requestData);
