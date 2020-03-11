@@ -1,6 +1,6 @@
 # Default HTTP port
 server:
-  port: 8081
+  port-range: 8080-8099 
   
 
 # HATEOAS resource links fix

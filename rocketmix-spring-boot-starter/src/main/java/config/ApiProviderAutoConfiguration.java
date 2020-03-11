@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 
 import com.essec.microservices.JaxRsConfiguration;
 import com.essec.microservices.SecurityConfiguration;
+import com.essec.microservices.ServerPortConfiguration;
 import com.essec.microservices.catalog.SwaggerConfiguration;
 
 @Configuration
@@ -19,7 +20,7 @@ import com.essec.microservices.catalog.SwaggerConfiguration;
 @EnableDiscoveryClient
 @EnableCircuitBreaker
 @EnableHystrixDashboard
-@Import({SecurityConfiguration.class, SwaggerConfiguration.class, CxfAutoConfiguration.class, JaxRsConfiguration.class })
+@Import({ServerPortConfiguration.class, SecurityConfiguration.class, SwaggerConfiguration.class, CxfAutoConfiguration.class, JaxRsConfiguration.class })
 public class ApiProviderAutoConfiguration {
 
 
