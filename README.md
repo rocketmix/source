@@ -8,7 +8,7 @@
 
 \>\>\> [Edit code or contribute](https://gitpod.io#https://github.com/rocketmix/rocketmix.source) with Theia Cloud IDE [![Gitpod - Code Now](https://img.shields.io/badge/Gitpod-code%20now-blue.svg?longCache=true)](https://gitpod.io#https://github.com/rocketmix/rocketmix.source) <<<
 
-\>\>\> [Go to the demo](https://rocketmix.herokuapp.com/ "https://rocketmix.herokuapp.com/") (hosted on a free Heroku server which could be down if we reach monthly offer limits) <<<
+\>\>\> [Go to the demo](https://rocketmix.herokuapp.com/ "https://rocketmix.herokuapp.com/") (hosted for free thanks to Heroku free offer) <<<
 
 RocketMiX is a free API plateform under Apache Licence 2.0 which helps you to publish your APIs. As many products are complex to understand and complex to deploy, we made RocketMix to be as simple as possible. Just only one Linux file to execute, nothing more! That makes this project so beautiful.
 
