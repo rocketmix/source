@@ -3,6 +3,9 @@ spring:
     name: DEMO
   
 
+server:
+  port-range: 8081-8090
+
 #managementServerURL: http://localhost:8080  
 
 

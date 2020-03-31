@@ -100,7 +100,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable();
 		// Secure access to services catalog
-		http.authorizeRequests().requestMatchers(catalogRequestMatcher()).authenticated().accessDecisionManager(accessDecisionManager());
+		http.authorizeRequests().requestMatchers(privateCatalogRequestMatcher()).authenticated().accessDecisionManager(accessDecisionManager());
 		// Secure access to admin UI
 		http.authorizeRequests().antMatchers("/admin").hasAnyRole("ADMIN");
 		http.authorizeRequests().antMatchers("/admin/instances").permitAll();
@@ -126,7 +126,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	 * @return r
 	 */
 	@Bean
-	public RequestMatcher catalogRequestMatcher() {
+	public RequestMatcher privateCatalogRequestMatcher() {
 		ReloadableUserDetailsManager reloadableUserDetailsManager = userDetailsManager();
 		return new RequestMatcher() {
 			@Override
@@ -147,6 +147,32 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			}
 		};
 	}
+	
+	
+	@Bean
+	public RequestMatcher publicCatalogRequestMatcher() {
+		ReloadableUserDetailsManager reloadableUserDetailsManager = userDetailsManager();
+		return new RequestMatcher() {
+			@Override
+			public boolean matches(HttpServletRequest request) {
+				String requestURI = request.getRequestURI();
+				if (!requestURI.equalsIgnoreCase("/catalog/swagger-docs/proxy")) {
+					return false;
+				}
+				String service = request.getParameter("vipaddress");
+				if (StringUtils.isBlank(service)) {
+					return false;
+				}
+				service = "ROLE_" + service.toUpperCase();
+				if (!reloadableUserDetailsManager.roleExists(service)) {
+					return true;
+				}
+				return false;
+			}
+		};
+	}
+	
+	
 
 	/**
 	 * Confirm if a user has access to a services catalog <br/>
@@ -212,6 +238,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		web.ignoring().antMatchers("/catalog", "/catalog/swagger-ui/index.html");  // Let access to Swagger HTML resources
 		web.ignoring().antMatchers("/openapi/default.json"); // Let access to defauit api definition
 		web.ignoring().requestMatchers(getRegisteredServiceRequestMatcher()); // Let access to all API (authentication managed by API itself
+		web.ignoring().requestMatchers(publicCatalogRequestMatcher()); // Let access to public catalog
 	}
 	
 	

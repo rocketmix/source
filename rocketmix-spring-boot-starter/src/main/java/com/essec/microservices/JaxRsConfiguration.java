@@ -1,7 +1,6 @@
 package com.essec.microservices;
 
 import javax.validation.ValidationException;
-import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.ext.ExceptionMapper;
 
 import org.apache.cxf.jaxrs.openapi.OpenApiFeature;
@@ -45,10 +44,6 @@ public class JaxRsConfiguration {
 //	}
 	
 	
-	@Bean
-	public ContainerResponseFilter corsFilter() {
-		return new CorsResponseFilter();
-	}
 	
 	@Bean
 	public BeanValidationProvider getBeanValidationProvider() {
