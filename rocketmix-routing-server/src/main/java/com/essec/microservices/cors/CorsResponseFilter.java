@@ -69,6 +69,9 @@ public class CorsResponseFilter extends ZuulFilter  {
 			String origin = httpServletRequest.getHeader("origin");
 			if (StringUtils.isBlank(origin)) {
 				String referer = httpServletRequest.getHeader("referer");
+				if (StringUtils.isBlank(referer)) {
+					return "*"; // Default case for sec-fetch-mode = navigate
+				}
 				URI originURL = new URI(referer);
 				origin = originURL.getScheme() + "://" + originURL.getAuthority();
 			}
