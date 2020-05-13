@@ -1,8 +1,5 @@
 package com.essec.microservices;
 
-import javax.validation.ValidationException;
-import javax.ws.rs.ext.ExceptionMapper;
-
 import org.apache.cxf.jaxrs.openapi.OpenApiFeature;
 import org.apache.cxf.jaxrs.swagger.ui.SwaggerUiConfig;
 import org.apache.cxf.jaxrs.validation.JAXRSBeanValidationInInterceptor;
@@ -26,31 +23,45 @@ public class JaxRsConfiguration {
 		return openApiFeature;
 	}
 
+	/**
+	 * This Jackson provider allows to convert automatically JSON streams to POJO
+	 * It has an @Provider annotation which make it discovered automatically by Apache CXF Spring integration
+	 * which scans Spring beans thanks to cxf.jaxrs.component-scan:true parameter   
+	 * 
+	 * 
+	 * @param module m
+	 * @return p
+	 */
 	@Bean
 	public JacksonJsonProvider jsonProvider(JsonComponentModule module) {
 		JacksonJsonProvider provider = new JacksonJsonProvider();
 		ObjectMapper mapper = new ObjectMapper();
+		// mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         mapper.registerModule(module);
         provider.setMapper(mapper);
 		return provider;
 	}
-//
-//	@Bean
-//	public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
-//		ObjectMapper mapper = new ObjectMapper();
-//		mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-//		MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter(mapper);
-//		return converter;
-//	}
 	
 	
-	
+	/**
+	 * Allows Apache CXF and Jackson object mapper to validate JSON stream with javax validation
+	 * annotations. To enable validation, don't forget to add @Valid annotation on method arguments
+	 * and nested entities 
+	 * 
+	 * @return p
+	 */
 	@Bean
 	public BeanValidationProvider getBeanValidationProvider() {
 		return new BeanValidationProvider();
 	}
 		
 	
+	/**
+	 * This input allows javax validation on method call arguments. Don't forget to add @Valid annotation
+	 * on arguments you want to validate.
+	 * 
+	 * @return p
+	 */
 	@Bean
 	public JAXRSBeanValidationInInterceptor getJAXRSBeanValidationInInterceptor() {
 		JAXRSBeanValidationInInterceptor interceptor = new JAXRSBeanValidationInInterceptor();
@@ -58,6 +69,12 @@ public class JaxRsConfiguration {
 		return interceptor;
 	}
 	
+	/**
+	 * Allows to validate result content with javax validation. Don't forget to att @Valid annotation
+	 * on method result declaration
+	 * 
+	 * @return p
+	 */
 	@Bean
 	public JAXRSBeanValidationOutInterceptor getJAXRSBeanValidationOutInterceptor() {
 		JAXRSBeanValidationOutInterceptor interceptor = new JAXRSBeanValidationOutInterceptor();
@@ -65,9 +82,4 @@ public class JaxRsConfiguration {
 		return interceptor;
 	}
 	
-	@Bean
-	public ExceptionMapper<ValidationException> getValidationExceptionMapper() {
-		return new JaxRsValidationExceptionMapper();	
-	}
-
 }
