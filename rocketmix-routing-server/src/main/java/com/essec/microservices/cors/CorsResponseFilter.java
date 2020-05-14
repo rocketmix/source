@@ -52,11 +52,14 @@ public class CorsResponseFilter extends ZuulFilter  {
 		}
 		List<Pair<String, String>> filteredResponseHeaders = new ArrayList<>();
 	    List<Pair<String, String>> zuulResponseHeaders = requestContext.getZuulResponseHeaders();
-	    if (zuulResponseHeaders != null) {
-	    	filteredResponseHeaders.add(new Pair<>("Access-Control-Allow-Credentials", "true"));
-	    	filteredResponseHeaders.add(new Pair<>("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT"));
-	    	filteredResponseHeaders.add(new Pair<>("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, X-Codingpedia"));
-	    	filteredResponseHeaders.add(new Pair<>("Access-Control-Allow-Origin", acceptedOrigin));
+	    filteredResponseHeaders.add(new Pair<>("Access-Control-Allow-Credentials", "true"));
+	    filteredResponseHeaders.add(new Pair<>("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT"));
+	    filteredResponseHeaders.add(new Pair<>("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, X-Codingpedia"));
+	    filteredResponseHeaders.add(new Pair<>("Access-Control-Allow-Origin", acceptedOrigin));
+	    if (zuulResponseHeaders != null) { // Keeps origin headers
+	    	for(Pair<String, String> header: zuulResponseHeaders){
+	    		filteredResponseHeaders.add(new Pair<>(header.first(), header.second()));
+	        }
 	    }
 	    requestContext.put("zuulResponseHeaders", filteredResponseHeaders);
 	    return null;		
