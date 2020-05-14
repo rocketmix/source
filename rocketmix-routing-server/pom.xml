@@ -196,7 +196,7 @@
 				<executions>
 					<execution>
 						<goals>
-							<goal>deploy</goal>
+							<goal>deploy-only</goal>
 						</goals>
 						<phase>deploy</phase>
 						<configuration>
