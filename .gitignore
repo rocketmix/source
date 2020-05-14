@@ -16,3 +16,4 @@ release.properties
 rebel.xml
 **/bundle-dashboard.js*
 **/.attach*
+**/package-lock.json
