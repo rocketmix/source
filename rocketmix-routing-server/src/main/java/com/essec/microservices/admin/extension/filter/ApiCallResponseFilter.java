@@ -50,7 +50,7 @@ public class ApiCallResponseFilter extends ZuulFilter {
 			}
 			String line = String.format("Response, %s \r\n", responseData);
 			log.debug(line);
-			ctx.setResponseBody(responseData);
+			//ctx.setResponseBody(responseData);
 		} catch (IOException e) {
 			log.error("Error reading body", e);
 		}
