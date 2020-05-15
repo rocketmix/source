@@ -84,5 +84,7 @@ hystrix.command.default.circuitBreaker.requestVolumeThreshold: 20 # Opens circui
 eureka:
   dashboard:
     path: /eureka-dashboard
-
+# Avoid service registration issue : https://https://stackoverflow.com/questions/32616329/eureka-never-unregisters-a-service
+  server:
+    enable-self-preservation: false
           
