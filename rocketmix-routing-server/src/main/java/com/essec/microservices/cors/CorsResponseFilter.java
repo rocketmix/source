@@ -6,6 +6,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -46,23 +47,38 @@ public class CorsResponseFilter extends ZuulFilter  {
 	@Override
 	public Object run() throws ZuulException {
 		RequestContext requestContext = RequestContext.getCurrentContext();
-		String acceptedOrigin = getAcceptedOrigin(requestContext);
-		if (StringUtils.isBlank(acceptedOrigin)) {
-			return null;
-		}
-		List<Pair<String, String>> filteredResponseHeaders = new ArrayList<>();
-	    List<Pair<String, String>> zuulResponseHeaders = requestContext.getZuulResponseHeaders();
-	    filteredResponseHeaders.add(new Pair<>("Access-Control-Allow-Credentials", "true"));
-	    filteredResponseHeaders.add(new Pair<>("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT"));
-	    filteredResponseHeaders.add(new Pair<>("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, X-Codingpedia"));
-	    filteredResponseHeaders.add(new Pair<>("Access-Control-Allow-Origin", acceptedOrigin));
-	    if (zuulResponseHeaders != null) { // Keeps origin headers
-	    	for(Pair<String, String> header: zuulResponseHeaders){
-	    		filteredResponseHeaders.add(new Pair<>(header.first(), header.second()));
-	        }
-	    }
-	    requestContext.put("zuulResponseHeaders", filteredResponseHeaders);
+		requestContext = preserveOriginResponseHeaders(requestContext);
+		requestContext = injectCORSResponseHeaders(requestContext);
 	    return null;		
+	}
+
+	private RequestContext injectCORSResponseHeaders(RequestContext requestContext) {
+		String acceptedOrigin = getAcceptedOrigin(requestContext);
+		if (StringUtils.isNotBlank(acceptedOrigin)) {
+			requestContext.addZuulResponseHeader("Access-Control-Allow-Credentials", "true");
+			requestContext.addZuulResponseHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT");
+			requestContext.addZuulResponseHeader("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, X-Codingpedia");
+			requestContext.addZuulResponseHeader("Access-Control-Allow-Origin", acceptedOrigin);
+		}
+		return requestContext;
+	}
+
+	private RequestContext preserveOriginResponseHeaders(RequestContext requestContext) {
+		List<Pair<String,String>> originResponseHeaders = requestContext.getOriginResponseHeaders();
+		List<Pair<String,String>> zuulResponseHeaders = requestContext.getZuulResponseHeaders();
+		List<String> zuulReponseHeadersKeys = new ArrayList<>();
+		if (zuulResponseHeaders != null) {
+			zuulReponseHeadersKeys.addAll(zuulResponseHeaders.stream().map(p -> p.first()).collect(Collectors.toList()));
+		}
+		for (Pair<String,String> anOriginResponseHeader : originResponseHeaders) {
+			String headerKey = anOriginResponseHeader.first();
+			boolean isAlreadyContained = zuulReponseHeadersKeys.stream().anyMatch(headerKey::equalsIgnoreCase);
+			if (isAlreadyContained) {
+				continue;
+			}
+			requestContext.addZuulResponseHeader(anOriginResponseHeader.first(), anOriginResponseHeader.second());
+		}
+		return requestContext;
 	}
 	
 	private String getAcceptedOrigin(RequestContext requestContext) {
