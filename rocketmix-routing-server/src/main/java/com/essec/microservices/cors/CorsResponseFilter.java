@@ -72,6 +72,9 @@ public class CorsResponseFilter extends ZuulFilter  {
 		}
 		for (Pair<String,String> anOriginResponseHeader : originResponseHeaders) {
 			String headerKey = anOriginResponseHeader.first();
+			if ("Content-Length".equalsIgnoreCase(headerKey)) { // To avoid content length mismatch
+				continue;
+			}
 			boolean isAlreadyContained = zuulReponseHeadersKeys.stream().anyMatch(headerKey::equalsIgnoreCase);
 			if (isAlreadyContained) {
 				continue;
