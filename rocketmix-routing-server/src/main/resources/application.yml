@@ -60,7 +60,7 @@ zuul:
   cors: # CORS must be updated if you plan to use you APIs from a javascript web page
     allowed-origins: 
     - '*'
-
+  set-content-length: true
 
 # Ribbon acts as load balancer between microservices
 # See RibbonConfiguration class for load balancing strategy
