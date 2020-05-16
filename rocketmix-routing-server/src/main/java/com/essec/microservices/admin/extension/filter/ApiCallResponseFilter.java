@@ -20,9 +20,9 @@ import com.netflix.zuul.context.RequestContext;
 public class ApiCallResponseFilter extends ZuulFilter {
 
 	private static Logger log = LoggerFactory.getLogger(RouterApplication.class);
-	
+
 	@Autowired
-	private ApiCallSearchService service;	
+	private ApiCallSearchService service;
 
 	@Override
 	public String filterType() {
@@ -42,29 +42,29 @@ public class ApiCallResponseFilter extends ZuulFilter {
 	@Override
 	public Object run() {
 		RequestContext ctx = RequestContext.getCurrentContext();
-		try (final InputStream responseDataStream = ctx.getResponseDataStream()) {
-			Long originContentLength = ctx.getOriginContentLength();
-			String responseData = "";
-			if (originContentLength != null && originContentLength <= 4096) {
+		Long originContentLength = ctx.getOriginContentLength();
+		String responseData = "";
+		if (originContentLength != null && originContentLength <= 4096) {
+			try (final InputStream responseDataStream = ctx.getResponseDataStream()) {
 				byte[] byteArray = IOUtils.toByteArray(responseDataStream);
 				responseData = new String(byteArray);
 				ctx.setResponseDataStream(new ByteArrayInputStream(byteArray));
+			} catch (IOException e) {
+				log.error("Error reading body", e);
 			}
-			if (originContentLength != null && originContentLength > 4096) {
-				responseData = "[response too long to be read]";
-			}
-			if (originContentLength == null) {
-				responseData = "[response without content length not read]";
-			}
-			Long id = (Long) ctx.get("id");
-			if (id != null) {
-				this.service.update(id, responseData, ctx.getResponseStatusCode());
-			}
-			String line = String.format("Response, %s \r\n", responseData);
-			log.debug(line);
-		} catch (IOException e) {
-			log.error("Error reading body", e);
 		}
+		if (originContentLength != null && originContentLength > 4096) {
+			responseData = "[response too long to be read]";
+		}
+		if (originContentLength == null) {
+			responseData = "[response without content length not read]";
+		}
+		Long id = (Long) ctx.get("id");
+		if (id != null) {
+			this.service.update(id, responseData, ctx.getResponseStatusCode());
+		}
+		String line = String.format("Response, %s \r\n", responseData);
+		log.debug(line);
 		return null;
 	}
 }
