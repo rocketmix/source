@@ -43,15 +43,18 @@ public class ApiCallResponseFilter extends ZuulFilter {
 	public Object run() {
 		RequestContext ctx = RequestContext.getCurrentContext();
 		try (final InputStream responseDataStream = ctx.getResponseDataStream()) {
-			long originContentLength = ctx.getOriginContentLength();
+			Long originContentLength = ctx.getOriginContentLength();
 			String responseData = "";
-			if (originContentLength <= 4096) {
+			if (originContentLength != null && originContentLength <= 4096) {
 				byte[] byteArray = IOUtils.toByteArray(responseDataStream);
 				responseData = new String(byteArray);
 				ctx.setResponseDataStream(new ByteArrayInputStream(byteArray));
 			}
-			if (originContentLength > 4096) {
+			if (originContentLength != null && originContentLength > 4096) {
 				responseData = "[response too long to be read]";
+			}
+			if (originContentLength == null) {
+				responseData = "[response without content length not read]";
 			}
 			Long id = (Long) ctx.get("id");
 			if (id != null) {
