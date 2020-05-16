@@ -29,7 +29,7 @@ filters = {
 })
 public class ApiCallEntry {
 	
-	private static final int MAX_RESPONSE_LENGTH = 4000;
+	public static final int MAX_RESPONSE_LENGTH = 4000;
 	private static final int MAX_REQUEST_LENGTH = 4000;
 	private static final int MAX_URL_LENGTH = 2100;
 

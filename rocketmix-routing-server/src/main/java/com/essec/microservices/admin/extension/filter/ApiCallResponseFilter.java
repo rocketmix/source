@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.essec.microservices.RouterApplication;
+import com.essec.microservices.admin.extension.model.ApiCallEntry;
 import com.essec.microservices.admin.extension.service.ApiCallSearchService;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
@@ -44,7 +45,7 @@ public class ApiCallResponseFilter extends ZuulFilter {
 		RequestContext ctx = RequestContext.getCurrentContext();
 		Long originContentLength = ctx.getOriginContentLength();
 		String responseData = "";
-		if (originContentLength != null && originContentLength <= 4096) {
+		if (originContentLength != null && originContentLength <= ApiCallEntry.MAX_RESPONSE_LENGTH) {
 			try (final InputStream responseDataStream = ctx.getResponseDataStream()) {
 				byte[] byteArray = IOUtils.toByteArray(responseDataStream);
 				responseData = new String(byteArray);
@@ -53,7 +54,7 @@ public class ApiCallResponseFilter extends ZuulFilter {
 				log.error("Error reading body", e);
 			}
 		}
-		if (originContentLength != null && originContentLength > 4096) {
+		if (originContentLength != null && originContentLength > ApiCallEntry.MAX_RESPONSE_LENGTH) {
 			responseData = "[response too long to be read]";
 		}
 		if (originContentLength == null) {

@@ -48,7 +48,7 @@ public class ApiCallActuatorEndpoint {
 		return this.throughputService.getThroughputPerSecond();
 	}
 
-	@GetMapping(path = "/findAll", produces = { MediaType.APPLICATION_JSON_VALUE })
+	@GetMapping(path = "/findall", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public List<ApiCallEntry> findAll() {
 		return this.searchService.findAll();
 	}
