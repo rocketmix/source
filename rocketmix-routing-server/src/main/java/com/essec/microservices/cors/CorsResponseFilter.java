@@ -70,27 +70,8 @@ public class CorsResponseFilter extends ZuulFilter  {
 		if (StringUtils.isNotBlank(acceptedOrigin)) {
 			requestContext.addZuulResponseHeader(METHODS_NAME, ACCEPTED_METHODS);
 			requestContext.addZuulResponseHeader(HEADERS_NAME, ALLOWED_HEADERS);
-			boolean isOriginHeaderUpdated = false;
-			boolean isAllowCredentialsHeaderUpdated = false;
-			for (Pair<String, String> anExistingHeader : requestContext.getZuulResponseHeaders()) {
-				String headerName = anExistingHeader.first();
-				if (CREDENTIALS_NAME.equalsIgnoreCase(headerName)) {
-					anExistingHeader.setSecond(Boolean.TRUE.toString());
-					isAllowCredentialsHeaderUpdated = true;
-					continue;
-				}
-				if (ORIGIN_NAME.equalsIgnoreCase(headerName)) {
-					anExistingHeader.setSecond(acceptedOrigin);
-					isOriginHeaderUpdated = true;
-					continue;
-				}
-			}
-			if (!isAllowCredentialsHeaderUpdated) {
-				requestContext.addZuulResponseHeader(CREDENTIALS_NAME, Boolean.TRUE.toString());
-			}
-			if (!isOriginHeaderUpdated) {
-				requestContext.addZuulResponseHeader(ORIGIN_NAME, acceptedOrigin);
-			}
+			requestContext.addZuulResponseHeader(CREDENTIALS_NAME, Boolean.TRUE.toString());
+			requestContext.addZuulResponseHeader(ORIGIN_NAME, acceptedOrigin);
 		}
 		return requestContext;
 	}
