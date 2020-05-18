@@ -5,7 +5,6 @@ import static org.springframework.cloud.netflix.zuul.filters.support.FilterConst
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,29 +55,10 @@ public class CorsResponseFilter extends ZuulFilter  {
 	private RequestContext injectCORSResponseHeaders(RequestContext requestContext) {
 		String acceptedOrigin = getAcceptedOrigin(requestContext);
 		if (StringUtils.isNotBlank(acceptedOrigin)) {
+			requestContext.addZuulResponseHeader("Access-Control-Allow-Credentials", "true");
 			requestContext.addZuulResponseHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT");
 			requestContext.addZuulResponseHeader("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, X-Codingpedia");
-			boolean isOriginHeaderUpdated = false;
-			boolean isAllowCredentialsHeaderUpdated = false;
-			for (Pair<String, String> anExistingHeader : requestContext.getZuulResponseHeaders()) {
-				String headerName = anExistingHeader.first();
-				if ("Access-Control-Allow-Credentials".equalsIgnoreCase(headerName)) {
-					anExistingHeader.setSecond("true");
-					isAllowCredentialsHeaderUpdated = true;
-					continue;
-				}
-				if ("Access-Control-Allow-Origin".equalsIgnoreCase(headerName)) {
-					anExistingHeader.setSecond(acceptedOrigin);
-					isOriginHeaderUpdated = true;
-					continue;
-				}
-			}
-			if (!isAllowCredentialsHeaderUpdated) {
-				requestContext.addZuulResponseHeader("Access-Control-Allow-Credentials", "true");
-			}
-			if (!isOriginHeaderUpdated) {
-				requestContext.addZuulResponseHeader("Access-Control-Allow-Origin", acceptedOrigin);
-			}
+			requestContext.addZuulResponseHeader("Access-Control-Allow-Origin", acceptedOrigin);
 		}
 		return requestContext;
 	}
