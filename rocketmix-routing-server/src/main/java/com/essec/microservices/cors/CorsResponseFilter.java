@@ -3,6 +3,7 @@ package com.essec.microservices.cors;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.Filter;
@@ -19,6 +20,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+
+import com.netflix.util.Pair;
+import com.netflix.zuul.context.RequestContext;
 
 @Configuration
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -53,6 +57,7 @@ public class CorsResponseFilter implements Filter  {
         
         String acceptedOrigin = getAcceptedOrigin(request);
 		if (StringUtils.isNotBlank(acceptedOrigin)) {
+			removeExistingCORSServiceResponseHeaders();
 	        response.setHeader(ORIGIN_NAME, acceptedOrigin);
 	        response.setHeader(METHODS_NAME, ACCEPTED_METHODS);
 	        response.setHeader(MAX_AGE_NAME, MAX_AGE_VALUE);
@@ -73,6 +78,37 @@ public class CorsResponseFilter implements Filter  {
         config = filterConfig;
     }
 	
+    
+    private void removeExistingCORSServiceResponseHeaders() {
+    	RequestContext requestContext = RequestContext.getCurrentContext();
+    	List<Pair<String,String>> originResponseHeaders = requestContext.getOriginResponseHeaders();
+    	List<Pair<String, String>> headersToRemove = new ArrayList<>();
+    	for (Pair<String, String> anHeader : originResponseHeaders) {
+    		String headerName = anHeader.first();
+    		if (CREDENTIALS_NAME.equalsIgnoreCase(headerName)) {
+    			headersToRemove.add(anHeader);
+    			continue;
+    		}
+    		if (ORIGIN_NAME.equalsIgnoreCase(headerName)) {
+    			headersToRemove.add(anHeader);
+    			continue;
+    		}
+    		if (METHODS_NAME.equalsIgnoreCase(headerName)) {
+    			headersToRemove.add(anHeader);
+    			continue;
+    		}
+    		if (HEADERS_NAME.equalsIgnoreCase(headerName)) {
+    			headersToRemove.add(anHeader);
+    			continue;
+    		}
+    		if (MAX_AGE_NAME.equalsIgnoreCase(headerName)) {
+    			headersToRemove.add(anHeader);
+    			continue;
+    		}
+    	}
+    	originResponseHeaders.removeAll(headersToRemove);
+    }
+    
 	
 	private String getAcceptedOrigin(HttpServletRequest httpServletRequest) {
 		boolean isWildcardSupported = this.acceptedOrigins.contains("*");
