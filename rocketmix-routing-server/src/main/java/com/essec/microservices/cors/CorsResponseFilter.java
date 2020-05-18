@@ -57,7 +57,7 @@ public class CorsResponseFilter implements Filter  {
         
         String acceptedOrigin = getAcceptedOrigin(request);
 		if (StringUtils.isNotBlank(acceptedOrigin)) {
-			removeExistingCORSServiceResponseHeaders();
+			//removeExistingCORSServiceResponseHeaders();
 	        response.setHeader(ORIGIN_NAME, acceptedOrigin);
 	        response.setHeader(METHODS_NAME, ACCEPTED_METHODS);
 	        response.setHeader(MAX_AGE_NAME, MAX_AGE_VALUE);
