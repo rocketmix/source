@@ -9,21 +9,21 @@ import javax.ws.rs.ext.RuntimeDelegate;
 /**
  * Copy source code of com.sun.jersey:jersey-bundle:1.19.1 because of conflict with jax-rs implementation embedded with Apache CXF  
  */
-public abstract class UriBuilder2 {
+public abstract class UriBuilder {
     
     /**
      * Protected constructor, use one of the static <code>from<i>XXX</i></code>
      * methods to obtain an instance.
      */
-    protected UriBuilder2() {}
+    protected UriBuilder() {}
     
     /**
      * Creates a new instance of UriBuilder.
      * @return a new instance of UriBuilder
      */
-    protected static UriBuilder2 newInstance() {
-        Object b = RuntimeDelegate.getInstance().createUriBuilder();
-        return (UriBuilder2) b;
+    protected static UriBuilder newInstance() {
+        UriBuilder b = RuntimeDelegate.getInstance().createUriBuilder();
+        return b;
     }
     
     /**
@@ -32,8 +32,8 @@ public abstract class UriBuilder2 {
      * @return a new UriBuilder
      * @throws IllegalArgumentException if uri is null
      */
-    public static UriBuilder2 fromUri(URI uri) throws IllegalArgumentException {
-        UriBuilder2 b = newInstance();
+    public static UriBuilder fromUri(URI uri) throws IllegalArgumentException {
+        UriBuilder b = newInstance();
         b.uri(uri);
         return b;
     }
@@ -45,7 +45,7 @@ public abstract class UriBuilder2 {
      * @return a new UriBuilder
      * @throws IllegalArgumentException if uri is not a valid URI or is null
      */
-    public static UriBuilder2 fromUri(String uri) throws IllegalArgumentException {
+    public static UriBuilder fromUri(String uri) throws IllegalArgumentException {
         URI u;
         try {
             u = URI.create(uri);
@@ -63,8 +63,8 @@ public abstract class UriBuilder2 {
      * @return a new UriBuilder
      * @throws IllegalArgumentException if path is null
      */
-    public static UriBuilder2 fromPath(String path) throws IllegalArgumentException {
-        UriBuilder2 b = newInstance();
+    public static UriBuilder fromPath(String path) throws IllegalArgumentException {
+        UriBuilder b = newInstance();
         b.path(path);
         return b;
     }
@@ -79,8 +79,8 @@ public abstract class UriBuilder2 {
      * @throws IllegalArgumentException if resource is not annotated with 
      * {@link javax.ws.rs.Path} or resource is null.
      */
-    public static UriBuilder2 fromResource(Class<?> resource) throws IllegalArgumentException {
-        UriBuilder2 b = newInstance();
+    public static UriBuilder fromResource(Class<?> resource) throws IllegalArgumentException {
+        UriBuilder b = newInstance();
         b.path(resource);
         return b;
     }
@@ -92,7 +92,7 @@ public abstract class UriBuilder2 {
      * @return a copy of the UriBuilder
      */
     @Override
-    public abstract UriBuilder2 clone();
+    public abstract UriBuilder clone();
     
     /**
      * Copies the non-null components of the supplied URI to the UriBuilder replacing
@@ -101,7 +101,7 @@ public abstract class UriBuilder2 {
      * @return the updated UriBuilder
      * @throws IllegalArgumentException if uri is null
      */
-    public abstract UriBuilder2 uri(URI uri) throws IllegalArgumentException;
+    public abstract UriBuilder uri(URI uri) throws IllegalArgumentException;
     
     /**
      * Set the URI scheme.
@@ -110,7 +110,7 @@ public abstract class UriBuilder2 {
      * @return the updated UriBuilder
      * @throws IllegalArgumentException if scheme is invalid
      */
-    public abstract UriBuilder2 scheme(String scheme) throws IllegalArgumentException;
+    public abstract UriBuilder scheme(String scheme) throws IllegalArgumentException;
     
     /**
      * Set the URI scheme-specific-part (see {@link java.net.URI}). This 
@@ -120,7 +120,7 @@ public abstract class UriBuilder2 {
      * @return the updated UriBuilder
      * @throws IllegalArgumentException if ssp cannot be parsed or is null
      */
-    public abstract UriBuilder2 schemeSpecificPart(String ssp) throws IllegalArgumentException;
+    public abstract UriBuilder schemeSpecificPart(String ssp) throws IllegalArgumentException;
     
     /**
      * Set the URI user-info.
@@ -128,7 +128,7 @@ public abstract class UriBuilder2 {
      * A null value will unset userInfo component of the URI.
      * @return the updated UriBuilder
      */
-    public abstract UriBuilder2 userInfo(String ui);
+    public abstract UriBuilder userInfo(String ui);
     
     /**
      * Set the URI host.
@@ -137,7 +137,7 @@ public abstract class UriBuilder2 {
      * A null value will unset the host component of the URI.
      * @throws IllegalArgumentException if host is invalid.
      */
-    public abstract UriBuilder2 host(String host) throws IllegalArgumentException;
+    public abstract UriBuilder host(String host) throws IllegalArgumentException;
     
     /**
      * Set the URI port.
@@ -145,7 +145,7 @@ public abstract class UriBuilder2 {
      * @return the updated UriBuilder
      * @throws IllegalArgumentException if port is invalid
      */
-    public abstract UriBuilder2 port(int port) throws IllegalArgumentException;
+    public abstract UriBuilder port(int port) throws IllegalArgumentException;
     
     /**
      * Set the URI path. This method will overwrite 
@@ -156,7 +156,7 @@ public abstract class UriBuilder2 {
      * A null value will unset the path component of the URI.
      * @return the updated UriBuilder
      */
-    public abstract UriBuilder2 replacePath(String path);
+    public abstract UriBuilder replacePath(String path);
 
     /**
      * Append path to the existing path. 
@@ -168,7 +168,7 @@ public abstract class UriBuilder2 {
      * @return the updated UriBuilder
      * @throws IllegalArgumentException if path is null
      */
-    public abstract UriBuilder2 path(String path) throws IllegalArgumentException;
+    public abstract UriBuilder path(String path) throws IllegalArgumentException;
 
     /**
      * Append the path from a Path-annotated class to the
@@ -182,7 +182,7 @@ public abstract class UriBuilder2 {
      * @throws IllegalArgumentException if resource is null, or
      * if resource is not annotated with {@link javax.ws.rs.Path}
      */
-    public abstract UriBuilder2 path(Class resource) throws IllegalArgumentException;
+    public abstract UriBuilder path(Class resource) throws IllegalArgumentException;
     
     /**
      * Append the path from a Path-annotated method to the
@@ -201,7 +201,7 @@ public abstract class UriBuilder2 {
      * or there is more than or less than one variant of the method annotated with 
      * {@link javax.ws.rs.Path}
      */
-    public abstract UriBuilder2 path(Class resource, String method) throws IllegalArgumentException;
+    public abstract UriBuilder path(Class resource, String method) throws IllegalArgumentException;
     
     /**
      * Append the path from a {@link javax.ws.rs.Path}-annotated method to the
@@ -215,7 +215,7 @@ public abstract class UriBuilder2 {
      * @throws IllegalArgumentException if method is null or is
      * not annotated with a {@link javax.ws.rs.Path}
      */
-    public abstract UriBuilder2 path(Method method) throws IllegalArgumentException;
+    public abstract UriBuilder path(Method method) throws IllegalArgumentException;
     
     /**
      * Append path segments to the existing path.
@@ -230,7 +230,7 @@ public abstract class UriBuilder2 {
      * @throws IllegalArgumentException if segments or any element of segments
      * is null
      */
-    public abstract UriBuilder2 segment(String... segments) throws IllegalArgumentException;
+    public abstract UriBuilder segment(String... segments) throws IllegalArgumentException;
 
     /**
      * Set the matrix parameters of the current final segment of the current URI path.
@@ -245,7 +245,7 @@ public abstract class UriBuilder2 {
      * @throws IllegalArgumentException if matrix cannot be parsed
      * @see <a href="http://www.w3.org/DesignIssues/MatrixURIs.html">Matrix URIs</a>
      */
-    public abstract UriBuilder2 replaceMatrix(String matrix) throws IllegalArgumentException;
+    public abstract UriBuilder replaceMatrix(String matrix) throws IllegalArgumentException;
 
     /**
      * Append a matrix parameter to the existing set of matrix parameters of 
@@ -261,7 +261,7 @@ public abstract class UriBuilder2 {
      * @throws IllegalArgumentException if name or values is null
      * @see <a href="http://www.w3.org/DesignIssues/MatrixURIs.html">Matrix URIs</a>
      */
-    public abstract UriBuilder2 matrixParam(String name, Object... values) throws IllegalArgumentException;
+    public abstract UriBuilder matrixParam(String name, Object... values) throws IllegalArgumentException;
 
     /**
      * Replace the existing value(s) of a matrix parameter on 
@@ -278,7 +278,7 @@ public abstract class UriBuilder2 {
      * @throws IllegalArgumentException if name is null.
      * @see <a href="http://www.w3.org/DesignIssues/MatrixURIs.html">Matrix URIs</a>
      */
-    public abstract UriBuilder2 replaceMatrixParam(String name, Object... values) throws IllegalArgumentException;
+    public abstract UriBuilder replaceMatrixParam(String name, Object... values) throws IllegalArgumentException;
 
     /**
      * Set the URI query string. This method will overwrite any existing query
@@ -288,7 +288,7 @@ public abstract class UriBuilder2 {
      * @return the updated UriBuilder
      * @throws IllegalArgumentException if query cannot be parsed
      */
-    public abstract UriBuilder2 replaceQuery(String query) throws IllegalArgumentException;
+    public abstract UriBuilder replaceQuery(String query) throws IllegalArgumentException;
 
     /**
      * Append a query parameter to the existing set of query parameters. If
@@ -300,7 +300,7 @@ public abstract class UriBuilder2 {
      * @return the updated UriBuilder
      * @throws IllegalArgumentException if name or values is null
      */
-    public abstract UriBuilder2 queryParam(String name, Object... values) throws IllegalArgumentException;
+    public abstract UriBuilder queryParam(String name, Object... values) throws IllegalArgumentException;
     
     /**
      * Replace the existing value(s) of a query parameter. If
@@ -313,7 +313,7 @@ public abstract class UriBuilder2 {
      * @return the updated UriBuilder
      * @throws IllegalArgumentException if name is null
      */
-    public abstract UriBuilder2 replaceQueryParam(String name, Object... values) throws IllegalArgumentException;
+    public abstract UriBuilder replaceQueryParam(String name, Object... values) throws IllegalArgumentException;
     
     /**
      * Set the URI fragment.
@@ -321,7 +321,7 @@ public abstract class UriBuilder2 {
      * A null value will remove any existing fragment.
      * @return the updated UriBuilder
      */
-    public abstract UriBuilder2 fragment(String fragment);
+    public abstract UriBuilder fragment(String fragment);
     
     /**
      * Build a URI, any URI template parameters will be replaced by the value in

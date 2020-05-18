@@ -57,9 +57,8 @@ zuul:
     use-separate-thread-pools: true
   ignoredPatterns: /admin/logout # used by AdminController to redirect user to portal main page
   sensitive-headers: # blank value needed to keep authorization http headers
-  cors: # CORS must be updated if you plan to use you APIs from a javascript web page
-    allowed-origins: 
-    - '*'
+  ignored-headers:
+    - Access-Control-Allow-Origin
   set-content-length: true
 
 # Ribbon acts as load balancer between microservices
