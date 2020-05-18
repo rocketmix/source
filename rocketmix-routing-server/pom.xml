@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>rocketmix-routing-server</artifactId>
 	<name>RocketMiX Routing Server</name>
@@ -22,6 +24,11 @@
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-bundle</artifactId>
+			<version>1.19.1</version>
 		</dependency>
 		<!-- DIRECTORY SERVER (end) -->
 		<!-- CUSTOM OPENAPI.JSON MERGE (start) -->
@@ -167,8 +174,10 @@
 							<target>
 								<property environment="env" />
 								<echo message="Push to Sourceforge" />
-								<copy file="target/${project.build.finalName}.war" todir="target/${project.version}" />
-								<scp password="${env.SOURCEFORGE_PASSWORD}" trust="yes" todir="${env.SOURCEFORGE_USERNAME}@frs.sourceforge.net:/home/frs/project/rocketmix">
+								<copy file="target/${project.build.finalName}.war"
+									todir="target/${project.version}" />
+								<scp password="${env.SOURCEFORGE_PASSWORD}" trust="yes"
+									todir="${env.SOURCEFORGE_USERNAME}@frs.sourceforge.net:/home/frs/project/rocketmix">
 									<fileset dir="target">
 										<include name="${project.version}/*.war" />
 									</fileset>
@@ -207,7 +216,10 @@
 								<include>${project.build.directory}/${project.build.finalName}.war</include>
 							</includes>
 							<processTypes>
-								<web>java $JAVA_OPTS -Dserver.port=$PORT -DmanagementServerURL=http://127.0.0.1:$PORT -Djava.net.preferIPv4Stack=true -jar target/${project.build.finalName}.war $JAR_OPTS</web>
+								<web>java $JAVA_OPTS -Dserver.port=$PORT
+									-DmanagementServerURL=http://127.0.0.1:$PORT
+									-Djava.net.preferIPv4Stack=true -jar
+									target/${project.build.finalName}.war $JAR_OPTS</web>
 							</processTypes>
 						</configuration>
 					</execution>

@@ -39,11 +39,18 @@ public class CorsResponseFilter implements Filter  {
     public static final String MAX_AGE_VALUE = "3600";
     public static final String ALLOWED_HEADERS = "x-requested-with, authorization, Content-Type, Authorization, credential, X-XSRF-TOKEN";
     
+    private static final String PROXY_SERVLET_PATH = "/services";
+    
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp,
                          FilterChain chain) throws IOException, ServletException {
         HttpServletResponse response = (HttpServletResponse) resp;
         HttpServletRequest request = (HttpServletRequest) req;
+        if (!PROXY_SERVLET_PATH.equals(request.getServletPath())) {
+        	chain.doFilter(req, resp);
+        	return;
+        }
+        
         String acceptedOrigin = getAcceptedOrigin(request);
 		if (StringUtils.isNotBlank(acceptedOrigin)) {
 	        response.setHeader(ORIGIN_NAME, acceptedOrigin);
