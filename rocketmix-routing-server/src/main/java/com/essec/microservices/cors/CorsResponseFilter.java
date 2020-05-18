@@ -1,91 +1,73 @@
 package com.essec.microservices.cors;
 
-import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.POST_TYPE;
-
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 
-import com.netflix.util.Pair;
-import com.netflix.zuul.ZuulFilter;
-import com.netflix.zuul.context.RequestContext;
-import com.netflix.zuul.exception.ZuulException;
+@Configuration
+@Order(Ordered.HIGHEST_PRECEDENCE)
+public class CorsResponseFilter implements Filter  {
 
-public class CorsResponseFilter extends ZuulFilter  {
-
-	private static final int FILTER_ORDER = 3;
-	
 	@Value("${zuul.cors.allowed-origins:*}")
 	private List<String> acceptedOrigins;
 	
-	@Override
-	public String filterType() {
-		return POST_TYPE;
-	}
-
-	@Override
-	public int filterOrder() {
-		return FILTER_ORDER;
-	}
+	private FilterConfig config;
 	
-	@Override
-	public boolean shouldFilter() {
-		RequestContext context = RequestContext.getCurrentContext();
-	    return context.getThrowable() == null
-	           && (!context.getZuulResponseHeaders().isEmpty()
-	               || context.getResponseDataStream() != null
-	               || context.getResponseBody() != null);
-	}
-
-	@Override
-	public Object run() throws ZuulException {
-		RequestContext requestContext = RequestContext.getCurrentContext();
-		requestContext = preserveOriginResponseHeaders(requestContext);
-		requestContext = injectCORSResponseHeaders(requestContext);
-	    return null;		
-	}
-
-	private RequestContext injectCORSResponseHeaders(RequestContext requestContext) {
-		String acceptedOrigin = getAcceptedOrigin(requestContext);
+    public static final String CREDENTIALS_NAME = "Access-Control-Allow-Credentials";
+    public static final String ORIGIN_NAME = "Access-Control-Allow-Origin";
+    public static final String METHODS_NAME = "Access-Control-Allow-Methods";
+    public static final String HEADERS_NAME = "Access-Control-Allow-Headers";
+    public static final String MAX_AGE_NAME = "Access-Control-Max-Age";	
+    
+    public static final String ACCEPTED_METHODS = "POST, GET, OPTIONS, DELETE";
+    public static final String MAX_AGE_VALUE = "3600";
+    public static final String ALLOWED_HEADERS = "x-requested-with, authorization, Content-Type, Authorization, credential, X-XSRF-TOKEN";
+    
+    @Override
+    public void doFilter(ServletRequest req, ServletResponse resp,
+                         FilterChain chain) throws IOException, ServletException {
+        HttpServletResponse response = (HttpServletResponse) resp;
+        HttpServletRequest request = (HttpServletRequest) req;
+        String acceptedOrigin = getAcceptedOrigin(request);
 		if (StringUtils.isNotBlank(acceptedOrigin)) {
-			requestContext.addZuulResponseHeader("Access-Control-Allow-Credentials", "true");
-			requestContext.addZuulResponseHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT");
-			requestContext.addZuulResponseHeader("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, X-Codingpedia");
-			requestContext.addZuulResponseHeader("Access-Control-Allow-Origin", acceptedOrigin);
+	        response.setHeader(ORIGIN_NAME, acceptedOrigin);
+	        response.setHeader(METHODS_NAME, ACCEPTED_METHODS);
+	        response.setHeader(MAX_AGE_NAME, MAX_AGE_VALUE);
+	        response.setHeader(CREDENTIALS_NAME, Boolean.TRUE.toString());
+	        response.setHeader(HEADERS_NAME, ALLOWED_HEADERS);
 		}
-		return requestContext;
-	}
 
-	private RequestContext preserveOriginResponseHeaders(RequestContext requestContext) {
-		List<Pair<String,String>> originResponseHeaders = requestContext.getOriginResponseHeaders();
-		List<Pair<String,String>> zuulResponseHeaders = requestContext.getZuulResponseHeaders();
-		List<String> zuulReponseHeadersKeys = new ArrayList<>();
-		if (zuulResponseHeaders != null) {
-			zuulReponseHeadersKeys.addAll(zuulResponseHeaders.stream().map(p -> p.first()).collect(Collectors.toList()));
-		}
-		for (Pair<String,String> anOriginResponseHeader : originResponseHeaders) {
-			String headerKey = anOriginResponseHeader.first();
-			if ("Content-Length".equalsIgnoreCase(headerKey)) { // To avoid content length mismatch
-				continue;
-			}
-			boolean isAlreadyContained = zuulReponseHeadersKeys.stream().anyMatch(headerKey::equalsIgnoreCase);
-			if (isAlreadyContained) {
-				continue;
-			}
-			requestContext.addZuulResponseHeader(anOriginResponseHeader.first(), anOriginResponseHeader.second());
-		}
-		return requestContext;
-	}
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            response.setStatus(HttpServletResponse.SC_OK);
+        } else {
+            chain.doFilter(req, resp);
+        }
+
+    }
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        config = filterConfig;
+    }
 	
-	private String getAcceptedOrigin(RequestContext requestContext) {
-		HttpServletRequest httpServletRequest = requestContext.getRequest();
+	
+	private String getAcceptedOrigin(HttpServletRequest httpServletRequest) {
 		boolean isWildcardSupported = this.acceptedOrigins.contains("*");
 		try {
 			String origin = httpServletRequest.getHeader("origin");
