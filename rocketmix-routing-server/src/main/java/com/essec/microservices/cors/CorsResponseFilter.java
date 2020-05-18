@@ -1,37 +1,28 @@
 package com.essec.microservices.cors;
 
-import java.io.IOException;
+import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.POST_TYPE;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
 import com.netflix.util.Pair;
+import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
+import com.netflix.zuul.exception.ZuulException;
 
-@Configuration
-@Order(Ordered.HIGHEST_PRECEDENCE)
-public class CorsResponseFilter implements Filter  {
+@Component
+public class CorsResponseFilter extends ZuulFilter  {
 
-	@Value("${zuul.cors.allowed-origins:*}")
-	private List<String> acceptedOrigins;
-	
-	private FilterConfig config;
+	private static final int FILTER_ORDER = 3;
 	
     public static final String CREDENTIALS_NAME = "Access-Control-Allow-Credentials";
     public static final String ORIGIN_NAME = "Access-Control-Allow-Origin";
@@ -39,78 +30,100 @@ public class CorsResponseFilter implements Filter  {
     public static final String HEADERS_NAME = "Access-Control-Allow-Headers";
     public static final String MAX_AGE_NAME = "Access-Control-Max-Age";	
     
-    public static final String ACCEPTED_METHODS = "POST, GET, OPTIONS, DELETE";
+    public static final String ACCEPTED_METHODS = "PUT, POST, GET, OPTIONS, DELETE";
     public static final String MAX_AGE_VALUE = "3600";
     public static final String ALLOWED_HEADERS = "x-requested-with, authorization, Content-Type, Authorization, credential, X-XSRF-TOKEN";
-    
-    private static final String PROXY_SERVLET_PATH = "/services";
-    
-    @Override
-    public void doFilter(ServletRequest req, ServletResponse resp,
-                         FilterChain chain) throws IOException, ServletException {
-        HttpServletResponse response = (HttpServletResponse) resp;
-        HttpServletRequest request = (HttpServletRequest) req;
-        if (!PROXY_SERVLET_PATH.equals(request.getServletPath())) {
-        	chain.doFilter(req, resp);
-        	return;
-        }
-        
-        String acceptedOrigin = getAcceptedOrigin(request);
+
+	
+	@Value("${zuul.cors.allowed-origins:*}")
+	private List<String> acceptedOrigins;
+	
+	@Override
+	public String filterType() {
+		return POST_TYPE;
+	}
+
+	@Override
+	public int filterOrder() {
+		return FILTER_ORDER;
+	}
+	
+	@Override
+	public boolean shouldFilter() {
+		RequestContext context = RequestContext.getCurrentContext();
+	    return context.getThrowable() == null
+	           && (!context.getZuulResponseHeaders().isEmpty()
+	               || context.getResponseDataStream() != null
+	               || context.getResponseBody() != null);
+	}
+
+	@Override
+	public Object run() throws ZuulException {
+		RequestContext requestContext = RequestContext.getCurrentContext();
+		requestContext = preserveOriginResponseHeaders(requestContext);
+		requestContext = injectCORSResponseHeaders(requestContext);
+	    return null;		
+	}
+
+	private RequestContext injectCORSResponseHeaders(RequestContext requestContext) {
+		String acceptedOrigin = getAcceptedOrigin(requestContext);
 		if (StringUtils.isNotBlank(acceptedOrigin)) {
-			//removeExistingCORSServiceResponseHeaders();
-	        response.setHeader(ORIGIN_NAME, acceptedOrigin);
-	        response.setHeader(METHODS_NAME, ACCEPTED_METHODS);
-	        response.setHeader(MAX_AGE_NAME, MAX_AGE_VALUE);
-	        response.setHeader(CREDENTIALS_NAME, Boolean.TRUE.toString());
-	        response.setHeader(HEADERS_NAME, ALLOWED_HEADERS);
+			requestContext.addZuulResponseHeader(METHODS_NAME, ACCEPTED_METHODS);
+			requestContext.addZuulResponseHeader(HEADERS_NAME, ALLOWED_HEADERS);
+			boolean isOriginHeaderUpdated = false;
+			boolean isAllowCredentialsHeaderUpdated = false;
+			for (Pair<String, String> anExistingHeader : requestContext.getZuulResponseHeaders()) {
+				String headerName = anExistingHeader.first();
+				if (CREDENTIALS_NAME.equalsIgnoreCase(headerName)) {
+					anExistingHeader.setSecond(Boolean.TRUE.toString());
+					isAllowCredentialsHeaderUpdated = true;
+					continue;
+				}
+				if (ORIGIN_NAME.equalsIgnoreCase(headerName)) {
+					anExistingHeader.setSecond(acceptedOrigin);
+					isOriginHeaderUpdated = true;
+					continue;
+				}
+			}
+			if (!isAllowCredentialsHeaderUpdated) {
+				requestContext.addZuulResponseHeader(CREDENTIALS_NAME, Boolean.TRUE.toString());
+			}
+			if (!isOriginHeaderUpdated) {
+				requestContext.addZuulResponseHeader(ORIGIN_NAME, acceptedOrigin);
+			}
 		}
+		return requestContext;
+	}
 
-        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-            response.setStatus(HttpServletResponse.SC_OK);
-        } else {
-            chain.doFilter(req, resp);
-        }
-
-    }
-
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        config = filterConfig;
-    }
+	private RequestContext preserveOriginResponseHeaders(RequestContext requestContext) {
+		List<Pair<String,String>> originResponseHeaders = requestContext.getOriginResponseHeaders();
+		List<Pair<String,String>> zuulResponseHeaders = requestContext.getZuulResponseHeaders();
+		List<String> zuulReponseHeadersKeys = new ArrayList<>();
+		if (zuulResponseHeaders != null) {
+			zuulReponseHeadersKeys.addAll(zuulResponseHeaders.stream().map(p -> p.first()).collect(Collectors.toList()));
+		}
+		for (Pair<String,String> anOriginResponseHeader : originResponseHeaders) {
+			String headerKey = anOriginResponseHeader.first();
+			if ("Content-Length".equalsIgnoreCase(headerKey)) { // To avoid content length mismatch
+				continue;
+			}
+			if (CREDENTIALS_NAME.equalsIgnoreCase(headerKey)) { 
+				continue;
+			}
+			if (ORIGIN_NAME.equalsIgnoreCase(headerKey)) { 
+				continue;
+			}
+			boolean isAlreadyContained = zuulReponseHeadersKeys.stream().anyMatch(headerKey::equalsIgnoreCase);
+			if (isAlreadyContained) {
+				continue;
+			}
+			requestContext.addZuulResponseHeader(anOriginResponseHeader.first(), anOriginResponseHeader.second());
+		}
+		return requestContext;
+	}
 	
-    
-    private void removeExistingCORSServiceResponseHeaders() {
-    	RequestContext requestContext = RequestContext.getCurrentContext();
-    	List<Pair<String,String>> originResponseHeaders = requestContext.getOriginResponseHeaders();
-    	List<Pair<String, String>> headersToRemove = new ArrayList<>();
-    	for (Pair<String, String> anHeader : originResponseHeaders) {
-    		String headerName = anHeader.first();
-    		if (CREDENTIALS_NAME.equalsIgnoreCase(headerName)) {
-    			headersToRemove.add(anHeader);
-    			continue;
-    		}
-    		if (ORIGIN_NAME.equalsIgnoreCase(headerName)) {
-    			headersToRemove.add(anHeader);
-    			continue;
-    		}
-    		if (METHODS_NAME.equalsIgnoreCase(headerName)) {
-    			headersToRemove.add(anHeader);
-    			continue;
-    		}
-    		if (HEADERS_NAME.equalsIgnoreCase(headerName)) {
-    			headersToRemove.add(anHeader);
-    			continue;
-    		}
-    		if (MAX_AGE_NAME.equalsIgnoreCase(headerName)) {
-    			headersToRemove.add(anHeader);
-    			continue;
-    		}
-    	}
-    	originResponseHeaders.removeAll(headersToRemove);
-    }
-    
-	
-	private String getAcceptedOrigin(HttpServletRequest httpServletRequest) {
+	private String getAcceptedOrigin(RequestContext requestContext) {
+		HttpServletRequest httpServletRequest = requestContext.getRequest();
 		boolean isWildcardSupported = this.acceptedOrigins.contains("*");
 		try {
 			String origin = httpServletRequest.getHeader("origin");
