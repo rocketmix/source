@@ -5,6 +5,7 @@ import static org.springframework.cloud.netflix.zuul.filters.support.FilterConst
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,6 +56,19 @@ public class CorsResponseFilter extends ZuulFilter  {
 	private RequestContext injectCORSResponseHeaders(RequestContext requestContext) {
 		String acceptedOrigin = getAcceptedOrigin(requestContext);
 		if (StringUtils.isNotBlank(acceptedOrigin)) {
+			List<Pair<String, String>> existingHeadersToRemove = new ArrayList<>();
+			for (Pair<String, String> anExistingHeader : requestContext.getZuulResponseHeaders()) {
+				String headerName = anExistingHeader.first();
+				if ("Access-Control-Allow-Credentials".equalsIgnoreCase(headerName)) {
+					existingHeadersToRemove.add(anExistingHeader);
+					continue;
+				}
+				if ("Access-Control-Allow-Origin".equalsIgnoreCase(headerName)) {
+					existingHeadersToRemove.add(anExistingHeader);
+					continue;
+				}
+			}
+			requestContext.getZuulResponseHeaders().removeAll(existingHeadersToRemove);
 			requestContext.addZuulResponseHeader("Access-Control-Allow-Credentials", "true");
 			requestContext.addZuulResponseHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT");
 			requestContext.addZuulResponseHeader("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, X-Codingpedia");
