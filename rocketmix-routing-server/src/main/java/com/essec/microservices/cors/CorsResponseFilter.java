@@ -58,6 +58,7 @@ public class CorsResponseFilter extends ZuulFilter  {
 	@Override
 	public Object run() throws ZuulException {
 		RequestContext requestContext = RequestContext.getCurrentContext();
+		requestContext = removeOriginCORSResponseHeader(requestContext);
 		requestContext = preserveOriginResponseHeaders(requestContext);
 		requestContext = injectCORSResponseHeaders(requestContext);
 	    return null;		
@@ -73,6 +74,36 @@ public class CorsResponseFilter extends ZuulFilter  {
 		}
 		return requestContext;
 	}
+	
+	private RequestContext removeOriginCORSResponseHeader(RequestContext requestContext) {
+		List<Pair<String,String>> originResponseHeaders = requestContext.getOriginResponseHeaders();
+		List<Pair<String,String>> toRemove = new ArrayList<>();
+		for (Pair<String,String> anOriginResponseHeader : originResponseHeaders) {
+			String headerKey = anOriginResponseHeader.first();
+			if (CREDENTIALS_NAME.equalsIgnoreCase(headerKey)) {
+				toRemove.add(anOriginResponseHeader);
+				continue;
+			}
+			if (ORIGIN_NAME.equalsIgnoreCase(headerKey)) {
+				toRemove.add(anOriginResponseHeader);
+				continue;
+			}
+			if (METHODS_NAME.equalsIgnoreCase(headerKey)) {
+				toRemove.add(anOriginResponseHeader);
+				continue;
+			}
+			if (HEADERS_NAME.equalsIgnoreCase(headerKey)) {
+				toRemove.add(anOriginResponseHeader);
+				continue;
+			}
+			if (MAX_AGE_NAME.equalsIgnoreCase(headerKey)) {
+				toRemove.add(anOriginResponseHeader);
+				continue;
+			}
+		}
+		originResponseHeaders.removeAll(toRemove);
+		return requestContext;
+	}
 
 	private RequestContext preserveOriginResponseHeaders(RequestContext requestContext) {
 		List<Pair<String,String>> originResponseHeaders = requestContext.getOriginResponseHeaders();
@@ -84,12 +115,6 @@ public class CorsResponseFilter extends ZuulFilter  {
 		for (Pair<String,String> anOriginResponseHeader : originResponseHeaders) {
 			String headerKey = anOriginResponseHeader.first();
 			if ("Content-Length".equalsIgnoreCase(headerKey)) { // To avoid content length mismatch
-				continue;
-			}
-			if (CREDENTIALS_NAME.equalsIgnoreCase(headerKey)) { 
-				continue;
-			}
-			if (ORIGIN_NAME.equalsIgnoreCase(headerKey)) { 
 				continue;
 			}
 			boolean isAlreadyContained = zuulReponseHeadersKeys.stream().anyMatch(headerKey::equalsIgnoreCase);
