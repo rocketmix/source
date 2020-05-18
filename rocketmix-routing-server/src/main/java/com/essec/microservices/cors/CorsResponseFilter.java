@@ -56,23 +56,29 @@ public class CorsResponseFilter extends ZuulFilter  {
 	private RequestContext injectCORSResponseHeaders(RequestContext requestContext) {
 		String acceptedOrigin = getAcceptedOrigin(requestContext);
 		if (StringUtils.isNotBlank(acceptedOrigin)) {
-			List<Pair<String, String>> existingHeadersToRemove = new ArrayList<>();
+			requestContext.addZuulResponseHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT");
+			requestContext.addZuulResponseHeader("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, X-Codingpedia");
+			boolean isOriginHeaderUpdated = false;
+			boolean isAllowCredentialsHeaderUpdated = false;
 			for (Pair<String, String> anExistingHeader : requestContext.getZuulResponseHeaders()) {
 				String headerName = anExistingHeader.first();
 				if ("Access-Control-Allow-Credentials".equalsIgnoreCase(headerName)) {
-					existingHeadersToRemove.add(anExistingHeader);
+					anExistingHeader.setSecond("true");
+					isAllowCredentialsHeaderUpdated = true;
 					continue;
 				}
 				if ("Access-Control-Allow-Origin".equalsIgnoreCase(headerName)) {
-					existingHeadersToRemove.add(anExistingHeader);
+					anExistingHeader.setSecond(acceptedOrigin);
+					isOriginHeaderUpdated = true;
 					continue;
 				}
 			}
-			requestContext.getZuulResponseHeaders().removeAll(existingHeadersToRemove);
-			requestContext.addZuulResponseHeader("Access-Control-Allow-Credentials", "true");
-			requestContext.addZuulResponseHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT");
-			requestContext.addZuulResponseHeader("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, X-Codingpedia");
-			requestContext.addZuulResponseHeader("Access-Control-Allow-Origin", acceptedOrigin);
+			if (!isAllowCredentialsHeaderUpdated) {
+				requestContext.addZuulResponseHeader("Access-Control-Allow-Credentials", "true");
+			}
+			if (!isOriginHeaderUpdated) {
+				requestContext.addZuulResponseHeader("Access-Control-Allow-Origin", acceptedOrigin);
+			}
 		}
 		return requestContext;
 	}
