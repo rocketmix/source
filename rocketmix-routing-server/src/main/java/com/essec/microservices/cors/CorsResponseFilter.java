@@ -58,7 +58,7 @@ public class CorsResponseFilter extends ZuulFilter  {
 	@Override
 	public Object run() throws ZuulException {
 		RequestContext requestContext = RequestContext.getCurrentContext();
-		requestContext = removeOriginCORSResponseHeader(requestContext);
+		requestContext = removeExisingCORSResponseHeader(requestContext);
 		requestContext = preserveOriginResponseHeaders(requestContext);
 		requestContext = injectCORSResponseHeaders(requestContext);
 	    return null;		
@@ -70,38 +70,65 @@ public class CorsResponseFilter extends ZuulFilter  {
 			requestContext.addZuulResponseHeader(METHODS_NAME, ACCEPTED_METHODS);
 			requestContext.addZuulResponseHeader(HEADERS_NAME, ALLOWED_HEADERS);
 			requestContext.addZuulResponseHeader(CREDENTIALS_NAME, Boolean.TRUE.toString());
+			requestContext.addZuulResponseHeader(MAX_AGE_NAME, MAX_AGE_VALUE);
 			requestContext.addZuulResponseHeader(ORIGIN_NAME, acceptedOrigin);
 		}
 		return requestContext;
 	}
 	
-	private RequestContext removeOriginCORSResponseHeader(RequestContext requestContext) {
+	private RequestContext removeExisingCORSResponseHeader(RequestContext requestContext) {
 		List<Pair<String,String>> originResponseHeaders = requestContext.getOriginResponseHeaders();
-		List<Pair<String,String>> toRemove = new ArrayList<>();
+		List<Pair<String,String>> toRemoveFromOriginHeaders = new ArrayList<>();
 		for (Pair<String,String> anOriginResponseHeader : originResponseHeaders) {
 			String headerKey = anOriginResponseHeader.first();
 			if (CREDENTIALS_NAME.equalsIgnoreCase(headerKey)) {
-				toRemove.add(anOriginResponseHeader);
+				toRemoveFromOriginHeaders.add(anOriginResponseHeader);
 				continue;
 			}
 			if (ORIGIN_NAME.equalsIgnoreCase(headerKey)) {
-				toRemove.add(anOriginResponseHeader);
+				toRemoveFromOriginHeaders.add(anOriginResponseHeader);
 				continue;
 			}
 			if (METHODS_NAME.equalsIgnoreCase(headerKey)) {
-				toRemove.add(anOriginResponseHeader);
+				toRemoveFromOriginHeaders.add(anOriginResponseHeader);
 				continue;
 			}
 			if (HEADERS_NAME.equalsIgnoreCase(headerKey)) {
-				toRemove.add(anOriginResponseHeader);
+				toRemoveFromOriginHeaders.add(anOriginResponseHeader);
 				continue;
 			}
 			if (MAX_AGE_NAME.equalsIgnoreCase(headerKey)) {
-				toRemove.add(anOriginResponseHeader);
+				toRemoveFromOriginHeaders.add(anOriginResponseHeader);
 				continue;
 			}
 		}
-		originResponseHeaders.removeAll(toRemove);
+		originResponseHeaders.removeAll(toRemoveFromOriginHeaders);
+		List<Pair<String,String>> zuulResponseHeaders = requestContext.getZuulResponseHeaders();
+		List<Pair<String,String>> toRemoveFromZuulHeaders = new ArrayList<>();
+		for (Pair<String,String> anZuulResponseHeader : zuulResponseHeaders) {
+			String headerKey = anZuulResponseHeader.first();
+			if (CREDENTIALS_NAME.equalsIgnoreCase(headerKey)) {
+				toRemoveFromZuulHeaders.add(anZuulResponseHeader);
+				continue;
+			}
+			if (ORIGIN_NAME.equalsIgnoreCase(headerKey)) {
+				toRemoveFromZuulHeaders.add(anZuulResponseHeader);
+				continue;
+			}
+			if (METHODS_NAME.equalsIgnoreCase(headerKey)) {
+				toRemoveFromZuulHeaders.add(anZuulResponseHeader);
+				continue;
+			}
+			if (HEADERS_NAME.equalsIgnoreCase(headerKey)) {
+				toRemoveFromZuulHeaders.add(anZuulResponseHeader);
+				continue;
+			}
+			if (MAX_AGE_NAME.equalsIgnoreCase(headerKey)) {
+				toRemoveFromZuulHeaders.add(anZuulResponseHeader);
+				continue;
+			}
+		}
+		zuulResponseHeaders.removeAll(toRemoveFromZuulHeaders);
 		return requestContext;
 	}
 

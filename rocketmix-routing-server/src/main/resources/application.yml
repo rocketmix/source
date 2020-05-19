@@ -61,6 +61,8 @@ zuul:
     allowed-origins: 
     - '*'
   set-content-length: true
+  ignored-headers:
+    - Access-Control-Allow-Credentials
 
 # Ribbon acts as load balancer between microservices
 # See RibbonConfiguration class for load balancing strategy
