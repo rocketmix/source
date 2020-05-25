@@ -20,6 +20,10 @@ import com.netflix.zuul.exception.ZuulException;
 
 public class CorsResponseFilter extends ZuulFilter  {
 
+	private static final String BLANK_STRING = "";
+
+	private static final String DELIMITER = ",";
+
 	private static final int FILTER_ORDER = 3;
 	
     public static final String CREDENTIALS_NAME = "Access-Control-Allow-Credentials";
@@ -27,14 +31,23 @@ public class CorsResponseFilter extends ZuulFilter  {
     public static final String METHODS_NAME = "Access-Control-Allow-Methods";
     public static final String HEADERS_NAME = "Access-Control-Allow-Headers";
     public static final String MAX_AGE_NAME = "Access-Control-Max-Age";	
-    
-    public static final String ACCEPTED_METHODS = "PUT, POST, GET, OPTIONS, DELETE";
-    public static final String MAX_AGE_VALUE = "3600";
-    public static final String ALLOWED_HEADERS = "x-requested-with, authorization, Content-Type, Authorization, credential, X-XSRF-TOKEN";
 
 	
-	@Value("${zuul.cors.allowed-origins:*}")
+	@Value("${zuul.cors.allowed-origins}")
 	private List<String> acceptedOrigins;
+	
+	@Value("${zuul.cors.accepted-methods}")
+	private List<String> acceptedMethods;
+	
+	@Value("${zuul.cors.allowed-headers}")
+	private List<String> allowedHeaders;
+	
+	@Value("${zuul.cors.allow-credentials}")
+	private Boolean allowCredentials;
+	
+	@Value("${zuul.cors.access-control-max-age}")
+	private int accessControlMaxAge;
+	
 	
 	@Override
 	public String filterType() {
@@ -67,10 +80,10 @@ public class CorsResponseFilter extends ZuulFilter  {
 	private RequestContext injectCORSResponseHeaders(RequestContext requestContext) {
 		String acceptedOrigin = getAcceptedOrigin(requestContext);
 		if (StringUtils.isNotBlank(acceptedOrigin)) {
-			requestContext.addZuulResponseHeader(METHODS_NAME, ACCEPTED_METHODS);
-			requestContext.addZuulResponseHeader(HEADERS_NAME, ALLOWED_HEADERS);
-			requestContext.addZuulResponseHeader(CREDENTIALS_NAME, Boolean.TRUE.toString());
-			requestContext.addZuulResponseHeader(MAX_AGE_NAME, MAX_AGE_VALUE);
+			requestContext.addZuulResponseHeader(METHODS_NAME, String.join(DELIMITER, this.acceptedMethods));
+			requestContext.addZuulResponseHeader(HEADERS_NAME, String.join(DELIMITER, this.allowedHeaders));
+			requestContext.addZuulResponseHeader(CREDENTIALS_NAME, this.allowCredentials.toString());
+			requestContext.addZuulResponseHeader(MAX_AGE_NAME, this.accessControlMaxAge + BLANK_STRING);
 			requestContext.addZuulResponseHeader(ORIGIN_NAME, acceptedOrigin);
 		}
 		return requestContext;

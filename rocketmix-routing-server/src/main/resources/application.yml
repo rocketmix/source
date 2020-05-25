@@ -58,11 +58,12 @@ zuul:
   ignoredPatterns: /admin/logout # used by AdminController to redirect user to portal main page
   sensitive-headers: # blank value needed to keep authorization http headers
   cors: # CORS must be updated if you plan to use you APIs from a javascript web page
-    allowed-origins: 
-    - '*'
-  set-content-length: true
-  ignored-headers:
-    - Access-Control-Allow-Credentials
+    allowed-origins: '*'
+    accepted-methods: PUT, POST, GET, OPTIONS, DELETE
+    allowed-headers: X-Requested-With, Content-Type, Authorization, X-XSRF-TOKEN
+    allow-credentials: true
+    access-control-max-age : 3600 
+
 
 # Ribbon acts as load balancer between microservices
 # See RibbonConfiguration class for load balancing strategy
