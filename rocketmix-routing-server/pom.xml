@@ -211,10 +211,7 @@
 								<include>${project.build.directory}/${project.build.finalName}.war</include>
 							</includes>
 							<processTypes>
-								<web>java $JAVA_OPTS -Dserver.port=$PORT
-									-DmanagementServerURL=http://127.0.0.1:$PORT
-									-Djava.net.preferIPv4Stack=true -jar
-									target/${project.build.finalName}.war $JAR_OPTS</web>
+								<web><![CDATA[java $JAVA_OPTS -Dserver.port=$PORT -DmanagementServerURL=http://127.0.0.1:$PORT -Djava.net.preferIPv4Stack=true -jar target/${project.build.finalName}.war $JAR_OPTS]]></web>
 							</processTypes>
 						</configuration>
 					</execution>
