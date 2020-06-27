@@ -85,7 +85,7 @@ public class ApiCallSearchService {
 		if (count <= REPOSITORY_MAX_SIZE) {
 			return;
 		}
-		Page<ApiCallEntry> page = this.repository.findLatest(PageRequest.of(0, REPOSITORY_MAX_SIZE));
+		Page<ApiCallEntry> page = this.repository.findAllOrderByActivityDateDesc(PageRequest.of(0, REPOSITORY_MAX_SIZE));
 		if (page.isEmpty()) {
 			return;
 		}

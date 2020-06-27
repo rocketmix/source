@@ -57,20 +57,20 @@ public class ApiCallRequestFilter extends ZuulFilter {
 			String line = String.format("Request,%s,%s,%s \r\n", request.getRequestURL(), request.getMethod(),
 					requestData);
 			log.debug(line);
-			String principal  = "anonymous";
-			Principal userPrincipal = request.getUserPrincipal();
-			if (userPrincipal != null && StringUtils.isNotBlank(userPrincipal.getName())) {
-				principal = userPrincipal.getName();
-			}
 			ApiCallEntry apiCall = new ApiCallEntry();
 			apiCall.setId(this.threadSafeSeq.incrementAndGet());
-			String serviceId = request.getRequestURI();
+			String requestURI = request.getRequestURI();
+			String serviceId = requestURI;
 			if (serviceId != null && serviceId.contains(URL_SEARCHED_STRING)) {
 				serviceId = serviceId.substring(1, serviceId.indexOf(URL_SEARCHED_STRING));
 			}
-			
 			apiCall.setServiceId(serviceId);
-			apiCall.setRequestURL(request.getRequestURI());
+			String queryString = request.getQueryString();
+			String requestURL = requestURI;
+			if (queryString != null) {
+				requestURL = requestURL + "?" + queryString;
+			}
+			apiCall.setRequestURL(requestURL);
 			apiCall.setRequestData(requestData);
 			Long id = service.save(apiCall);
 			ctx.put("id", id);

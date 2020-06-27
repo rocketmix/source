@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.essec.microservices.admin.extension.model.ApiCallEntry;
+import com.essec.microservices.admin.extension.repository.ApiCallRespository.ApiCallCounter;
+import com.essec.microservices.admin.extension.service.ApiCallBarChartService;
+import com.essec.microservices.admin.extension.service.ApiCallBarChartService.BarChartData;
 import com.essec.microservices.admin.extension.service.ApiCallSearchService;
 import com.essec.microservices.admin.extension.service.ApiCallThroughputService;
 
@@ -25,6 +28,9 @@ public class ApiCallActuatorEndpoint {
 
 	@Autowired
 	private ApiCallSearchService searchService;
+	
+	@Autowired
+	private ApiCallBarChartService barChartService;
 
 	@GetMapping(path = "", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public List<String> listEndpoints() {
@@ -58,6 +64,9 @@ public class ApiCallActuatorEndpoint {
 		return this.searchService.performSearch(keyword);
 	}
 
-	
+	@GetMapping(path = "/count", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public BarChartData count() {
+		return this.barChartService.getCounters();
+	}
 
 }

@@ -25,8 +25,21 @@ public interface ApiCallRespository extends JpaRepository<ApiCallEntry, Long> {
 	    Integer getCounter();
 	}
 	
+	
+	// JPA Spring projection
+	public interface ApiCallCounter {
+		Date getDate();
+		String getService();
+		Long getCounter();
+	}
+	
+	
+	
 	@Query("select t from ApiCallEntry t order by t.activityDate desc")
-    public Page<ApiCallEntry> findLatest(Pageable pageable);
+    public Page<ApiCallEntry> findAllOrderByActivityDateDesc(Pageable pageable);
+
+	@Query("select t.activityDate as date, t.serviceId as service, count(t) as counter from ApiCallEntry t where t.activityDate > :fromDate group by hour(t.activityDate), t.serviceId order by hour(t.activityDate)")
+    public List<ApiCallCounter> countByServiceIdAndHour(Date fromDate);
 	
 	@Modifying
 	@Query("delete from ApiCallEntry t where t.activityDate < :expirationDate")
@@ -34,5 +47,8 @@ public interface ApiCallRespository extends JpaRepository<ApiCallEntry, Long> {
 	
 	@Query("select t.serviceId as service, count(t) as counter from ApiCallEntry t where t.activityDate >= :activityDate group by t.serviceId")
 	public List<ApiCallServiceAndCount> countWithActivityDateAdter(@Param("activityDate") Date activityDateTime);
+	
+
+	
 
 }
