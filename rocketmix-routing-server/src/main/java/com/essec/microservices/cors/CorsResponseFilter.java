@@ -30,8 +30,11 @@ public class CorsResponseFilter extends ZuulFilter  {
     public static final String ORIGIN_NAME = "Access-Control-Allow-Origin";
     public static final String METHODS_NAME = "Access-Control-Allow-Methods";
     public static final String HEADERS_NAME = "Access-Control-Allow-Headers";
-    public static final String MAX_AGE_NAME = "Access-Control-Max-Age";	
-
+    public static final String MAX_AGE_NAME = "Access-Control-Max-Age";
+    public static final String CROSS_REQUEST_TYPE_NAME = "X-Requested-With";
+    public static final String CROSS_REQUEST_TYPE_AJAX_VALUE = "XMLHttpRequest";
+    public static final String AUTHENTICATION_TYPE_NAME = "WWW-Authenticate";
+    
 	
 	@Value("${zuul.cors.allowed-origins}")
 	private List<String> acceptedOrigins;
@@ -73,6 +76,7 @@ public class CorsResponseFilter extends ZuulFilter  {
 		RequestContext requestContext = RequestContext.getCurrentContext();
 		requestContext = removeExisingCORSResponseHeader(requestContext);
 		requestContext = preserveOriginResponseHeaders(requestContext);
+		requestContext = avoidAuthenticationPopupOnAjaxRequest(requestContext);
 		requestContext = injectCORSResponseHeaders(requestContext);
 	    return null;		
 	}
@@ -85,6 +89,25 @@ public class CorsResponseFilter extends ZuulFilter  {
 			requestContext.addZuulResponseHeader(CREDENTIALS_NAME, this.allowCredentials.toString());
 			requestContext.addZuulResponseHeader(MAX_AGE_NAME, this.accessControlMaxAge + BLANK_STRING);
 			requestContext.addZuulResponseHeader(ORIGIN_NAME, acceptedOrigin);
+		}
+		return requestContext;
+	}
+	
+	
+	private RequestContext avoidAuthenticationPopupOnAjaxRequest(RequestContext requestContext) {
+		HttpServletRequest request = requestContext.getRequest();
+		String value = request.getHeader(CROSS_REQUEST_TYPE_NAME);
+		if (CROSS_REQUEST_TYPE_AJAX_VALUE.equalsIgnoreCase(value)) {
+			List<Pair<String,String>> zuulResponseHeaders = requestContext.getZuulResponseHeaders();
+			List<Pair<String,String>> toRemoveFromZuulHeaders = new ArrayList<>();
+			for (Pair<String,String> anZuulResponseHeader : zuulResponseHeaders) {
+				String headerKey = anZuulResponseHeader.first();
+				if (AUTHENTICATION_TYPE_NAME.equalsIgnoreCase(headerKey)) {
+					toRemoveFromZuulHeaders.add(anZuulResponseHeader);
+					continue;
+				}
+			}
+			zuulResponseHeaders.removeAll(toRemoveFromZuulHeaders);
 		}
 		return requestContext;
 	}
