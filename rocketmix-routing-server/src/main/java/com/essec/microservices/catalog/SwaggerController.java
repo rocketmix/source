@@ -52,7 +52,6 @@ public class SwaggerController {
 	private static final String DOC_PATH = "/services/openapi.json";
 	private static final String PROXY_ROOT_PATH = "/catalog/swagger-docs/proxy";
 	private static final String PROXY_PATH = PROXY_ROOT_PATH + "?url={0}&vipaddress={1}";
-	private static final String ESSEC_DOMAIN_NAME = "essec.fr";
 	private static final String HTTP_PROTOCOL_PREFIX_SEARCH_PATTERN = "^(?i)http://";
 	private static final String HTTPS_PROTOCOL_PREFIX = "https://";
 
@@ -183,7 +182,11 @@ public class SwaggerController {
 	}
 
 	private String fixReverseProxyProtocol(String url) {
-		if (StringUtils.isNotBlank(url) && url.toLowerCase().contains(ESSEC_DOMAIN_NAME)) {
+		HttpServletRequest currentRequest = getCurrentRequest();
+		if (currentRequest == null) {
+			return url;
+		}
+		if (StringUtils.isNotBlank(url) && currentRequest.isSecure()) {
 			url = url.replaceAll(HTTP_PROTOCOL_PREFIX_SEARCH_PATTERN, HTTPS_PROTOCOL_PREFIX);
 		}
 		return url;
