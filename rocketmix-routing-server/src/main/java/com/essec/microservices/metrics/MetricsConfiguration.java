@@ -19,25 +19,26 @@ import io.micrometer.core.instrument.MeterRegistry;
 public class MetricsConfiguration {
 
 	@Bean
-	public Filter getMetricsFilter(MeterRegistry registry, MetricsServiceBean metricsServiceBean) {
+	public Filter getMetricsFilter(final MeterRegistry registry, final MetricsServiceBean metricsServiceBean) {
 		return new Filter() {
 			@Override
-			public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+			public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
+					throws IOException, ServletException {
 				if (request instanceof HttpServletRequest) {
-					String url = ((HttpServletRequest) request).getRequestURL().toString();
+					final String url = ((HttpServletRequest) request).getRequestURL().toString();
 					metricsServiceBean.incrementCounter(url);
 					chain.doFilter(request, response);
 				}
 			}
 
 			@Override
-			public void init(FilterConfig filterConfig) throws ServletException {
-				
+			public void init(final FilterConfig filterConfig) throws ServletException {
+				// Nothing to do
 			}
 
 			@Override
 			public void destroy() {
-				
+				// Nothing to do
 			}
 		};
 	}
